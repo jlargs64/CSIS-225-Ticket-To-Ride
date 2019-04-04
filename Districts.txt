@@ -1,0 +1,17 @@
+15
+Lincoln Center, 0
+Central Park, 1
+Midtown West, 0
+Times Square, 1
+United Nations, 1
+Empire State Building, 1
+Chelsea, 1
+Gramercy Park, 0
+Greenwich Village, 1
+East Village, 0
+Soho, 0
+China Town, 1
+Lower East Side, 0
+Wall Street, 1
+Brooklyn, 1
+
