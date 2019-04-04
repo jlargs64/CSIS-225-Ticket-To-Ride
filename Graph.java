@@ -1,4 +1,7 @@
 import java.awt.Color;
+import java.io.File;
+import java.util.Scanner;
+
 /**
  * An adjacency list graph to represent our game map.
  *
@@ -13,19 +16,37 @@ public class Graph {
     /**
      * Constructor
      */
-    public Graph(int numVerts) {
+    public Graph(File data) {
 
+        int numVerts = 0;
+        try {
 
-        vertices = new Vertex[numVerts];
-        for (int src = 0; src < numVerts; src++) {
-            vertices[src] = new Vertex();
+            Scanner s = new Scanner(data);
+            numVerts = s.nextInt();
+            vertices = new Vertex[numVerts];
+
+            for (int src = 0; src < numVerts; src++) {
+
+                String input = s.nextLine();
+                String[] vertexData = input.split(",");
+
+                //Set a vertex as an attraction if it is 1
+                boolean isAttraction = false;
+                if (vertexData[1].equals("1")) {
+                    isAttraction = true;
+                }
+                vertices[src] = new Vertex(vertexData[0], isAttraction);
+            }
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
         }
-
     }
 
-    public void addEdge(int src, int dest) {
+    public void addEdge(int src, int dest, Color color, int cost) {
 
-        vertices[src].firstEdge = new Edge(dest, vertices[src].firstEdge);
+        vertices[src].firstEdge = new Edge(dest, vertices[src].firstEdge, color, cost);
     }
 
     public void removeEdge(int src, int dest) {
@@ -54,22 +75,42 @@ public class Graph {
     private class Vertex {
 
         private Edge firstEdge;
+        private boolean isAttraction;
+        private String name;
+
+        /**
+         * Constructor for Vertex
+         *
+         * @param name name of the district
+         * @param isAttraction 1 pt added if true
+         */
+        public Vertex(String name, boolean isAttraction) {
+
+            firstEdge = null;
+            this.name = name;
+            this.isAttraction = isAttraction;
+        }
     }
 
+    // A private class to represent edges to other districts
     private class Edge {
         private int dest;
         private Edge next;
         private Color color;
         private int cost;
-        private boolean isAttraction;
+
         /**
+         * Constructor for Edge
          *
          * @param dest the vertex we are from
          * @param next the vertex we are to
          */
-        private Edge(int dest, Edge next) {
+        private Edge(int dest, Edge next, Color color, int cost) {
+
             this.dest = dest;
             this.next = next;
+            this.color = color;
+            this.cost = cost;
         }
     }
 }

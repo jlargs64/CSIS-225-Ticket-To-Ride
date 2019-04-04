@@ -48,8 +48,9 @@ class Game extends JPanel implements MouseListener, ActionListener {
     public static void main(String[] args) {
 
         invokeLater(() -> {
+
             // Create and set up the window.
-            JFrame frame = new JFrame("Text Twist");
+            JFrame frame = new JFrame("Ticket to Ride: New York");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
             Game panel = new Game();
