@@ -64,8 +64,6 @@ class Game extends JPanel implements MouseListener, ActionListener {
             // Display the window.
             frame.pack();
             frame.setVisible(true);
-            //Make the background image
-
         });
     }
 

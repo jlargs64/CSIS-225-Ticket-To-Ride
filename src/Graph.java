@@ -21,13 +21,18 @@ public class Graph {
         int numVerts = 0;
         try {
 
+            //Scanner we read from file with
             Scanner s = new Scanner(data);
             numVerts = s.nextInt();
+
+            //Initialize our vertices from top of the file
             vertices = new Vertex[numVerts];
-            //Go to the next line
+            //Go to the next line b/c nothing is there.
             s.nextLine();
             for (int src = 0; src < numVerts; src++) {
 
+                //Parse the district name and if it is a tourist attraction.
+                //If district is an attraction it is an extra point if captured.
                 String input = s.nextLine();
                 String[] vertexData = input.split(",");
 
@@ -45,21 +50,22 @@ public class Graph {
         }
     }
 
-    public static void main(String[] args) {
-        try {
-            File f = new File("Districts.txt");
-            Graph g = new Graph(f);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
+    /**
+     * @param src the src destination in the vertex array
+     * @param dest edge destination to add
+     * @param color color of the taxi required
+     * @param cost amount of taxi's needed
+     */
     public void addEdge(int src, int dest, Color color, int cost) {
 
-        vertices[src].firstEdge = new Edge(dest, vertices[src].firstEdge, color, cost);
+        vertices[src].firstEdge = new Edge(dest, vertices[src].firstEdge,
+                color, cost);
     }
 
+    /**
+     * @param src source vertex to remove from
+     * @param dest edge being removed
+     */
     public void removeEdge(int src, int dest) {
 
         // empty list, none to remove
