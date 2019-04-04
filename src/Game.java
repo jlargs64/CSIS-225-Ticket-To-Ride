@@ -21,16 +21,18 @@ class Game extends JPanel implements MouseListener, ActionListener {
     private final int width;
     private final int height;
     private final Graph map;
+    private Toolkit toolkit;
+    private Image mainMenuBackground;
 
     //The constructor for Text Twist
     private Game() {
 
         //Default window settings
         setPreferredSize(new Dimension(800, 600));
+        toolkit = Toolkit.getDefaultToolkit();
         setOpaque(true);
         width = getPreferredSize().width;
         height = getPreferredSize().height;
-        setBackground(new Color(65, 218, 249));
         setFocusable(true);
         setLayout(null);
 
@@ -62,7 +64,27 @@ class Game extends JPanel implements MouseListener, ActionListener {
             // Display the window.
             frame.pack();
             frame.setVisible(true);
+            //Make the background image
+
         });
+    }
+
+    /**
+     * PaintComponent method for JPanel.
+     *
+     * @param g the Graphics object for this applet
+     */
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        // display images
+        mainMenuBackground = toolkit.getImage("assets\\game-cover.jpg");
+        int bgWidth = mainMenuBackground.getWidth(this);
+        int bgHeight = mainMenuBackground.getHeight(this);
+        g.drawImage(mainMenuBackground, 0, 0, bgWidth, bgHeight, this);
+        // display icon
+        //icon1.paintIcon(this, g, width- icon1.getIconWidth(), 0);
     }
 
     /**
