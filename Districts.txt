@@ -72,7 +72,7 @@ Brooklyn, 1
 8 12 2 Clear
 9 5 4 Pink
 9 8 2 Orange
-9 13 Clear
+9 13 2 Clear
 10 7 2 Clear
 10 8 2 Blue
 10 12 1 Black

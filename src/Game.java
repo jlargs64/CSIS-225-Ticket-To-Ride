@@ -39,6 +39,7 @@ class Game extends JPanel implements MouseListener, ActionListener {
         //Construct our graph
         File data = new File("Districts.txt");
         map = new Graph(data);
+        map.fillNYData();
         // Add universal interface listeners
         addMouseListener(this);
     }

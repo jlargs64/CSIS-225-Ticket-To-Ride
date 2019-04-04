@@ -12,17 +12,18 @@ import java.util.Scanner;
 public class Graph {
 
     private Vertex[] vertices;
+    private Scanner s;
 
     /**
      * Constructor
      */
     public Graph(File data) {
 
-        int numVerts = 0;
+        int numVerts;
         try {
 
             //Scanner we read from file with
-            Scanner s = new Scanner(data);
+            s = new Scanner(data);
             numVerts = s.nextInt();
 
             //Initialize our vertices from top of the file
@@ -51,10 +52,10 @@ public class Graph {
     }
 
     /**
-     * @param src the src destination in the vertex array
-     * @param dest edge destination to add
+     * @param src   the src destination in the vertex array
+     * @param dest  edge destination to add
      * @param color color of the taxi required
-     * @param cost amount of taxi's needed
+     * @param cost  amount of taxi's needed
      */
     public void addEdge(int src, int dest, Color color, int cost) {
 
@@ -63,7 +64,7 @@ public class Graph {
     }
 
     /**
-     * @param src source vertex to remove from
+     * @param src  source vertex to remove from
      * @param dest edge being removed
      */
     public void removeEdge(int src, int dest) {
@@ -86,6 +87,51 @@ public class Graph {
                 return;
             }
             e = e.next;
+        }
+    }
+
+    /**
+     * Fill the graph with the NY Data from file
+     */
+    public void fillNYData() {
+
+        //Skip the next line b/c it's empty
+        s.nextLine();
+        while (s.hasNextLine()) {
+            int src = s.nextInt();
+            int dest = s.nextInt();
+            int cost = s.nextInt();
+            String strColor = s.next().trim();
+            Color color;
+            switch (strColor) {
+                case "Red":
+                    color = Color.RED;
+                    break;
+                case "Blue":
+
+                    color = Color.BLUE;
+                    break;
+                case "Orange":
+
+                    color = Color.ORANGE;
+                    break;
+                case "Black":
+
+                    color = Color.BLACK;
+                    break;
+                case "Pink":
+
+                    color = Color.PINK;
+                    break;
+                case "Clear":
+
+                    color = Color.WHITE;
+                    break;
+                default:
+                    color = Color.GREEN;
+                    break;
+            }
+            addEdge(src, dest, color, cost);
         }
     }
 
