@@ -99,6 +99,7 @@ class Game extends JPanel implements MouseListener, ActionListener {
                 //Draw the help button which displays the help photos
 
                 //Draw the exit button
+
                 break;
             case HELP_MENU:
 
@@ -106,10 +107,21 @@ class Game extends JPanel implements MouseListener, ActionListener {
 
                 break;
             case PLAYER_SELECTION:
+
+                //We should have some radio buttons for 2/3/4 players
+
+                //Then generate programmatically each player and their selected
+                //colors (BLUE(CYAN)/PURPLE/YELLOW/WHITE
+                //Color selection should be a dropdown menu
+
                 break;
             case GAME_MENU:
                 break;
             case SCORE_MENU:
+
+                //This is where we show who won the game with the scorecard
+                //There will be some animations that we can add later.
+
                 break;
         }
     }
@@ -121,9 +133,7 @@ class Game extends JPanel implements MouseListener, ActionListener {
      * @param e the event to be processed
      */
     @Override
-    public void mouseClicked(MouseEvent e) {
-
-    }
+    public void mouseClicked(MouseEvent e) { }
 
     /**
      * Invoked when a mouse button has been pressed on a component.
@@ -131,9 +141,7 @@ class Game extends JPanel implements MouseListener, ActionListener {
      * @param e the event to be processed
      */
     @Override
-    public void mousePressed(MouseEvent e) {
-
-    }
+    public void mousePressed(MouseEvent e) { }
 
     /**
      * Invoked when a mouse button has been released on a component.
@@ -141,9 +149,7 @@ class Game extends JPanel implements MouseListener, ActionListener {
      * @param e the event to be processed
      */
     @Override
-    public void mouseReleased(MouseEvent e) {
-
-    }
+    public void mouseReleased(MouseEvent e) { }
 
     /**
      * Invoked when the mouse enters a component.
@@ -151,9 +157,7 @@ class Game extends JPanel implements MouseListener, ActionListener {
      * @param e the event to be processed
      */
     @Override
-    public void mouseEntered(MouseEvent e) {
-
-    }
+    public void mouseEntered(MouseEvent e) { }
 
     /**
      * Invoked when the mouse exits a component.
@@ -161,9 +165,7 @@ class Game extends JPanel implements MouseListener, ActionListener {
      * @param e the event to be processed
      */
     @Override
-    public void mouseExited(MouseEvent e) {
-
-    }
+    public void mouseExited(MouseEvent e) { }
 
     /**
      * Invoked when an action occurs.
@@ -171,9 +173,7 @@ class Game extends JPanel implements MouseListener, ActionListener {
      * @param e the event to be processed
      */
     @Override
-    public void actionPerformed(ActionEvent e) {
-
-    }
+    public void actionPerformed(ActionEvent e) { }
 
     // For managing the game state
     public enum GameState {
