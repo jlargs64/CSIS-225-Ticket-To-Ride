@@ -23,6 +23,7 @@ class Game extends JPanel implements MouseListener, ActionListener {
     private final Graph map;
     private Toolkit toolkit;
     private Image mainMenuBackground;
+    private GameState currentState;
 
     //The constructor for Text Twist
     private Game() {
@@ -33,6 +34,7 @@ class Game extends JPanel implements MouseListener, ActionListener {
         setOpaque(true);
         width = getPreferredSize().width;
         height = getPreferredSize().height;
+        setBackground(Color.WHITE);
         setFocusable(true);
         setLayout(null);
 
@@ -40,6 +42,10 @@ class Game extends JPanel implements MouseListener, ActionListener {
         File data = new File("Districts.txt");
         map = new Graph(data);
         map.fillNYData();
+
+        //Set our current state
+        currentState = GameState.values()[0];
+
         // Add universal interface listeners
         addMouseListener(this);
     }
@@ -77,13 +83,35 @@ class Game extends JPanel implements MouseListener, ActionListener {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        // display images
-        mainMenuBackground = toolkit.getImage("assets\\game-cover.jpg");
-        int bgWidth = mainMenuBackground.getWidth(this);
-        int bgHeight = mainMenuBackground.getHeight(this);
-        g.drawImage(mainMenuBackground, 0, 0, bgWidth, bgHeight, this);
-        // display icon
-        //icon1.paintIcon(this, g, width- icon1.getIconWidth(), 0);
+
+        //Switch case for displaying different states
+        switch (currentState) {
+
+            case MAIN_MENU:
+
+                // display images
+                mainMenuBackground = toolkit.getImage("assets\\game-cover.jpg");
+                int bgWidth = mainMenuBackground.getWidth(this);
+                int bgHeight = mainMenuBackground.getHeight(this);
+                g.drawImage(mainMenuBackground, 0, 0, bgWidth, bgHeight, this);
+                //Draw the play button which leads to the select players screen.
+
+                //Draw the help button which displays the help photos
+
+                //Draw the exit button
+                break;
+            case HELP_MENU:
+
+                //Swap between the 2 help images and also a back to main button.
+
+                break;
+            case PLAYER_SELECTION:
+                break;
+            case GAME_MENU:
+                break;
+            case SCORE_MENU:
+                break;
+        }
     }
 
     /**
@@ -145,5 +173,10 @@ class Game extends JPanel implements MouseListener, ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
+    }
+
+    // For managing the game state
+    public enum GameState {
+        MAIN_MENU, HELP_MENU, PLAYER_SELECTION, GAME_MENU, SCORE_MENU
     }
 }
