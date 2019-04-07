@@ -11,19 +11,24 @@ public class DestCard {
     protected int worth;
     protected int startDistrict;
     protected int endDistrict;
+    //Used for finding the correct image to display
+    protected int cardNum;
 
     /**
      * Constructor for the Destination class that initialize the Destination
      * trip array.
      *
+     * @param cardNum       used for finding which card image to display
      * @param worth         the points gained from completion
      * @param startDistrict the start point of the trip
      * @param endDistrict   the  end point of the trip
      */
-    public DestCard(int worth, int startDistrict, int endDistrict) {
+    public DestCard(int cardNum, int worth, int startDistrict, int endDistrict) {
 
+        //Initialize our instance variables
         this.worth = worth;
         this.startDistrict = startDistrict;
         this.endDistrict = endDistrict;
+        this.cardNum = cardNum;
     }
 }
