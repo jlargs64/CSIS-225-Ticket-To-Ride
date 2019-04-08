@@ -24,6 +24,7 @@ class Game extends JPanel implements MouseListener, ActionListener {
     private Toolkit toolkit;
     private Image mainMenuBackground;
     private GameState currentState;
+    private JButton playButton, helpButton, quitButton;
 
     //The constructor for Text Twist
     private Game() {
@@ -48,6 +49,36 @@ class Game extends JPanel implements MouseListener, ActionListener {
 
         // Add universal interface listeners
         addMouseListener(this);
+
+        // Adding board buttons
+        helpButton = new JButton("Help");
+        helpButton.setVerticalTextPosition(AbstractButton.CENTER);
+        helpButton.setHorizontalTextPosition(AbstractButton.CENTER);
+        helpButton.setBounds(100, 50, 300, 100);
+
+        playButton = new JButton("Play");
+        playButton.setVerticalTextPosition(AbstractButton.CENTER);
+        playButton.setHorizontalTextPosition(AbstractButton.CENTER);
+        playButton.setBounds(100, 160, 300, 100);
+
+        quitButton = new JButton("Quit");
+        quitButton.setVerticalTextPosition(AbstractButton.CENTER);
+        quitButton.setHorizontalTextPosition(AbstractButton.CENTER);
+        quitButton.setBounds(100, 270, 300, 100);
+
+        // Radio Buttons for selecting number of players
+        JRadioButton p2 = new JRadioButton("2");
+        JRadioButton p3 = new JRadioButton("3");
+        JRadioButton p4 = new JRadioButton("4");
+        ButtonGroup group = new ButtonGroup();
+        group.add(p2);
+        group.add(p3);
+        group.add(p4);
+
+        // Add action listeners for if a button is clicked
+        helpButton.addActionListener(this);
+        playButton.addActionListener(this);
+        quitButton.addActionListener(this);
     }
 
     /**
@@ -59,19 +90,19 @@ class Game extends JPanel implements MouseListener, ActionListener {
 
         invokeLater(() -> {
 
-            // Create and set up the window.
-            JFrame frame = new JFrame("Ticket to Ride: New York");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                // Create and set up the window.
+                JFrame frame = new JFrame("Ticket to Ride: New York");
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-            Game panel = new Game();
-            frame.getContentPane().add(panel);
+                Game panel = new Game();
+                frame.getContentPane().add(panel);
 
-            // Making sure the game scales well
-            frame.setResizable(false);
-            // Display the window.
-            frame.pack();
-            frame.setVisible(true);
-        });
+                // Making sure the game scales well
+                frame.setResizable(false);
+                // Display the window.
+                frame.pack();
+                frame.setVisible(true);
+            });
     }
 
     /**
@@ -83,46 +114,59 @@ class Game extends JPanel implements MouseListener, ActionListener {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-
         //Switch case for displaying different states
         switch (currentState) {
 
             case MAIN_MENU:
 
-                // display images
-                mainMenuBackground = toolkit.getImage("assets\\game-cover.jpg");
-                int bgWidth = mainMenuBackground.getWidth(this);
-                int bgHeight = mainMenuBackground.getHeight(this);
-                g.drawImage(mainMenuBackground, 0, 0, bgWidth, bgHeight, this);
-                //Draw the play button which leads to the select players screen.
+            // display images
+            mainMenuBackground = toolkit.getImage("assets\\game-cover.jpg");
+            int bgWidth = mainMenuBackground.getWidth(this);
+            int bgHeight = mainMenuBackground.getHeight(this);
+            g.drawImage(mainMenuBackground, 0, 0, bgWidth, bgHeight, this);
 
-                //Draw the help button which displays the help photos
+            // Draw the Title Text
+            Font titleFont = new Font("Monospace", Font.BOLD, 100);
+            g.setFont(titleFont);
+            g.setColor(Color.BLACK);
+            g.drawString("Ticket to Ride", width/4, 100);
 
-                //Draw the exit button
+            //Draw the play button which leads to the select players screen.
+            add(playButton);
 
-                break;
+            //Draw the help button which displays the help photos
+            add(helpButton);
+
+            //Draw the exit button
+            add(quitButton);
+            
+            //Disable Buttons
+            // remove(group);
+            
+            
+            break;
             case HELP_MENU:
 
-                //Swap between the 2 help images and also a back to main button.
+            //Swap between the 2 help images and also a back to main button.
 
-                break;
+            break;
             case PLAYER_SELECTION:
 
-                //We should have some radio buttons for 2/3/4 players
+            //We should have some radio buttons for 2/3/4 players
 
-                //Then generate programmatically each player and their selected
-                //colors (BLUE(CYAN)/PURPLE/YELLOW/WHITE
-                //Color selection should be a dropdown menu
+            //Then generate programmatically each player and their selected
+            //colors (BLUE(CYAN)/PURPLE/YELLOW/WHITE
+            //Color selection should be a dropdown menu
 
-                break;
+            break;
             case GAME_MENU:
-                break;
+            break;
             case SCORE_MENU:
 
-                //This is where we show who won the game with the scorecard
-                //There will be some animations that we can add later.
+            //This is where we show who won the game with the scorecard
+            //There will be some animations that we can add later.
 
-                break;
+            break;
         }
     }
 
