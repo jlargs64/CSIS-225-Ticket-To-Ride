@@ -21,7 +21,6 @@ public class GameDriver {
             @Override
             public void run() {
 
-
                 // Create and set up the window.
                 JFrame frame = new JFrame("Ticket to Ride: New York");
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
