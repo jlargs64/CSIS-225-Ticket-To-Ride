@@ -6,6 +6,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -22,14 +23,29 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
     private final int height;
     private final Graph map;
     private Toolkit toolkit;
-    private Image mainMenuBackground;
+
+    //Image related variables
+    private Image mainMenuBackground, woodenBackgroundImage, gameMap;
+    private Image[] helpImages = new Image[2];
+    private int currentHelpImage;
+
+    //Game state related variables
     private GameState currentState;
-    private JButton playButton, helpButton, quitButton;
+
+    //Buttons
+    private JButton playButton, helpButton, quitButton, backButton;
+    private JButton switchButton;
     private ButtonGroup selectionGroup;
     private JRadioButton p2, p3, p4;
+
+    //Card objects
     private ArrayDeque<TaxiCard> taxiCards;
     private ArrayDeque<TaxiCard> activeTaxiCards;
     private ArrayDeque<DestCard> destCards;
+
+    //Player related variables
+    private ArrayList<Player> players;
+    private Player currentPlayer;
 
     //The constructor for Text Twist
     public GamePanel() {
@@ -71,6 +87,16 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
         quitButton.setHorizontalTextPosition(AbstractButton.CENTER);
         quitButton.setBounds(width - 250, height - 100, 200, 100);
 
+        backButton = new JButton("Back");
+        backButton.setVerticalTextPosition(AbstractButton.CENTER);
+        backButton.setHorizontalTextPosition(AbstractButton.CENTER);
+        backButton.setBounds(50, height - 100, 200, 100);
+
+        switchButton = new JButton("Next");
+        switchButton.setVerticalTextPosition(AbstractButton.CENTER);
+        switchButton.setHorizontalTextPosition(AbstractButton.CENTER);
+        switchButton.setBounds(width - 250, height - 100, 200, 100);
+
         // Radio Buttons for selecting number of players
         p2 = new JRadioButton("2");
         p3 = new JRadioButton("3");
@@ -96,13 +122,26 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
+        //The background image
+        String imgFileLocation = "assets\\wood-background.jpg";
+        woodenBackgroundImage = toolkit.getImage(imgFileLocation);
+
+        //The main menu image
+        imgFileLocation = "assets\\game-cover.jpg";
+        mainMenuBackground = toolkit.getImage(imgFileLocation);
+
+        //The game map
+        imgFileLocation = "assets\\ny-board.jpg";
+        gameMap = toolkit.getImage(imgFileLocation);
+
         //Switch case for displaying different states
         switch (currentState) {
 
             case MAIN_MENU:
 
                 // display images
-                mainMenuBackground = toolkit.getImage("assets\\game-cover.jpg");
+                imgFileLocation = "assets\\game-cover.jpg";
+                mainMenuBackground = toolkit.getImage(imgFileLocation);
                 int bgWidth = mainMenuBackground.getWidth(this);
                 int bgHeight = mainMenuBackground.getHeight(this);
                 g.drawImage(mainMenuBackground, 0, 0, bgWidth, bgHeight, this);
@@ -111,7 +150,6 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 Font titleFont = new Font("Monospace", Font.BOLD, 100);
                 g.setFont(titleFont);
                 g.setColor(Color.BLACK);
-                //g.drawString("Ticket to Ride", width/4, 100);
 
                 //Draw the play button which leads to the select players screen.
                 add(playButton);
@@ -122,11 +160,15 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 //Draw the exit button
                 add(quitButton);
 
-
+                //Disable buttons not in use
+                remove(switchButton);
+                remove(backButton);
                 break;
             case HELP_MENU:
 
                 //Swap between the 2 help images and also a back to main button.
+                add(switchButton);
+                add(backButton);
 
                 // Disable Buttons not in use
                 remove(playButton);
@@ -135,10 +177,15 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 break;
             case PLAYER_SELECTION:
 
+                //Paint the background image
+                bgWidth = woodenBackgroundImage.getWidth(this);
+                bgHeight = woodenBackgroundImage.getHeight(this);
+                g.drawImage(woodenBackgroundImage, 0, 0, bgWidth, bgHeight, this);
                 //We should have some radio buttons for 2/3/4 players
                 add(p2);
                 add(p3);
                 add(p4);
+
                 //Then generate programmatically each player and their selected
                 //colors (CYAN/MAGENTA/YELLOW/WHITE
                 //Color selection should be a dropdown menu
@@ -154,6 +201,16 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 taxiCards = new ArrayDeque<>();
                 activeTaxiCards = new ArrayDeque<>();
                 destCards = new ArrayDeque<>();
+
+                //Draw the background
+                bgWidth = woodenBackgroundImage.getWidth(this);
+                bgHeight = woodenBackgroundImage.getHeight(this);
+                g.drawImage(woodenBackgroundImage, 0, 0, bgWidth, bgHeight, this);
+
+                //Layer the game map on top of background
+                bgWidth = gameMap.getWidth(this);
+                bgHeight = gameMap.getHeight(this);
+                g.drawImage(gameMap, 0, 0, bgWidth, bgHeight, this);
 
                 //This menu is where the bulk of the code will exist
                 //Disable buttons not in use
@@ -178,6 +235,55 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
+        //Enter the player selection screen
+        if (e.getSource().equals(playButton)) {
+
+            //Set our current state to player selection
+            currentState = GameState.values()[2];
+
+            //Repaint and end the method
+            repaint();
+            return;
+        }
+
+        //Enter the help screen
+        else if (e.getSource().equals(helpButton)) {
+
+            //Set our current state to help menu
+            currentState = GameState.values()[1];
+
+            //Repaint and end the method
+            repaint();
+            return;
+        }
+
+        //Kill the program
+        else if (e.getSource().equals(quitButton)) {
+
+            //Repaint and end the method
+            repaint();
+            return;
+        }
+
+        //Switch the help messages
+        else if (e.getSource().equals(switchButton)) {
+
+
+            //Repaint and end the method
+            repaint();
+            return;
+        }
+
+        //Go back from help to the main menu
+        else if (e.getSource().equals(backButton)) {
+
+            //Set our current state to player selection
+            currentState = GameState.values()[2];
+
+            //Repaint and end the method
+            repaint();
+            return;
+        }
     }
 
     /**
@@ -188,7 +294,6 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
      */
     @Override
     public void mouseClicked(MouseEvent e) {
-
     }
 
     /**
@@ -198,7 +303,6 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
      */
     @Override
     public void mousePressed(MouseEvent e) {
-
     }
 
     /**
@@ -208,7 +312,6 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
      */
     @Override
     public void mouseReleased(MouseEvent e) {
-
     }
 
     /**
@@ -218,7 +321,6 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
      */
     @Override
     public void mouseEntered(MouseEvent e) {
-
     }
 
     /**
@@ -228,7 +330,6 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
      */
     @Override
     public void mouseExited(MouseEvent e) {
-
     }
 
     // For managing the game state
