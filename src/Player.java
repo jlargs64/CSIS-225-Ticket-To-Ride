@@ -17,13 +17,13 @@ public class Player {
     //first(youngest goes first)
     private int age;
     //The number of taxis
-    private int taxis;
+    protected int taxis;
     //The player's score
-    private int points = 0;
+    protected int points = 0;
     //The cards that player has in hand
-    private ArrayList<TaxiCard> playerTaxis = new ArrayList<>();
+    protected ArrayList<TaxiCard> playerTaxis = new ArrayList<>();
     //The cards that player has in hand
-    private ArrayList<DestCard> playerDestCards = new ArrayList<>();
+    protected ArrayList<DestCard> playerDestCards = new ArrayList<>();
 
     /**
      * Constructor for the player class that initialize the player
