@@ -7,7 +7,6 @@ import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 /**
  * A java implementation of ticket to ride - New York.
@@ -25,7 +24,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
     private Toolkit toolkit;
 
     //Image related variables
-    private Image mainMenuBackground, woodenBackgroundImage, gameMap;
+    private Image mainMenuImg, woodenImage, gameMap;
     private Image[] helpImages = new Image[2];
     private int currentHelpImage;
 
@@ -111,6 +110,8 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
         helpButton.addActionListener(this);
         playButton.addActionListener(this);
         quitButton.addActionListener(this);
+        backButton.addActionListener(this);
+        switchButton.addActionListener(this);
     }
 
     /**
@@ -124,14 +125,18 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
         //The background image
         String imgFileLocation = "assets\\wood-background.jpg";
-        woodenBackgroundImage = toolkit.getImage(imgFileLocation);
+        woodenImage = toolkit.getImage(imgFileLocation);
 
         //The main menu image
         imgFileLocation = "assets\\game-cover.jpg";
-        mainMenuBackground = toolkit.getImage(imgFileLocation);
+        mainMenuImg = toolkit.getImage(imgFileLocation);
 
         //The game map
         imgFileLocation = "assets\\ny-board.jpg";
+        gameMap = toolkit.getImage(imgFileLocation);
+
+        //Score card
+        imgFileLocation = "assets\\score-card.jpg";
         gameMap = toolkit.getImage(imgFileLocation);
 
         //Switch case for displaying different states
@@ -141,10 +146,10 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
                 // display images
                 imgFileLocation = "assets\\game-cover.jpg";
-                mainMenuBackground = toolkit.getImage(imgFileLocation);
-                int bgWidth = mainMenuBackground.getWidth(this);
-                int bgHeight = mainMenuBackground.getHeight(this);
-                g.drawImage(mainMenuBackground, 0, 0, bgWidth, bgHeight, this);
+                mainMenuImg = toolkit.getImage(imgFileLocation);
+                int bgWidth = mainMenuImg.getWidth(this);
+                int bgHeight = mainMenuImg.getHeight(this);
+                g.drawImage(mainMenuImg, 0, 0, bgWidth, bgHeight, this);
 
                 // Draw the Title Text
                 Font titleFont = new Font("Monospace", Font.BOLD, 100);
@@ -178,9 +183,9 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
             case PLAYER_SELECTION:
 
                 //Paint the background image
-                bgWidth = woodenBackgroundImage.getWidth(this);
-                bgHeight = woodenBackgroundImage.getHeight(this);
-                g.drawImage(woodenBackgroundImage, 0, 0, bgWidth, bgHeight, this);
+                bgWidth = woodenImage.getWidth(this);
+                bgHeight = woodenImage.getHeight(this);
+                g.drawImage(woodenImage, 0, 0, bgWidth, bgHeight, this);
                 //We should have some radio buttons for 2/3/4 players
                 add(p2);
                 add(p3);
@@ -203,9 +208,9 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 destCards = new ArrayDeque<>();
 
                 //Draw the background
-                bgWidth = woodenBackgroundImage.getWidth(this);
-                bgHeight = woodenBackgroundImage.getHeight(this);
-                g.drawImage(woodenBackgroundImage, 0, 0, bgWidth, bgHeight, this);
+                bgWidth = woodenImage.getWidth(this);
+                bgHeight = woodenImage.getHeight(this);
+                g.drawImage(woodenImage, 0, 0, bgWidth, bgHeight, this);
 
                 //Layer the game map on top of background
                 bgWidth = gameMap.getWidth(this);
@@ -243,7 +248,6 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
             //Repaint and end the method
             repaint();
-            return;
         }
 
         //Enter the help screen
@@ -254,7 +258,6 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
             //Repaint and end the method
             repaint();
-            return;
         }
 
         //Kill the program
@@ -262,7 +265,6 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
             //Repaint and end the method
             repaint();
-            return;
         }
 
         //Switch the help messages
@@ -271,18 +273,16 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
             //Repaint and end the method
             repaint();
-            return;
         }
 
         //Go back from help to the main menu
         else if (e.getSource().equals(backButton)) {
 
             //Set our current state to player selection
-            currentState = GameState.values()[2];
+            currentState = GameState.values()[0];
 
             //Repaint and end the method
             repaint();
-            return;
         }
     }
 
