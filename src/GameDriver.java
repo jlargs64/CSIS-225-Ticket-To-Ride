@@ -1,7 +1,5 @@
 import javax.swing.*;
 
-import static javax.swing.SwingUtilities.invokeLater;
-
 /**
  * A java implementation of ticket to ride - New York.
  *
@@ -18,20 +16,25 @@ public class GameDriver {
      */
     public static void main(String[] args) {
 
-        invokeLater(() -> {
+        javax.swing.SwingUtilities.invokeLater(new Runnable() {
 
-            // Create and set up the window.
-            JFrame frame = new JFrame("Ticket to Ride: New York");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            @Override
+            public void run() {
 
-            GamePanel panel = new GamePanel();
-            frame.getContentPane().add(panel);
 
-            // Making sure the game scales well
-            frame.setResizable(false);
-            // Display the window.
-            frame.pack();
-            frame.setVisible(true);
+                // Create and set up the window.
+                JFrame frame = new JFrame("Ticket to Ride: New York");
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+                GamePanel panel = new GamePanel();
+                frame.getContentPane().add(panel);
+
+                // Making sure the game scales well
+                frame.setResizable(false);
+                // Display the window.
+                frame.pack();
+                frame.setVisible(true);
+            }
         });
     }
 }
