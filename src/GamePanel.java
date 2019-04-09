@@ -5,6 +5,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
+import java.util.ArrayDeque;
+import java.util.Scanner;
 
 /**
  * A java implementation of ticket to ride - New York.
@@ -25,6 +27,9 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
     private JButton playButton, helpButton, quitButton;
     private ButtonGroup selectionGroup;
     private JRadioButton p2, p3, p4;
+    private ArrayDeque<TaxiCard> taxiCards;
+    private ArrayDeque<TaxiCard> activeTaxiCards;
+    private ArrayDeque<DestCard> destCards;
 
     //The constructor for Text Twist
     public GamePanel() {
@@ -135,7 +140,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 add(p3);
                 add(p4);
                 //Then generate programmatically each player and their selected
-                //colors (BLUE(CYAN)/PURPLE/YELLOW/WHITE
+                //colors (CYAN/MAGENTA/YELLOW/WHITE
                 //Color selection should be a dropdown menu
 
                 // Disable Buttons not in use
@@ -144,6 +149,11 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 remove(quitButton);
                 break;
             case GAME_MENU:
+
+                //Initialize our array deques of cards
+                taxiCards = new ArrayDeque<>();
+                activeTaxiCards = new ArrayDeque<>();
+                destCards = new ArrayDeque<>();
 
                 //This menu is where the bulk of the code will exist
                 //Disable buttons not in use

@@ -1,16 +1,17 @@
-import java.awt.Color;
+import java.awt.*;
 
 /**
  * The TaxiCard class for ticket to ride - New York.
  *
- * @version 1.0
  * @author Michael Lamb, Justin Largo, Leon Griffiths, Jennifer LeClair, Yousuf
  * Borna
+ * @version 1.0
  */
 public class TaxiCard {
 
     //taxi type color
-    protected Color type;
+    protected String type;
+    protected Image cardImage;
 
     /**
      * Constructor for the TaxiCard class that initialize the taxi
@@ -18,10 +19,37 @@ public class TaxiCard {
      *
      * @param type the type of the taxi
      */
-    public TaxiCard(Color type) {
+    public TaxiCard(String type) {
 
         // assigning the type of Taxi
         this.type = type;
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+
+        //Assign the string type of taxi card and assign it the respective
+        //image that goes to it.
+        if (type.equalsIgnoreCase("BLACK")) {
+
+            cardImage = toolkit.getImage("assets\\pieces\\black-card.jpg");
+        } else if (type.equalsIgnoreCase("BLUE")) {
+
+            cardImage = toolkit.getImage("assets\\pieces\\blue-card.jpg");
+        } else if (type.equalsIgnoreCase("RED")) {
+
+            cardImage = toolkit.getImage("assets\\pieces\\red-card.jpg");
+        } else if (type.equalsIgnoreCase("GREEN")) {
+
+            cardImage = toolkit.getImage("assets\\pieces\\green-card.jpg");
+        } else if (type.equalsIgnoreCase("ORANGE")) {
+
+            cardImage = toolkit.getImage("assets\\pieces\\orange-card.jpg");
+        } else if (type.equalsIgnoreCase("PINK")) {
+
+            cardImage = toolkit.getImage("assets\\pieces\\pink-card.jpg");
+        } else {
+
+            //It's a locomotive
+            cardImage = toolkit.getImage("assets\\pieces\\rainbow-card.jpg");
+        }
     }
 
 }
