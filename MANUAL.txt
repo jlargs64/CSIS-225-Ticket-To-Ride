@@ -14,14 +14,14 @@ Cards and Board:
 	Some Locations are connected by Double Routes (two Routes of the same length connecting the same Locations). A single player cannot claim both Routes of a Double Route.
 	In two-player games, once one Route of a Double Route is claimed, the other one cannot be claimed by the other player.
 	Each Destination Ticket card shows two Locations and a point value. 
-	At the end of the game, you score the point value of each Destination Ticket card you completed. 
-	To complete a Destination Ticket card, you must connect the two locations listed on the card by creating a continuous path of Routes you claimed. 
-	If you cannot, you will lose that many points. You may have any number of Destination Ticket cards
+ At the end of the game, you score the point value of each Destination Ticket card you completed. 
+ To complete a Destination Ticket card, you must connect the two locations listed on the card by creating a continuous path of Routes you claimed. 
+ If you cannot, you will lose that many points. You may have any number of Destination Ticket cards
 
 
 Rules:
-	At the end of the game, the player who scored the most points wins. You score points by:
-  •	Claiming a Route between two adjacent Locations on the board
+ At the end of the game, the player who scored the most points wins. You score points by:
+     •	Claiming a Route between two adjacent Locations on the board
   •	Successfully completing a Continuous Path of Routes between the two Locations listed on your Destination Ticket(s);
   •	Connecting Tourist Attractions.
 	You also lose points for each of your Destination Ticket cards you do not complete by the end of the game.
