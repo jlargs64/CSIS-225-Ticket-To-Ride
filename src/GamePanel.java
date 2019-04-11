@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.LinkedList;
 
@@ -18,16 +20,21 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
     private final int width;
     private final int height;
     //Game state related variables
-    protected GameState currentState;
+    private GameState currentState;
     private Graph map;
     private Toolkit toolkit;
+    private int turnNum;
+
     //Image related variables
     private Image mainMenuImg, woodenImage, gameMap, scoreCard;
+    private Image taxiBackImg, destBackImg;
     private Image[] helpImages = new Image[2];
     private int currentHelpImage;
+
     //Buttons
     private JButton playButton, helpButton, quitButton, backButton;
     private JButton switchButton;
+
     //Card objects
     private Deque<TaxiCard> taxiCards;
     private Deque<TaxiCard> activeTaxiCards;
@@ -125,6 +132,14 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
         imgFileLocation = "assets\\score-card.jpg";
         scoreCard = toolkit.getImage(imgFileLocation);
 
+        //The back of a taxi card
+        imgFileLocation = "assets\\taxi-card-cover.png";
+        taxiBackImg = toolkit.getImage(imgFileLocation);
+
+        //The back of a destination card
+        imgFileLocation = "assets\\dest-card-cover.png";
+        destBackImg = toolkit.getImage(imgFileLocation);
+
         //Switch case for displaying different states
         switch (currentState) {
 
@@ -133,14 +148,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 // display images
                 imgFileLocation = "assets\\game-cover.jpg";
                 mainMenuImg = toolkit.getImage(imgFileLocation);
-                int bgWidth = mainMenuImg.getWidth(this);
-                int bgHeight = mainMenuImg.getHeight(this);
-                g.drawImage(mainMenuImg, 0, 0, bgWidth, bgHeight, this);
-
-                // Draw the Title Text
-                Font titleFont = new Font("Monospace", Font.BOLD, 100);
-                g.setFont(titleFont);
-                g.setColor(Color.BLACK);
+                g.drawImage(mainMenuImg, 0, 0, 800, 600, this);
 
                 //Draw the play button which leads to the select players screen.
                 add(playButton);
@@ -178,17 +186,81 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 activeTaxiCards = new LinkedList<>();
                 destCards = new LinkedList<>();
 
+                //Init turn number
+                turnNum = 0;
+
+                //Adding taxi cards to our deck
+                //6 each color and 8 rainbow
+                ArrayList<TaxiCard> tempCards = new ArrayList<>();
+                for (int i = 0; i < 6; i++) {
+                    tempCards.add(new TaxiCard("blue"));
+                    tempCards.add(new TaxiCard("green"));
+                    tempCards.add(new TaxiCard("orange"));
+                    tempCards.add(new TaxiCard("black"));
+                    tempCards.add(new TaxiCard("pink"));
+                    tempCards.add(new TaxiCard("red"));
+                }
+                //Add the 8 locomotives
+                for (int i = 0; i < 8; i++) {
+                    tempCards.add(new TaxiCard("rainbow"));
+                }
+                //Shuffle the taxi card deck
+                Collections.shuffle(tempCards);
+
+                //Place our temp hand into the deque due to it being a data structure
+                //that handles more like a card deck.
+                for (int i = 0; i < tempCards.size(); i++) {
+
+                    //Add it to our deck
+                    taxiCards.add(tempCards.get(i));
+                    //Remove it because we don't need it anymore
+                    tempCards.remove(i);
+                }
+
+                //Adding dest cards to our deck
+                //TO DUE ISSUE #6
+
                 //Draw the background
-                bgWidth = woodenImage.getWidth(this);
-                bgHeight = woodenImage.getHeight(this);
+                int bgWidth = woodenImage.getWidth(this);
+                int bgHeight = woodenImage.getHeight(this);
                 g.drawImage(woodenImage, 0, 0, bgWidth, bgHeight, this);
 
                 //Layer the game map on top of background
-                bgWidth = gameMap.getWidth(this);
-                bgHeight = gameMap.getHeight(this);
-                g.drawImage(gameMap, 0, 0, bgWidth, bgHeight, this);
+                g.drawImage(gameMap, 0, 0, 400, 600, this);
 
-                //This menu is where the bulk of the code will exist
+                //Draw the card decks on the right hand side
+                g.drawImage(taxiBackImg, width / 2, height / 2, 200,
+                        100, this);
+
+                g.drawImage(destBackImg, (width / 2) + 200, (height / 2), 200,
+                        100, this);
+
+                //Make the font for text
+                Font titleFont = new Font("Monospace", Font.BOLD, 32);
+                g.setFont(titleFont);
+                g.setColor(Color.WHITE);
+
+                //Draw the current player stats:
+                //Capitalize the first letter of the players name by default.
+                String name = currentPlayer.name;
+                String newName = name.substring(0, 1).toUpperCase()
+                        + name.substring(1);
+
+                String msg = newName + "\'s Turn";
+                g.drawString(msg, 410, 40);
+
+                //Draw the turn number
+                g.drawString("Turn Number: " + turnNum, 410, 80);
+
+                //Draw the amount of trains
+                g.drawString("Taxis Left: " + currentPlayer.taxis,
+                        410, 120);
+
+                //Draw the cards available
+                g.drawString("Available Cards", 410, 160);
+
+                //Draw the current hand of the player
+                g.drawString("Current Hand", 410, height / 2 + 130);
                 break;
             case SCORE_MENU:
 
@@ -223,7 +295,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 /**
                  * Invoked when a window has been closed.
                  *
-                 * @param e
+                 * @param e a window event object
                  */
                 @Override
                 public void windowClosed(WindowEvent e) {
@@ -231,6 +303,10 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
                     //Set our current state to player selection
                     currentState = GameState.values()[2];
+
+                    //Set our current player to the youngest
+                    currentPlayer = players.removeFirst();
+
                     //Repaint and end the method
                     repaint();
                 }
