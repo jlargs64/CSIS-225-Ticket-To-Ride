@@ -1,57 +1,68 @@
 Setup:
-	Each player gets a set of colored Taxis.
-	Transportation cards are shuffled and 2 are dealt to each player from the deck of Transportation cards
-	Flip the top five cards from the Transportation deck face up 
- If three of the five face up cards are Taxi cards, immediately discard all five cards and flip five new cards face up to replace them.
-	Destination Ticket cards are shuffled, and two cards are dealt to each player 
-	Each player must decide which Destination Ticket cards they wish to keep. Each player must keep one or both cards. If they choose to keep only one, the returned card is placed on the bottom of the Destination Ticket deck.
-	Players must keep their Destination Ticket cards secret until the end of the game.
+ Each player gets a set of colored Taxis.
+ Transportation cards are shuffled and 2 are dealt to each player from the deck of Transportation cards
+ Flip the top five cards from the Transportation deck face up 
+ If three of the five face up cards are Taxi cards, immediately discard all five cards and flip five new cards face up to 
+replace them.
+ Destination Ticket cards are shuffled, and two cards are dealt to each player 
+ Each player must decide which Destination Ticket cards they wish to keep. Each player must keep one or both cards. If they 
+choose to keep only one, the returned card is placed on the bottom of the Destination Ticket deck.
+ Players must keep their Destination Ticket cards secret until the end of the game.
 
 
 Cards and Board:
-	Transportation cards match the Route colors on the board (blue, green, black, pink, red, orange) except for Taxi cards which are multicolored and act as wild cards (they can replace any card when claiming a Route). You may have any number of Transportation cards in your hand at any time. 
-	A Route is a set of spaces of the same color on the board that links two adjacent Locations.
-	Some Locations are connected by Double Routes (two Routes of the same length connecting the same Locations). A single player cannot claim both Routes of a Double Route.
-	In two-player games, once one Route of a Double Route is claimed, the other one cannot be claimed by the other player.
-	Each Destination Ticket card shows two Locations and a point value. 
+ Transportation cards match the Route colors on the board (blue, green, black, pink, red, orange) except for Taxi cards 
+which are multicolored and act as wild cards (they can replace any card when claiming a Route). You may have any number of 
+Transportation cards in your hand at any time. 
+ A Route is a set of spaces of the same color on the board that links two adjacent Locations.
+ Some Locations are connected by Double Routes (two Routes of the same length connecting the same Locations). A single 
+player cannot claim both Routes of a Double Route.
+ In two-player games, once one Route of a Double Route is claimed, the other one cannot be claimed by the other player.
+ Each Destination Ticket card shows two Locations and a point value. 
  At the end of the game, you score the point value of each Destination Ticket card you completed. 
- To complete a Destination Ticket card, you must connect the two locations listed on the card by creating a continuous path of Routes you claimed. 
+ To complete a Destination Ticket card, you must connect the two locations listed on the card by creating a continuous path 
+of Routes you claimed. 
  If you cannot, you will lose that many points. You may have any number of Destination Ticket cards
 
 
 Rules:
  At the end of the game, the player who scored the most points wins. You score points by:
-     •	Claiming a Route between two adjacent Locations on the board
-  •	Successfully completing a Continuous Path of Routes between the two Locations listed on your Destination Ticket(s);
-  •	Connecting Tourist Attractions.
-	You also lose points for each of your Destination Ticket cards you do not complete by the end of the game.
+     • Claiming a Route between two adjacent Locations on the board
+     • Successfully completing a Continuous Path of Routes between the two Locations listed on your Destination Ticket(s);
+     • Connecting Tourist Attractions.
+ You also lose points for each of your Destination Ticket cards you do not complete by the end of the game.
 
 
 During each turn one of the following actions must be completed: 
-	draw Transportation cards
-  •	This action allows you to draw two Transportation cards. You may take the top card from the deck or take any one of the five face up cards and it is immediately replaced.
-  •	As an exception, if you get a face up Taxi card as your ¬first card, you cannot take another card on that turn. You cannot take a face up Taxi card as your second card either. 
-  •	If, at any time, three of the ¬ five face up cards are Taxi cards, immediately discard all five cards and flip ¬five new cards from the deck face up to replace them. 
-  •	When the deck is empty, shuffle the discarded cards to create a new Transportation cards deck.
-	Claim a Route 
-  •	To claim a Route, you must discard a number of cards from your hand equal to the number of spaces of this Route and place a Taxi on each of those spaces. 
-  •	Most Routes require a speci¬fically colored set of cards. 
-  •	The gray Routes can be claimed with a set of cards of any one color
-  •	You can claim any open Route on the board, even if it is not connected to a Route you previously claimed. 
-  •	You cannot claim more than one Route per turn.
-  •	If you do not have enough plastic Taxis left to place one on each space of a given Route, you cannot claim that Route.
-	draw Destination Ticket cards.
-  • Draw two cards from the top of the Destination Ticket cards deck. 
-  •	You must keep at least one of those cards, but may keep both of them if you want. 
-  •	Any returned cards are placed at the bottom of the Destination Ticket cards deck. 
-  •	You cannot discard a Destination Ticket card once you have chosen to keep it.
-  •	If there is only one Destination Ticket card left in the deck, you can still do this action but must keep the card. 
-  •	Destination Ticket cards and their completion must be kept secret from other players until the end of the game.
+ draw Transportation cards
+     • This action allows you to draw two Transportation cards. You may take the top card from the deck or take any one of
+     the five face up cards and it is immediately replaced.
+     • As an exception, if you get a face up Taxi card as your ¬first card, you cannot take another card on that turn. You
+     cannot take a face up Taxi card as your second card either. 
+     • If, at any time, three of the ¬ five face up cards are Taxi cards, immediately discard all five cards and flip five
+     new cards from the deck face up to replace them. 
+     • When the deck is empty, shuffle the discarded cards to create a new Transportation cards deck.
+ Claim a Route 
+     • To claim a Route, you must discard a number of cards from your hand equal to the number of spaces of this Route and place a Taxi on each of those spaces. 
+     • Most Routes require a speci¬fically colored set of cards. 
+     • The gray Routes can be claimed with a set of cards of any one color
+     • You can claim any open Route on the board, even if it is not connected to a Route you previously claimed. 
+     • You cannot claim more than one Route per turn.
+     • If you do not have enough plastic Taxis left to place one on each space of a given Route, you cannot claim that Route.
+ draw Destination Ticket cards.
+     • Draw two cards from the top of the Destination Ticket cards deck. 
+     • You must keep at least one of those cards, but may keep both of them if you want. 
+     • Any returned cards are placed at the bottom of the Destination Ticket cards deck. 
+     • You cannot discard a Destination Ticket card once you have chosen to keep it.
+     • If there is only one Destination Ticket card left in the deck, you can still do this action but must keep the card. 
+     • Destination Ticket cards and their completion must be kept secret from other players until the end of the game.
 
 The end of the game and scoring:
-	When a player has two or fewer Taxis left in their supply, each player gets one last turn. 
-	Then the game ends and players calculate their final scores using the point system:
-  •	Each player scores points for each Route they claimed during the game based on the Route Scoring Table on the board.
-  •	Each player’s Destination Ticket cards are revealed, the values of the completed cards added, and the value of any card they failed to complete is subtracted.
-  •	Finally, each player scores one point for each Tourist Attraction that is connected to one or more of the Routes they claimed.
+ When a player has two or fewer Taxis left in their supply, each player gets one last turn. 
+ Then the game ends and players calculate their final scores using the point system:
+     • Each player scores points for each Route they claimed during the game based on the Route Scoring Table on the board.
+     • Each player’s Destination Ticket cards are revealed, the values of the completed cards added, and the value of any 
+     card they failed to complete is subtracted.
+     • Finally, each player scores one point for each Tourist Attraction that is connected to one or more of the Routes they 
+     claimed.
 
