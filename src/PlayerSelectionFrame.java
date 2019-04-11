@@ -1,7 +1,8 @@
 import javax.swing.*;
+import java.util.Deque;
 
 /**
- * The game panel for displaying the various game states of ticket to ride.
+ * The player selection frame for getting the form data of the players.
  *
  * @author Justin Largo, Leon Griffiths, Jennifer LeClair, Michael Lamb, Yousef
  * Borna
@@ -11,14 +12,13 @@ public class PlayerSelectionFrame extends JFrame {
 
     protected JPanel content;
 
-    public PlayerSelectionFrame() {
+    public PlayerSelectionFrame(Deque<Player> players) {
 
         setTitle("Player Selection");
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 
-        content = new PlayerSelectionPanel(this);
+        content = new PlayerSelectionPanel(this, players);
         getContentPane().add(content);
-        hasFocus();
 
         // Making sure the game scales well
         setResizable(false);

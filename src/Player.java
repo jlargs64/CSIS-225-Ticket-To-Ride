@@ -10,12 +10,12 @@ import java.awt.Color;
  */
 public class Player {
     //The player name
-    private String name;
+    protected String name;
     //The player's color
-    private String color;
+    protected String color;
     //The age of the player to determine who goes
     //first(youngest goes first)
-    private int age;
+    protected int age;
     //The number of taxis
     protected int taxis;
     //The player's score

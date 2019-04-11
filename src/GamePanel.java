@@ -2,8 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedList;
 
 /**
  * The game panel for displaying the various game states of ticket to ride.
@@ -29,12 +29,12 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
     private JButton playButton, helpButton, quitButton, backButton;
     private JButton switchButton;
     //Card objects
-    private ArrayDeque<TaxiCard> taxiCards;
-    private ArrayDeque<TaxiCard> activeTaxiCards;
-    private ArrayDeque<DestCard> destCards;
+    private Deque<TaxiCard> taxiCards;
+    private Deque<TaxiCard> activeTaxiCards;
+    private Deque<DestCard> destCards;
 
     //Player related variables
-    private ArrayDeque<Player> players;
+    private Deque<Player> players = new LinkedList<>();
     private Player currentPlayer;
 
     //The constructor for Text Twist
@@ -174,9 +174,9 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 remove(quitButton);
 
                 //Initialize our array deques of cards
-                taxiCards = new ArrayDeque<>();
-                activeTaxiCards = new ArrayDeque<>();
-                destCards = new ArrayDeque<>();
+                taxiCards = new LinkedList<>();
+                activeTaxiCards = new LinkedList<>();
+                destCards = new LinkedList<>();
 
                 //Draw the background
                 bgWidth = woodenImage.getWidth(this);
@@ -211,7 +211,10 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
         if (e.getSource().equals(playButton)) {
 
             //Send the player set up form
-            PlayerSelectionFrame playerSelectForm = new PlayerSelectionFrame();
+            //We pass in the player deque to get our data
+            PlayerSelectionFrame playerSelectForm =
+                    new PlayerSelectionFrame(players);
+            //Prompt the users with the form
             JDialog playerSelect = new JDialog(playerSelectForm);
 
             //We add a listener to see if the dialog window how been closed.
@@ -232,7 +235,6 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                     repaint();
                 }
             });
-
         }
 
         //Enter the help screen

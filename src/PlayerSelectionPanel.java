@@ -3,11 +3,13 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Deque;
 
 import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 
 /**
- * The game panel for displaying the various game states of ticket to ride.
+ * The player selection panel for getting the data from the player selection
+ * form.
  *
  * @author Justin Largo, Leon Griffiths, Jennifer LeClair, Michael Lamb, Yousef
  * Borna
@@ -16,10 +18,11 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 public class PlayerSelectionPanel extends JPanel implements ActionListener {
 
     //Instance variables
-    protected int numPlayers = 2;
+    private int numPlayers = 2;
 
     //Player data from form
-    protected ArrayList<Player> players = new ArrayList<>();
+    private ArrayList<Player> playersList = new ArrayList<>();
+    private Deque<Player> players;
     private ArrayList<String> playerNames = new ArrayList<>();
     private ArrayList<String> playerAges = new ArrayList<>();
     private ArrayList<String> playerColors = new ArrayList<>();
@@ -33,13 +36,17 @@ public class PlayerSelectionPanel extends JPanel implements ActionListener {
     private JPanel numPlayerPanel, playerForm, helpPanel;
     private JFrame parentFrame;
 
-    PlayerSelectionPanel(PlayerSelectionFrame parentFrame) {
+    PlayerSelectionPanel(PlayerSelectionFrame parentFrame,
+                         Deque<Player> players) {
 
         //Set our panels size
         setPreferredSize(new Dimension(600, 400));
 
         //Set our parent frame
         this.parentFrame = parentFrame;
+
+        //Set our player deque
+        this.players = players;
 
         //Initialize our radio buttons for player selection
         JRadioButton p2 = new JRadioButton("2 Players");
@@ -122,13 +129,35 @@ public class PlayerSelectionPanel extends JPanel implements ActionListener {
 
                 for (int i = 0; i < numPlayers; i++) {
 
+                    //Construct our players
                     String name = playerNames.get(i);
                     int age = Integer.parseInt(playerAges.get(i));
                     String color = playerColors.get(i);
-                    players.add(new Player(name, color, age));
-
-                    parentFrame.dispose();
+                    playersList.add(new Player(name, color, age));
                 }
+
+                //We now sort out deque of players to go from youngest to
+                //oldest
+                while (players.size() < numPlayers) {
+
+                    //Init our youngest player temp variable
+                    Player youngest = playersList.get(0);
+
+                    //Find a new youngest player
+                    for (int i = 0; i < playersList.size(); i++) {
+
+                        int ageToCompare = playersList.get(i).age;
+                        if (youngest.age > ageToCompare) {
+
+                            youngest = playersList.get(i);
+                            i = 0;
+                        }
+                    }
+                    players.add(youngest);
+                    playersList.remove(youngest);
+                }
+                //Kill the frame
+                parentFrame.dispose();
             } else {
 
                 remove(helpPanel);
