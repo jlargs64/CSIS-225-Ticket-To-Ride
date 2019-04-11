@@ -20,16 +20,15 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
     //instance variables
     private final int width;
     private final int height;
-    //Player related variables
-    protected ArrayList<Player> players;
     private Graph map;
     private Toolkit toolkit;
+
     //Image related variables
     private Image mainMenuImg, woodenImage, gameMap;
     private Image[] helpImages = new Image[2];
     private int currentHelpImage;
     //Game state related variables
-    private GameState currentState;
+    protected GameState currentState;
     //Buttons
     private JButton playButton, helpButton, quitButton, backButton;
     private JButton switchButton;
@@ -37,7 +36,9 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
     private ArrayDeque<TaxiCard> taxiCards;
     private ArrayDeque<TaxiCard> activeTaxiCards;
     private ArrayDeque<DestCard> destCards;
-    private int numPlayers;
+
+    //Player related variables
+    private ArrayDeque<Player> players;
     private Player currentPlayer;
 
     //The constructor for Text Twist

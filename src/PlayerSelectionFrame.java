@@ -10,14 +10,13 @@ import javax.swing.*;
 public class PlayerSelectionFrame extends JFrame {
 
     protected JPanel content;
-    protected int numPlayers;
 
     public PlayerSelectionFrame() {
 
         setTitle("Player Selection");
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 
-        content = new PlayerSelectionPanel();
+        content = new PlayerSelectionPanel(this);
         getContentPane().add(content);
 
         // Making sure the game scales well
