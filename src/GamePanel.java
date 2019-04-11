@@ -1,9 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 import java.io.File;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -20,15 +17,14 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
     //instance variables
     private final int width;
     private final int height;
-    private Graph map;
-    private Toolkit toolkit;
-
-    //Image related variables
-    private Image mainMenuImg, woodenImage, gameMap;
-    private Image[] helpImages = new Image[2];
-    private int currentHelpImage;
     //Game state related variables
     protected GameState currentState;
+    private Graph map;
+    private Toolkit toolkit;
+    //Image related variables
+    private Image mainMenuImg, woodenImage, gameMap, scoreCard;
+    private Image[] helpImages = new Image[2];
+    private int currentHelpImage;
     //Buttons
     private JButton playButton, helpButton, quitButton, backButton;
     private JButton switchButton;
@@ -127,7 +123,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
         //Score card
         imgFileLocation = "assets\\score-card.jpg";
-        gameMap = toolkit.getImage(imgFileLocation);
+        scoreCard = toolkit.getImage(imgFileLocation);
 
         //Switch case for displaying different states
         switch (currentState) {
@@ -170,27 +166,12 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 remove(helpButton);
                 remove(quitButton);
                 break;
-            case PLAYER_SELECTION:
-
-                //Paint the background image
-                bgWidth = woodenImage.getWidth(this);
-                bgHeight = woodenImage.getHeight(this);
-                g.drawImage(woodenImage, 0, 0, bgWidth, bgHeight, this);
-
-                //We should have some radio buttons for 2/3/4 players
-                // Radio Buttons for selecting number of players
-
-                //Then generate programmatically each player and their selected
-                //colors (CYAN/MAGENTA/YELLOW/WHITE
-                //Color selection should be a dropdown menu
-
+            case GAME_MENU:
 
                 // Disable Buttons not in use
                 remove(playButton);
                 remove(helpButton);
                 remove(quitButton);
-                break;
-            case GAME_MENU:
 
                 //Initialize our array deques of cards
                 taxiCards = new ArrayDeque<>();
@@ -229,23 +210,29 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
         //Enter the player selection screen
         if (e.getSource().equals(playButton)) {
 
-            //Set our current state to player selection
-            currentState = GameState.values()[2];
-
-            /*
-            //Get the amount of players that want to play
-            Object[] nums = {2, 3, 4};
-            numPlayers = (int) JOptionPane.showInputDialog(null,
-                    "Select the amount of players: ", "Select Players",
-                    JOptionPane.INFORMATION_MESSAGE, null,
-                    nums, nums[0]);
-            */
-
+            //Send the player set up form
             PlayerSelectionFrame playerSelectForm = new PlayerSelectionFrame();
             JDialog playerSelect = new JDialog(playerSelectForm);
 
-            //Repaint and end the method
-            repaint();
+            //We add a listener to see if the dialog window how been closed.
+            //If it was closed it means it was successful or program exited.
+            playerSelectForm.addWindowListener(new WindowAdapter() {
+                /**
+                 * Invoked when a window has been closed.
+                 *
+                 * @param e
+                 */
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    super.windowClosed(e);
+
+                    //Set our current state to player selection
+                    currentState = GameState.values()[2];
+                    //Repaint and end the method
+                    repaint();
+                }
+            });
+
         }
 
         //Enter the help screen
@@ -332,6 +319,6 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
     // For managing the game state
     public enum GameState {
-        MAIN_MENU, HELP_MENU, PLAYER_SELECTION, GAME_MENU, SCORE_MENU
+        MAIN_MENU, HELP_MENU, GAME_MENU, SCORE_MENU
     }
 }

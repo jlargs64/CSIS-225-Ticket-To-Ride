@@ -18,6 +18,7 @@ public class PlayerSelectionFrame extends JFrame {
 
         content = new PlayerSelectionPanel(this);
         getContentPane().add(content);
+        hasFocus();
 
         // Making sure the game scales well
         setResizable(false);
