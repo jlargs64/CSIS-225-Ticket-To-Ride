@@ -1,7 +1,7 @@
 import javax.swing.*;
 
 /**
- * A java implementation of ticket to ride - New York.
+ * The main method to run our ticket to ride game.
  *
  * @author Justin Largo, Leon Griffiths, Jennifer LeClair, Michael Lamb, Yousef
  * Borna
@@ -26,6 +26,7 @@ public class GameDriver {
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
                 GamePanel panel = new GamePanel();
+
                 frame.getContentPane().add(panel);
 
                 // Making sure the game scales well
@@ -33,6 +34,7 @@ public class GameDriver {
                 // Display the window.
                 frame.pack();
                 frame.setVisible(true);
+                frame.setLocationRelativeTo(null);
             }
         });
     }

@@ -9,7 +9,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 
 /**
- * A java implementation of ticket to ride - New York.
+ * The game panel for displaying the various game states of ticket to ride.
  *
  * @author Justin Largo, Leon Griffiths, Jennifer LeClair, Michael Lamb, Yousef
  * Borna
@@ -20,30 +20,24 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
     //instance variables
     private final int width;
     private final int height;
-    private final Graph map;
+    //Player related variables
+    protected ArrayList<Player> players;
+    private Graph map;
     private Toolkit toolkit;
-
     //Image related variables
     private Image mainMenuImg, woodenImage, gameMap;
     private Image[] helpImages = new Image[2];
     private int currentHelpImage;
-
     //Game state related variables
     private GameState currentState;
-
     //Buttons
     private JButton playButton, helpButton, quitButton, backButton;
     private JButton switchButton;
-    private ButtonGroup selectionGroup;
-    private JRadioButton p2, p3, p4;
-
     //Card objects
     private ArrayDeque<TaxiCard> taxiCards;
     private ArrayDeque<TaxiCard> activeTaxiCards;
     private ArrayDeque<DestCard> destCards;
-
-    //Player related variables
-    private ArrayList<Player> players;
+    private int numPlayers;
     private Player currentPlayer;
 
     //The constructor for Text Twist
@@ -57,12 +51,16 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
         height = getPreferredSize().height;
         setBackground(Color.WHITE);
         setFocusable(true);
-        setLayout(null);
 
         //Construct our graph
-        File data = new File("Districts.txt");
-        map = new Graph(data);
-        map.fillNYData();
+        try {
+            File data = new File("Districts.txt");
+            map = new Graph(data);
+            map.fillNYData();
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
 
         //Set our current state
         currentState = GameState.values()[0];
@@ -95,16 +93,6 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
         switchButton.setVerticalTextPosition(AbstractButton.CENTER);
         switchButton.setHorizontalTextPosition(AbstractButton.CENTER);
         switchButton.setBounds(width - 250, height - 100, 200, 100);
-
-        // Radio Buttons for selecting number of players
-        p2 = new JRadioButton("2");
-        p3 = new JRadioButton("3");
-        p4 = new JRadioButton("4");
-
-        selectionGroup = new ButtonGroup();
-        selectionGroup.add(p2);
-        selectionGroup.add(p3);
-        selectionGroup.add(p4);
 
         // Add action listeners for if a button is clicked
         helpButton.addActionListener(this);
@@ -186,14 +174,14 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 bgWidth = woodenImage.getWidth(this);
                 bgHeight = woodenImage.getHeight(this);
                 g.drawImage(woodenImage, 0, 0, bgWidth, bgHeight, this);
+
                 //We should have some radio buttons for 2/3/4 players
-                add(p2);
-                add(p3);
-                add(p4);
+                // Radio Buttons for selecting number of players
 
                 //Then generate programmatically each player and their selected
                 //colors (CYAN/MAGENTA/YELLOW/WHITE
                 //Color selection should be a dropdown menu
+
 
                 // Disable Buttons not in use
                 remove(playButton);
@@ -218,10 +206,6 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 g.drawImage(gameMap, 0, 0, bgWidth, bgHeight, this);
 
                 //This menu is where the bulk of the code will exist
-                //Disable buttons not in use
-                remove(p2);
-                remove(p3);
-                remove(p4);
                 break;
             case SCORE_MENU:
 
@@ -246,6 +230,14 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
             //Set our current state to player selection
             currentState = GameState.values()[2];
 
+            //Get the amount of players that want to play
+            Object[] nums = {2, 3, 4};
+            numPlayers = (int) JOptionPane.showInputDialog(null,
+                    "Select the amount of players: ", "Select Players",
+                    JOptionPane.INFORMATION_MESSAGE, null,
+                    nums, nums[0]);
+
+            //PlayerSelectionDialog p = new PlayerSelectionDialog(this, false, "Hi");
             //Repaint and end the method
             repaint();
         }

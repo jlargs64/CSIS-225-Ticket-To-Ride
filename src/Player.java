@@ -31,6 +31,7 @@ public class Player {
      *
      * @param name  the name of the player
      * @param color the color of the player's taxis
+     * @param age the numerical age of the player
      */
     public Player(String name, Color color, int age) {
         //Initialize player name
