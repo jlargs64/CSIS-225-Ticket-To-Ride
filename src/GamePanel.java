@@ -230,14 +230,15 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
             //Set our current state to player selection
             currentState = GameState.values()[2];
 
+            /*
             //Get the amount of players that want to play
             Object[] nums = {2, 3, 4};
             numPlayers = (int) JOptionPane.showInputDialog(null,
                     "Select the amount of players: ", "Select Players",
                     JOptionPane.INFORMATION_MESSAGE, null,
                     nums, nums[0]);
-
-            //PlayerSelectionDialog p = new PlayerSelectionDialog(this, false, "Hi");
+            */
+            JDialog j = new JDialog(new PlayerSelectionFrame());
             //Repaint and end the method
             repaint();
         }

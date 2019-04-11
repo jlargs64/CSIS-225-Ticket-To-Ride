@@ -3,10 +3,12 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class PlayerSelectionPanel implements ActionListener {
+public class PlayerSelectionPanel extends JPanel implements ActionListener {
 
 
-    PlayerSelectionPanel(GamePanel gp) {
+    PlayerSelectionPanel() {
+
+        setPreferredSize(new Dimension(100, 500));
 
         JRadioButton p2 = new JRadioButton("2 Players");
         p2.setActionCommand("2");
@@ -30,7 +32,7 @@ public class PlayerSelectionPanel implements ActionListener {
         buttonPanel.add(p2);
         buttonPanel.add(p3);
         buttonPanel.add(p4);
-        gp.add(buttonPanel, BorderLayout.NORTH);
+        add(buttonPanel, BorderLayout.NORTH);
     }
 
     /**
@@ -50,5 +52,10 @@ public class PlayerSelectionPanel implements ActionListener {
         if (e.getActionCommand().equals("4")) {
 
         }
+    }
+
+    private void createPlayerForm() {
+
+
     }
 }
