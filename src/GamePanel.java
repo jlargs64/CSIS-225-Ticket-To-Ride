@@ -51,6 +51,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
         height = getPreferredSize().height;
         setBackground(Color.WHITE);
         setFocusable(true);
+        setLayout(null);
 
         //Construct our graph
         try {
@@ -238,7 +239,10 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                     JOptionPane.INFORMATION_MESSAGE, null,
                     nums, nums[0]);
             */
-            JDialog j = new JDialog(new PlayerSelectionFrame());
+
+            PlayerSelectionFrame playerSelectForm = new PlayerSelectionFrame();
+            JDialog playerSelect = new JDialog(playerSelectForm);
+
             //Repaint and end the method
             repaint();
         }

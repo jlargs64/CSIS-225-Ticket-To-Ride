@@ -9,10 +9,12 @@ import javax.swing.*;
  */
 public class PlayerSelectionFrame extends JFrame {
 
-    private JPanel content;
+    protected JPanel content;
+    protected int numPlayers;
 
     public PlayerSelectionFrame() {
 
+        setTitle("Player Selection");
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 
         content = new PlayerSelectionPanel();

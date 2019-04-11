@@ -12,7 +12,7 @@ public class Player {
     //The player name
     private String name;
     //The player's color
-    private Color color;
+    private String color;
     //The age of the player to determine who goes
     //first(youngest goes first)
     private int age;
@@ -33,11 +33,11 @@ public class Player {
      * @param color the color of the player's taxis
      * @param age the numerical age of the player
      */
-    public Player(String name, Color color, int age) {
+    public Player(String name, String color, int age) {
         //Initialize player name
         this.name = name;
         //Initialize the player color
-        //(blue, purple, white, yellow)   
+        //(blue, purple, white, yellow)
         this.color = color;
         //Youngest player goes first
         this.age = age;
