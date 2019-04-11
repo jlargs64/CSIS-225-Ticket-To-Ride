@@ -229,14 +229,14 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 g.drawImage(gameMap, 0, 0, 400, 600, this);
 
                 //Draw the card decks on the right hand side
-                g.drawImage(taxiBackImg, width / 2, height / 2, 200,
-                        100, this);
+                g.drawImage(taxiBackImg, width / 2, height / 2, 100,
+                        50, this);
 
-                g.drawImage(destBackImg, (width / 2) + 200, (height / 2), 200,
-                        100, this);
+                g.drawImage(destBackImg, (width / 2) + 200, (height / 2), 100,
+                        50, this);
 
                 //Make the font for text
-                Font titleFont = new Font("Monospace", Font.BOLD, 32);
+                Font titleFont = new Font("Monospace", Font.BOLD, 16);
                 g.setFont(titleFont);
                 g.setColor(Color.WHITE);
 
@@ -247,20 +247,20 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                         + name.substring(1);
 
                 String msg = newName + "\'s Turn";
-                g.drawString(msg, 410, 40);
+                g.drawString(msg, 410, 20);
 
                 //Draw the turn number
-                g.drawString("Turn Number: " + turnNum, 410, 80);
+                g.drawString("Turn Number: " + turnNum, 410, 40);
 
                 //Draw the amount of trains
                 g.drawString("Taxis Left: " + currentPlayer.taxis,
-                        410, 120);
+                        410, 60);
 
                 //Draw the cards available
-                g.drawString("Available Cards", 410, 160);
+                g.drawString("Available Cards", 410, 80);
 
                 //Draw the current hand of the player
-                g.drawString("Current Hand", 410, height / 2 + 130);
+                g.drawString("Current Hand", 410, height / 2 + 120);
                 break;
             case SCORE_MENU:
 
