@@ -81,4 +81,38 @@ public class Player {
         //add their value to the final score
 
     }
+
+    /**
+     * This method returns an int[] that holds how many of each card type a
+     * player has.
+     * From 0 to 7 respectively we have blue, green, black, pink, orange, red,
+     * and rainbow(taxi).
+     *
+     * @return amountOfCard the int amount of each card type
+     */
+    public int[] getCardTypes() {
+
+        //An array of card counts per type
+        int[] amountOfCard = new int[7];
+        for (TaxiCard card : playerTaxis) {
+
+            if (card.type.equalsIgnoreCase("BLUE")) {
+                amountOfCard[0]++;
+            } else if (card.type.equalsIgnoreCase("GREEN")) {
+                amountOfCard[1]++;
+            } else if (card.type.equalsIgnoreCase("BLACK")) {
+                amountOfCard[2]++;
+            } else if (card.type.equalsIgnoreCase("PINK")) {
+                amountOfCard[3]++;
+            } else if (card.type.equalsIgnoreCase("ORANGE")) {
+                amountOfCard[4]++;
+            } else if (card.type.equalsIgnoreCase("RED")) {
+                amountOfCard[5]++;
+            } else if (card.type.equalsIgnoreCase("RAINBOW")) {
+                amountOfCard[6]++;
+            }
+        }
+
+        return amountOfCard;
+    }
 }

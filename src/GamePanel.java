@@ -257,34 +257,20 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                         "assets\\pieces\\rainbow.png"
                 };
                 //An array of card counts per type
-                int[] amountOfCard = new int[7];
-                for (TaxiCard card : currentPlayer.playerTaxis) {
-
-                    if (card.type.equalsIgnoreCase("BLUE")) {
-                        amountOfCard[0]++;
-                    } else if (card.type.equalsIgnoreCase("GREEN")) {
-                        amountOfCard[1]++;
-                    } else if (card.type.equalsIgnoreCase("BLACK")) {
-                        amountOfCard[2]++;
-                    } else if (card.type.equalsIgnoreCase("PINK")) {
-                        amountOfCard[3]++;
-                    } else if (card.type.equalsIgnoreCase("ORANGE")) {
-                        amountOfCard[4]++;
-                    } else if (card.type.equalsIgnoreCase("RED")) {
-                        amountOfCard[5]++;
-                    } else if (card.type.equalsIgnoreCase("RAINBOW")) {
-                        amountOfCard[6]++;
-                    }
-                }
+                int[] amountOfCard = currentPlayer.getCardTypes();
+                activeCardY = 100;
                 for (int i = 0; i < cardFileNames.length; i++) {
 
                     //Create and draw the image of the card
                     Image card = toolkit.getImage(cardFileNames[i]);
-                    g.drawImage(card, currentHandX, activeCardY, cardW,
-                            cardH, this);
-                    g.drawString("x" + amountOfCard[i],
-                            currentHandX + 115, activeCardY + 30);
-                    activeCardY -= 60;
+                    if (amountOfCard[i] != 0) {
+
+                        g.drawImage(card, currentHandX, activeCardY, cardW,
+                                cardH, this);
+                        g.drawString("x" + amountOfCard[i],
+                                currentHandX + 115, activeCardY + 30);
+                        activeCardY += 60;
+                    }
                 }
                 break;
             case SCORE_MENU:
