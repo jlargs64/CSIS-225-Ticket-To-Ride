@@ -263,25 +263,19 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 //An array of card counts per type
                 int[] amountOfCard = currentPlayer.getCardTypes();
                 int handY = 100;
-                for (int i = 0; i < cardFileNames.length; i++) {
+                for (TaxiCard card : currentPlayer.playerTaxis) {
 
-                    //Create and draw the image of the card
-                    Image card = toolkit.getImage(cardFileNames[i]);
-                    if (amountOfCard[i] != 0) {
+                    card.border.x = currentHandX;
+                    card.border.y = handY;
+                    card.border.width = cardW;
+                    card.border.height = cardH;
 
-                        //Setting the width, height, x, and y of the card
-                        //This is for collision detection
-                        Rectangle r = currentPlayer.playerTaxis.get(i).border;
-                        r.height = cardH;
-                        r.width = cardW;
-                        r.x = currentHandX;
-                        r.y = activeCardY;
-                        g.drawImage(card, currentHandX, handY, cardW,
-                                cardH, this);
-                        g.drawString("x" + amountOfCard[i],
-                                currentHandX + 115, handY + 30);
-                        handY += 60;
-                    }
+                    g.drawImage(card.cardImage, currentHandX, handY, cardW,
+                            cardH, this);
+
+                    //g.drawString("x" + amountOfCard[i],
+                    //        currentHandX + 115, handY + 30);
+                    handY += 60;
                 }
                 break;
             case SCORE_MENU:
@@ -468,6 +462,16 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
      */
     @Override
     public void mouseClicked(MouseEvent e) {
+
+        Point pointClicked = e.getPoint();
+
+        for (TaxiCard c : activeTaxiCards) {
+
+            if (c.border.contains(pointClicked)) {
+
+                currentPlayer.playerTaxis.add(activeTaxiCards.removeFirst());
+            }
+        }
     }
 
     /**
