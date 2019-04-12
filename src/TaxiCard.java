@@ -1,3 +1,5 @@
+import org.w3c.dom.css.Rect;
+
 import java.awt.*;
 
 /**
@@ -12,6 +14,7 @@ public class TaxiCard {
     //taxi type color
     protected String type;
     protected Image cardImage;
+    protected Rectangle border;
 
     /**
      * Constructor for the TaxiCard class that initialize the taxi
@@ -19,8 +22,10 @@ public class TaxiCard {
      *
      * @param type the type of the taxi
      */
-    public TaxiCard(String type) {
+    public TaxiCard(String type, Rectangle rect) {
 
+        //Creating the border
+        border = rect;
         // assigning the type of Taxi
         this.type = type;
         Toolkit toolkit = Toolkit.getDefaultToolkit();

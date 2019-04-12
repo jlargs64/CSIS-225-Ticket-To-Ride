@@ -204,6 +204,10 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 for (TaxiCard card : activeTaxiCards) {
 
                     activeCardY -= 60;
+                    card.border.x = textXaxis;
+                    card.border.y = activeCardY;
+                    card.border.width = cardW;
+                    card.border.height = cardH;
                     g.drawImage(card.cardImage, textXaxis, activeCardY, cardW,
                             cardH, this);
                 }
@@ -258,18 +262,25 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 };
                 //An array of card counts per type
                 int[] amountOfCard = currentPlayer.getCardTypes();
-                activeCardY = 100;
+                int handY = 100;
                 for (int i = 0; i < cardFileNames.length; i++) {
 
                     //Create and draw the image of the card
                     Image card = toolkit.getImage(cardFileNames[i]);
                     if (amountOfCard[i] != 0) {
 
-                        g.drawImage(card, currentHandX, activeCardY, cardW,
+                        //Setting the width, height, x, and y of the card
+                        //This is for collision detection
+                        Rectangle r = currentPlayer.playerTaxis.get(i).border;
+                        r.height = cardH;
+                        r.width = cardW;
+                        r.x = currentHandX;
+                        r.y = activeCardY;
+                        g.drawImage(card, currentHandX, handY, cardW,
                                 cardH, this);
                         g.drawString("x" + amountOfCard[i],
-                                currentHandX + 115, activeCardY + 30);
-                        activeCardY += 60;
+                                currentHandX + 115, handY + 30);
+                        handY += 60;
                     }
                 }
                 break;
@@ -328,18 +339,21 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                     //Adding taxi cards to our deck
                     //6 each color and 8 rainbow
                     //Use a temporary ArrayList so that we can shuffle later.
+                    //The rectangle r is used for collision detected
+                    Rectangle r = new Rectangle();
                     ArrayList<TaxiCard> tempCards = new ArrayList<>();
                     for (int i = 0; i < 6; i++) {
-                        tempCards.add(new TaxiCard("blue"));
-                        tempCards.add(new TaxiCard("green"));
-                        tempCards.add(new TaxiCard("orange"));
-                        tempCards.add(new TaxiCard("black"));
-                        tempCards.add(new TaxiCard("pink"));
-                        tempCards.add(new TaxiCard("red"));
+
+                        tempCards.add(new TaxiCard("blue", r));
+                        tempCards.add(new TaxiCard("green", r));
+                        tempCards.add(new TaxiCard("orange", r));
+                        tempCards.add(new TaxiCard("black", r));
+                        tempCards.add(new TaxiCard("pink", r));
+                        tempCards.add(new TaxiCard("red", r));
                     }
                     //Add the 8 locomotives
                     for (int i = 0; i < 8; i++) {
-                        tempCards.add(new TaxiCard("rainbow"));
+                        tempCards.add(new TaxiCard("rainbow", r));
                     }
                     //Shuffle the taxi card deck
                     Collections.shuffle(tempCards);
