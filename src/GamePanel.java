@@ -38,6 +38,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
     //Card objects
     private Deque<TaxiCard> taxiCards;
     private Deque<TaxiCard> activeTaxiCards;
+    private Deque<TaxiCard> discaredTaxis;
     private Deque<DestCard> destCards;
 
     //Player related variables
@@ -181,59 +182,23 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 remove(helpButton);
                 remove(quitButton);
 
-                //Initialize our array deques of cards
-                taxiCards = new LinkedList<>();
-                activeTaxiCards = new LinkedList<>();
-                destCards = new LinkedList<>();
-
-                //Init turn number
-                turnNum = 0;
-
-                //Adding taxi cards to our deck
-                //6 each color and 8 rainbow
-                ArrayList<TaxiCard> tempCards = new ArrayList<>();
-                for (int i = 0; i < 6; i++) {
-                    tempCards.add(new TaxiCard("blue"));
-                    tempCards.add(new TaxiCard("green"));
-                    tempCards.add(new TaxiCard("orange"));
-                    tempCards.add(new TaxiCard("black"));
-                    tempCards.add(new TaxiCard("pink"));
-                    tempCards.add(new TaxiCard("red"));
-                }
-                //Add the 8 locomotives
-                for (int i = 0; i < 8; i++) {
-                    tempCards.add(new TaxiCard("rainbow"));
-                }
-                //Shuffle the taxi card deck
-                Collections.shuffle(tempCards);
-
-                //Place our temp hand into the deque due to it being a data structure
-                //that handles more like a card deck.
-                for (int i = 0; i < tempCards.size(); i++) {
-
-                    //Add it to our deck
-                    taxiCards.add(tempCards.get(i));
-                    //Remove it because we don't need it anymore
-                    tempCards.remove(i);
-                }
-
-                //Adding dest cards to our deck
-                //TO DUE ISSUE #6
-
                 //Draw the background
                 int bgWidth = woodenImage.getWidth(this);
                 int bgHeight = woodenImage.getHeight(this);
                 g.drawImage(woodenImage, 0, 0, bgWidth, bgHeight, this);
 
                 //Layer the game map on top of background
-                g.drawImage(gameMap, 0, 0, 400, 600, this);
+                g.drawImage(gameMap, 20, 10, 400, 580, this);
+
+                //Keep items in line
+                int textXaxis = 460;
 
                 //Draw the card decks on the right hand side
-                g.drawImage(taxiBackImg, width / 2, height / 2, 100,
+                g.drawImage(taxiBackImg, textXaxis, height / 2 + 40, 100,
                         50, this);
 
-                g.drawImage(destBackImg, (width / 2) + 200, (height / 2), 100,
-                        50, this);
+                //g.drawImage(destBackImg, (width / 2) + 200, (height / 2), 100,
+                //        50, this);
 
                 //Make the font for text
                 Font titleFont = new Font("Monospace", Font.BOLD, 16);
@@ -247,20 +212,20 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                         + name.substring(1);
 
                 String msg = newName + "\'s Turn";
-                g.drawString(msg, 410, 20);
+                g.drawString(msg, textXaxis, 20);
 
                 //Draw the turn number
-                g.drawString("Turn Number: " + turnNum, 410, 40);
+                g.drawString("Turn Number: " + turnNum, textXaxis, 40);
 
                 //Draw the amount of trains
                 g.drawString("Taxis Left: " + currentPlayer.taxis,
-                        410, 60);
+                        textXaxis, 60);
 
                 //Draw the cards available
-                g.drawString("Available Cards", 410, 80);
+                g.drawString("Available Cards", textXaxis, 80);
 
                 //Draw the current hand of the player
-                g.drawString("Current Hand", 410, height / 2 + 120);
+                g.drawString("Current Hand", textXaxis, height / 2 + 120);
                 break;
             case SCORE_MENU:
 
@@ -306,6 +271,91 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
                     //Set our current player to the youngest
                     currentPlayer = players.removeFirst();
+
+                    //Game Start Initialization
+                    //Initialize our array deques of cards
+                    taxiCards = new LinkedList<>();
+                    activeTaxiCards = new LinkedList<>();
+                    destCards = new LinkedList<>();
+                    discaredTaxis = new LinkedList<>();
+
+                    //Init turn number
+                    turnNum = 0;
+
+                    //Adding taxi cards to our deck
+                    //6 each color and 8 rainbow
+                    //Use a temporary ArrayList so that we can shuffle later.
+                    ArrayList<TaxiCard> tempCards = new ArrayList<>();
+                    for (int i = 0; i < 6; i++) {
+                        tempCards.add(new TaxiCard("blue"));
+                        tempCards.add(new TaxiCard("green"));
+                        tempCards.add(new TaxiCard("orange"));
+                        tempCards.add(new TaxiCard("black"));
+                        tempCards.add(new TaxiCard("pink"));
+                        tempCards.add(new TaxiCard("red"));
+                    }
+                    //Add the 8 locomotives
+                    for (int i = 0; i < 8; i++) {
+                        tempCards.add(new TaxiCard("rainbow"));
+                    }
+                    //Shuffle the taxi card deck
+                    Collections.shuffle(tempCards);
+
+                    //Place our temp hand into the deque due to it being a data structure
+                    //that handles more like a card deck.
+                    for (int i = 0; i < tempCards.size(); i++) {
+
+                        //Add it to our deck
+                        taxiCards.add(tempCards.get(i));
+                        //Remove it because we don't need it anymore
+                        tempCards.remove(i);
+                    }
+
+                    //Deal 2 taxi cards to all players
+                    for (Player p : players) {
+
+                        p.playerTaxis.add(taxiCards.removeFirst());
+                        p.playerTaxis.add(taxiCards.removeFirst());
+                    }
+
+                    //Deal 5 cards face up from top of deck
+                    for (int i = 0; i < 5; i++) {
+
+                        activeTaxiCards.addFirst(taxiCards.removeFirst());
+                    }
+                    //Make sure there aren't more than 3 rainbow taxi's
+                    //otherwise discard
+                    int taxiCount = 0;
+                    for (int i = 0; i < activeTaxiCards.size(); i++) {
+
+                        TaxiCard t = activeTaxiCards.removeFirst();
+                        if (t.type.equalsIgnoreCase("rainbow")) {
+                            taxiCount++;
+                        }
+                        //Add the card back to the bottom of the deck.
+                        activeTaxiCards.addLast(t);
+                        //If three taxis exist discard all 5
+                        if (taxiCount == 3) {
+
+                            //Remove all the cards from active to discard pile.
+                            while (activeTaxiCards.size() > 0) {
+
+                                discaredTaxis.addFirst(
+                                        activeTaxiCards.removeFirst());
+                            }
+
+                            //Redraw 5 new cards
+                            for (int k = 0; k < 5; k++) {
+
+                                activeTaxiCards.addFirst(taxiCards.removeFirst());
+                            }
+                            taxiCount = 0;
+                        }
+                    }
+
+                    //Adding dest cards to our deck
+                    //TO DO ISSUE #6
+
 
                     //Repaint and end the method
                     repaint();
