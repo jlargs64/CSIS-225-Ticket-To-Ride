@@ -192,13 +192,21 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
                 //Keep items in line
                 int textXaxis = 460;
-
+                int activeCardY = height / 2 + 100;
+                int cardW = 100;
+                int cardH = 50;
                 //Draw the card decks on the right hand side
-                g.drawImage(taxiBackImg, textXaxis, height / 2 + 40, 100,
-                        50, this);
+                //To specify, these are the card decks that we can draw from
+                g.drawImage(taxiBackImg, textXaxis, activeCardY, cardW,
+                        cardH, this);
 
-                //g.drawImage(destBackImg, (width / 2) + 200, (height / 2), 100,
-                //        50, this);
+                //Now draw the remaining active cards
+                for (TaxiCard card : activeTaxiCards) {
+
+                    activeCardY -= 60;
+                    g.drawImage(card.cardImage, textXaxis, activeCardY, cardW,
+                            cardH, this);
+                }
 
                 //Make the font for text
                 Font titleFont = new Font("Monospace", Font.BOLD, 16);
@@ -225,7 +233,59 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 g.drawString("Available Cards", textXaxis, 80);
 
                 //Draw the current hand of the player
-                g.drawString("Current Hand", textXaxis, height / 2 + 120);
+                int currentHandX = textXaxis + 150;
+                g.drawString("Current Hand", currentHandX, 80);
+
+                //Reset card y axis
+                activeCardY = height / 2 + 170;
+
+                //Draw the dest card deck
+                g.drawImage(destBackImg, textXaxis, activeCardY, cardW,
+                        cardH, this);
+
+                //Draw our hand
+
+                //Just an array of string ref to our cards
+                String[] cardFileNames = {
+
+                        "assets\\pieces\\blue-card.png",
+                        "assets\\pieces\\green-card.png",
+                        "assets\\pieces\\black-card.png",
+                        "assets\\pieces\\pink-card.png",
+                        "assets\\pieces\\orange-card.png",
+                        "assets\\pieces\\red-card.png",
+                        "assets\\pieces\\rainbow.png"
+                };
+                //An array of card counts per type
+                int[] amountOfCard = new int[7];
+                for (TaxiCard card : currentPlayer.playerTaxis) {
+
+                    if (card.type.equalsIgnoreCase("BLUE")) {
+                        amountOfCard[0]++;
+                    } else if (card.type.equalsIgnoreCase("GREEN")) {
+                        amountOfCard[1]++;
+                    } else if (card.type.equalsIgnoreCase("BLACK")) {
+                        amountOfCard[2]++;
+                    } else if (card.type.equalsIgnoreCase("PINK")) {
+                        amountOfCard[3]++;
+                    } else if (card.type.equalsIgnoreCase("ORANGE")) {
+                        amountOfCard[4]++;
+                    } else if (card.type.equalsIgnoreCase("RED")) {
+                        amountOfCard[5]++;
+                    } else if (card.type.equalsIgnoreCase("RAINBOW")) {
+                        amountOfCard[6]++;
+                    }
+                }
+                for (int i = 0; i < cardFileNames.length; i++) {
+
+                    //Create and draw the image of the card
+                    Image card = toolkit.getImage(cardFileNames[i]);
+                    g.drawImage(card, currentHandX, activeCardY, cardW,
+                            cardH, this);
+                    g.drawString("x" + amountOfCard[i],
+                            currentHandX + 115, activeCardY + 30);
+                    activeCardY -= 60;
+                }
                 break;
             case SCORE_MENU:
 
@@ -268,9 +328,6 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
                     //Set our current state to player selection
                     currentState = GameState.values()[2];
-
-                    //Set our current player to the youngest
-                    currentPlayer = players.removeFirst();
 
                     //Game Start Initialization
                     //Initialize our array deques of cards
@@ -328,6 +385,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                     int taxiCount = 0;
                     for (int i = 0; i < activeTaxiCards.size(); i++) {
 
+                        //Count the amount of rainbow cards in the active deck.
                         TaxiCard t = activeTaxiCards.removeFirst();
                         if (t.type.equalsIgnoreCase("rainbow")) {
                             taxiCount++;
@@ -356,6 +414,9 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                     //Adding dest cards to our deck
                     //TO DO ISSUE #6
 
+
+                    //Set our current player to the youngest
+                    currentPlayer = players.removeFirst();
 
                     //Repaint and end the method
                     repaint();

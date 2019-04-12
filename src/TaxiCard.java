@@ -49,7 +49,7 @@ public class TaxiCard {
         } else {
 
             //It's a locomotive
-            cardImage = toolkit.getImage("assets\\pieces\\rainbow-card.png");
+            cardImage = toolkit.getImage("assets\\pieces\\rainbow.png");
         }
     }
 
@@ -83,32 +83,39 @@ public class TaxiCard {
 
                 //It's a locomotive
                 cardImage = toolkit.getImage(
-                        "assets\\pieces\\rainbow-card2.png");
+                        "assets\\pieces\\rainbow2.png");
             }
         } else {
             //Rotate horizontally
             if (type.equalsIgnoreCase("BLACK")) {
 
-                cardImage = toolkit.getImage("assets\\pieces\\black-card.png");
+                cardImage = toolkit.getImage(
+                        "assets\\pieces\\black-card.png");
             } else if (type.equalsIgnoreCase("BLUE")) {
 
-                cardImage = toolkit.getImage("assets\\pieces\\blue-card.png");
+                cardImage = toolkit.getImage(
+                        "assets\\pieces\\blue-card.png");
             } else if (type.equalsIgnoreCase("RED")) {
 
-                cardImage = toolkit.getImage("assets\\pieces\\red-card.png");
+                cardImage = toolkit.getImage(
+                        "assets\\pieces\\red-card.png");
             } else if (type.equalsIgnoreCase("GREEN")) {
 
-                cardImage = toolkit.getImage("assets\\pieces\\green-card.png");
+                cardImage = toolkit.getImage(
+                        "assets\\pieces\\green-card.png");
             } else if (type.equalsIgnoreCase("ORANGE")) {
 
-                cardImage = toolkit.getImage("assets\\pieces\\orange-card.png");
+                cardImage = toolkit.getImage(
+                        "assets\\pieces\\orange-card.png");
             } else if (type.equalsIgnoreCase("PINK")) {
 
-                cardImage = toolkit.getImage("assets\\pieces\\pink-card.png");
+                cardImage = toolkit.getImage(
+                        "assets\\pieces\\pink-card.png");
             } else {
 
                 //It's a locomotive
-                cardImage = toolkit.getImage("assets\\pieces\\rainbow-card.png");
+                cardImage = toolkit.getImage(
+                        "assets\\pieces\\rainbow.png");
             }
         }
     }
