@@ -192,24 +192,37 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
                 //Keep items in line
                 int textXaxis = 460;
-                int activeCardY = height / 2 + 100;
+                int currentHandY = 100;
                 int cardW = 100;
                 int cardH = 50;
-                //Draw the card decks on the right hand side
-                //To specify, these are the card decks that we can draw from
-                g.drawImage(taxiBackImg, textXaxis, activeCardY, cardW,
-                        cardH, this);
 
-                //Now draw the remaining active cards
-                for (TaxiCard card : activeTaxiCards) {
+                //Just an array of string ref to our cards
+                String[] cardFileNames = {
 
-                    activeCardY -= 60;
+                        "assets\\pieces\\blue-card.png",
+                        "assets\\pieces\\green-card.png",
+                        "assets\\pieces\\black-card.png",
+                        "assets\\pieces\\pink-card.png",
+                        "assets\\pieces\\orange-card.png",
+                        "assets\\pieces\\red-card.png",
+                        "assets\\pieces\\rainbow.png"
+                };
+                //An array of card counts per type
+                int[] amountOfCard = currentPlayer.getCardTypes();
+
+                //Now draw the players hand
+                for (TaxiCard card : currentPlayer.playerTaxis) {
+
                     card.border.x = textXaxis;
-                    card.border.y = activeCardY;
+                    card.border.y = currentHandY;
                     card.border.width = cardW;
                     card.border.height = cardH;
-                    g.drawImage(card.cardImage, textXaxis, activeCardY, cardW,
+                    g.drawImage(card.cardImage, textXaxis, currentHandY, cardW,
                             cardH, this);
+                    //g.drawString("x" + amountOfCard[i],
+                    //        textXaxis + 115, currentHandY + 30);
+
+                    currentHandY += 60;
                 }
 
                 //Make the font for text
@@ -233,50 +246,38 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 g.drawString("Taxis Left: " + currentPlayer.taxis,
                         textXaxis, 60);
 
-                //Draw the cards available
-                g.drawString("Available Cards", textXaxis, 80);
-
                 //Draw the current hand of the player
-                int currentHandX = textXaxis + 150;
-                g.drawString("Current Hand", currentHandX, 80);
+                g.drawString("Current Hand", textXaxis, 80);
 
-                //Reset card y axis
-                activeCardY = height / 2 + 170;
+                //Draw the cards available
+                int activeCardX = textXaxis + 150;
+                g.drawString("Available Cards", activeCardX, 80);
 
-                //Draw the dest card deck
-                g.drawImage(destBackImg, textXaxis, activeCardY, cardW,
-                        cardH, this);
-
-                //Draw our hand
-
-                //Just an array of string ref to our cards
-                String[] cardFileNames = {
-
-                        "assets\\pieces\\blue-card.png",
-                        "assets\\pieces\\green-card.png",
-                        "assets\\pieces\\black-card.png",
-                        "assets\\pieces\\pink-card.png",
-                        "assets\\pieces\\orange-card.png",
-                        "assets\\pieces\\red-card.png",
-                        "assets\\pieces\\rainbow.png"
-                };
-                //An array of card counts per type
-                int[] amountOfCard = currentPlayer.getCardTypes();
                 int handY = 100;
-                for (TaxiCard card : currentPlayer.playerTaxis) {
+                for (TaxiCard card : activeTaxiCards) {
 
-                    card.border.x = currentHandX;
+                    card.border.x = activeCardX;
                     card.border.y = handY;
                     card.border.width = cardW;
                     card.border.height = cardH;
 
-                    g.drawImage(card.cardImage, currentHandX, handY, cardW,
+                    g.drawImage(card.cardImage, activeCardX, handY, cardW,
                             cardH, this);
-
-                    //g.drawString("x" + amountOfCard[i],
-                    //        currentHandX + 115, handY + 30);
                     handY += 60;
                 }
+
+                //Get the y axis for desired place to draw the decks for
+                //taxis and destination cards.
+
+                int cardY = height / 2 + 100;
+                //Draw the dest card deck
+                g.drawImage(destBackImg, activeCardX, cardY, cardW,
+                        cardH, this);
+                cardY += 60;
+                //Draw the card decks on the right hand side
+                //To specify, these are the card decks that we can draw from
+                g.drawImage(taxiBackImg, activeCardX, cardY, cardW,
+                        cardH, this);
                 break;
             case SCORE_MENU:
 
