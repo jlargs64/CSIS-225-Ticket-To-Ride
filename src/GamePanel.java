@@ -182,6 +182,11 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 remove(helpButton);
                 remove(quitButton);
 
+                //Make the font for text
+                Font titleFont = new Font("Monospace", Font.BOLD, 16);
+                g.setFont(titleFont);
+                g.setColor(Color.WHITE);
+
                 //Draw the background
                 int bgWidth = woodenImage.getWidth(this);
                 int bgHeight = woodenImage.getHeight(this);
@@ -191,7 +196,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 g.drawImage(gameMap, 20, 10, 400, 580, this);
 
                 //Keep items in line
-                int textXaxis = 460;
+                int textXAxis = 460;
                 int currentHandY = 100;
                 int cardW = 100;
                 int cardH = 50;
@@ -213,22 +218,39 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 //Now draw the players hand
                 for (TaxiCard card : currentPlayer.playerTaxis) {
 
-                    card.border.x = textXaxis;
+                    card.border.x = textXAxis;
                     card.border.y = currentHandY;
                     card.border.width = cardW;
                     card.border.height = cardH;
-                    g.drawImage(card.cardImage, textXaxis, currentHandY, cardW,
+                    g.drawImage(card.cardImage, textXAxis, currentHandY, cardW,
                             cardH, this);
-                    //g.drawString("x" + amountOfCard[i],
-                    //        textXaxis + 115, currentHandY + 30);
+
+                    if (card.type.equalsIgnoreCase("BLUE")) {
+                        g.drawString("x" + amountOfCard[0],
+                                textXAxis + 115, currentHandY + 30);
+                    } else if (card.type.equalsIgnoreCase("GREEN")) {
+                        g.drawString("x" + amountOfCard[1],
+                                textXAxis + 115, currentHandY + 30);
+                    } else if (card.type.equalsIgnoreCase("BLACK")) {
+                        g.drawString("x" + amountOfCard[2],
+                                textXAxis + 115, currentHandY + 30);
+                    } else if (card.type.equalsIgnoreCase("PINK")) {
+                        g.drawString("x" + amountOfCard[3],
+                                textXAxis + 115, currentHandY + 30);
+                    } else if (card.type.equalsIgnoreCase("ORANGE")) {
+                        g.drawString("x" + amountOfCard[4],
+                                textXAxis + 115, currentHandY + 30);
+                    } else if (card.type.equalsIgnoreCase("RED")) {
+                        g.drawString("x" + amountOfCard[5],
+                                textXAxis + 115, currentHandY + 30);
+                    } else if (card.type.equalsIgnoreCase("RAINBOW")) {
+                        g.drawString("x" + amountOfCard[6],
+                                textXAxis + 115, currentHandY + 30);
+                    }
+
 
                     currentHandY += 60;
                 }
-
-                //Make the font for text
-                Font titleFont = new Font("Monospace", Font.BOLD, 16);
-                g.setFont(titleFont);
-                g.setColor(Color.WHITE);
 
                 //Draw the current player stats:
                 //Capitalize the first letter of the players name by default.
@@ -237,20 +259,20 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                         + name.substring(1);
 
                 String msg = newName + "\'s Turn";
-                g.drawString(msg, textXaxis, 20);
+                g.drawString(msg, textXAxis, 20);
 
                 //Draw the turn number
-                g.drawString("Turn Number: " + turnNum, textXaxis, 40);
+                g.drawString("Turn Number: " + turnNum, textXAxis, 40);
 
                 //Draw the amount of trains
                 g.drawString("Taxis Left: " + currentPlayer.taxis,
-                        textXaxis, 60);
+                        textXAxis, 60);
 
                 //Draw the current hand of the player
-                g.drawString("Current Hand", textXaxis, 80);
+                g.drawString("Current Hand", textXAxis, 80);
 
                 //Draw the cards available
-                int activeCardX = textXaxis + 150;
+                int activeCardX = textXAxis + 150;
                 g.drawString("Available Cards", activeCardX, 80);
 
                 int handY = 100;
