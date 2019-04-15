@@ -45,7 +45,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
     private Deque<Player> players = new LinkedList<>();
     private Player currentPlayer;
 
-    //The constructor for Text Twist
+    //The constructor for Game Panel
     public GamePanel() {
 
         //Default window settings
@@ -323,122 +323,130 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
             //Send the player set up form
             //We pass in the player deque to get our data
-            PlayerSelectionFrame playerSelectForm =
-                    new PlayerSelectionFrame(players);
+            //PlayerSelectionFrame playerSelectForm =
+            //       new PlayerSelectionFrame(players);
             //Prompt the users with the form
-            JDialog playerSelect = new JDialog(playerSelectForm);
+            //JDialog playerSelect = new JDialog(playerSelectForm);
 
             //We add a listener to see if the dialog window how been closed.
             //If it was closed it means it was successful or program exited.
-            playerSelectForm.addWindowListener(new WindowAdapter() {
+            //playerSelectForm.addWindowListener(new WindowAdapter() {
                 /**
                  * Invoked when a window has been closed.
                  *
                  * @param e a window event object
                  */
-                @Override
-                public void windowClosed(WindowEvent e) {
-                    super.windowClosed(e);
+            //    @Override
+            //    public void windowClosed(WindowEvent e) {
+            //        super.windowClosed(e);
 
-                    //Set our current state to player selection
-                    currentState = GameState.values()[2];
+            //The code below belongs in here but for debugging purposes
+            //I am leaving it out so the form doesn't have to be filled
+            //out every time.
+            //}
+            //});
 
-                    //Game Start Initialization
-                    //Initialize our array deques of cards
-                    taxiCards = new LinkedList<>();
-                    activeTaxiCards = new LinkedList<>();
-                    destCards = new LinkedList<>();
-                    discaredTaxis = new LinkedList<>();
+            //Set our current state to player selection
+            currentState = GameState.values()[2];
 
-                    //Init turn number
-                    turnNum = 0;
+            //Game Start Initialization
+            //Initialize our array deques of cards
+            taxiCards = new LinkedList<>();
+            activeTaxiCards = new LinkedList<>();
+            destCards = new LinkedList<>();
+            discaredTaxis = new LinkedList<>();
 
-                    //Adding taxi cards to our deck
-                    //6 each color and 8 rainbow
-                    //Use a temporary ArrayList so that we can shuffle later.
-                    //The rectangle r is used for collision detected
-                    Rectangle r = new Rectangle();
-                    ArrayList<TaxiCard> tempCards = new ArrayList<>();
-                    for (int i = 0; i < 6; i++) {
+            //Init turn number
+            turnNum = 0;
 
-                        tempCards.add(new TaxiCard("blue", r));
-                        tempCards.add(new TaxiCard("green", r));
-                        tempCards.add(new TaxiCard("orange", r));
-                        tempCards.add(new TaxiCard("black", r));
-                        tempCards.add(new TaxiCard("pink", r));
-                        tempCards.add(new TaxiCard("red", r));
+            //Adding taxi cards to our deck
+            //6 each color and 8 rainbow
+            //Use a temporary ArrayList so that we can shuffle later.
+            //The rectangle r is used for collision detected
+            Rectangle r = new Rectangle();
+            ArrayList<TaxiCard> tempCards = new ArrayList<>();
+            for (int i = 0; i < 6; i++) {
+
+                tempCards.add(new TaxiCard("blue", r));
+                tempCards.add(new TaxiCard("green", r));
+                tempCards.add(new TaxiCard("orange", r));
+                tempCards.add(new TaxiCard("black", r));
+                tempCards.add(new TaxiCard("pink", r));
+                tempCards.add(new TaxiCard("red", r));
+            }
+            //Add the 8 locomotives
+            for (int i = 0; i < 8; i++) {
+                tempCards.add(new TaxiCard("rainbow", r));
+            }
+            //Shuffle the taxi card deck
+            Collections.shuffle(tempCards);
+
+            //Place our temp hand into the deque due to it being a data structure
+            //that handles more like a card deck.
+            for (int i = 0; i < tempCards.size(); i++) {
+
+                //Add it to our deck
+                taxiCards.add(tempCards.get(i));
+                //Remove it because we don't need it anymore
+                tempCards.remove(i);
+            }
+
+            //FOR DEBUGGING PURPOSES HERE IS A TEMP PLAYER DEQUE
+            players.addLast(new Player("name", "blue", 19));
+            players.addLast(new Player("name2", "white", 20));
+
+            //Deal 2 taxi cards to all players
+            for (Player p : players) {
+
+                p.playerTaxis.add(taxiCards.removeFirst());
+                p.playerTaxis.add(taxiCards.removeFirst());
+            }
+
+            //Deal 5 cards face up from top of deck
+            for (int i = 0; i < 5; i++) {
+
+                activeTaxiCards.addFirst(taxiCards.removeFirst());
+            }
+            //Make sure there aren't more than 3 rainbow taxi's
+            //otherwise discard
+            int taxiCount = 0;
+            for (int i = 0; i < activeTaxiCards.size(); i++) {
+
+                //Count the amount of rainbow cards in the active deck.
+                TaxiCard t = activeTaxiCards.removeFirst();
+                if (t.type.equalsIgnoreCase("rainbow")) {
+                    taxiCount++;
+                }
+                //Add the card back to the bottom of the deck.
+                activeTaxiCards.addLast(t);
+                //If three taxis exist discard all 5
+                if (taxiCount == 3) {
+
+                    //Remove all the cards from active to discard pile.
+                    while (activeTaxiCards.size() > 0) {
+
+                        discaredTaxis.addFirst(
+                                activeTaxiCards.removeFirst());
                     }
-                    //Add the 8 locomotives
-                    for (int i = 0; i < 8; i++) {
-                        tempCards.add(new TaxiCard("rainbow", r));
-                    }
-                    //Shuffle the taxi card deck
-                    Collections.shuffle(tempCards);
 
-                    //Place our temp hand into the deque due to it being a data structure
-                    //that handles more like a card deck.
-                    for (int i = 0; i < tempCards.size(); i++) {
-
-                        //Add it to our deck
-                        taxiCards.add(tempCards.get(i));
-                        //Remove it because we don't need it anymore
-                        tempCards.remove(i);
-                    }
-
-                    //Deal 2 taxi cards to all players
-                    for (Player p : players) {
-
-                        p.playerTaxis.add(taxiCards.removeFirst());
-                        p.playerTaxis.add(taxiCards.removeFirst());
-                    }
-
-                    //Deal 5 cards face up from top of deck
-                    for (int i = 0; i < 5; i++) {
+                    //Redraw 5 new cards
+                    for (int k = 0; k < 5; k++) {
 
                         activeTaxiCards.addFirst(taxiCards.removeFirst());
                     }
-                    //Make sure there aren't more than 3 rainbow taxi's
-                    //otherwise discard
-                    int taxiCount = 0;
-                    for (int i = 0; i < activeTaxiCards.size(); i++) {
-
-                        //Count the amount of rainbow cards in the active deck.
-                        TaxiCard t = activeTaxiCards.removeFirst();
-                        if (t.type.equalsIgnoreCase("rainbow")) {
-                            taxiCount++;
-                        }
-                        //Add the card back to the bottom of the deck.
-                        activeTaxiCards.addLast(t);
-                        //If three taxis exist discard all 5
-                        if (taxiCount == 3) {
-
-                            //Remove all the cards from active to discard pile.
-                            while (activeTaxiCards.size() > 0) {
-
-                                discaredTaxis.addFirst(
-                                        activeTaxiCards.removeFirst());
-                            }
-
-                            //Redraw 5 new cards
-                            for (int k = 0; k < 5; k++) {
-
-                                activeTaxiCards.addFirst(taxiCards.removeFirst());
-                            }
-                            taxiCount = 0;
-                        }
-                    }
-
-                    //Adding dest cards to our deck
-                    //TO DO ISSUE #6
-
-
-                    //Set our current player to the youngest
-                    currentPlayer = players.removeFirst();
-
-                    //Repaint and end the method
-                    repaint();
+                    taxiCount = 0;
                 }
-            });
+            }
+
+            //Adding dest cards to our deck
+            //TO DO ISSUE #6
+
+
+            //Set our current player to the youngest
+            currentPlayer = players.removeFirst();
+
+            //Repaint and end the method
+            repaint();
         }
 
         //Enter the help screen
