@@ -37,13 +37,18 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
     //Card objects
     private Deque<TaxiCard> taxiCards;
-    private Deque<TaxiCard> activeTaxiCards;
-    private Deque<TaxiCard> discaredTaxis;
+    private final int CARD_W = 100;
+    private final int CARD_H = 50;
     private Deque<DestCard> destCards;
+    private ArrayList<TaxiCard> activeTaxiCards;
+    private ArrayList<TaxiCard> discaredTaxis;
 
     //Player related variables
     private Deque<Player> players = new LinkedList<>();
     private Player currentPlayer;
+    //Used for turns
+    private int pickUpCount = 0;
+    private boolean hasClaimedRoute = false;
 
     //The constructor for Game Panel
     public GamePanel() {
@@ -198,32 +203,20 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 //Keep items in line
                 int textXAxis = 460;
                 int currentHandY = 100;
-                int cardW = 100;
-                int cardH = 50;
 
-                //Just an array of string ref to our cards
-                String[] cardFileNames = {
-
-                        "assets\\pieces\\blue-card.png",
-                        "assets\\pieces\\green-card.png",
-                        "assets\\pieces\\black-card.png",
-                        "assets\\pieces\\pink-card.png",
-                        "assets\\pieces\\orange-card.png",
-                        "assets\\pieces\\red-card.png",
-                        "assets\\pieces\\rainbow.png"
-                };
                 //An array of card counts per type
                 int[] amountOfCard = currentPlayer.getCardTypes();
 
                 //Now draw the players hand
-                for (TaxiCard card : currentPlayer.playerTaxis) {
+                for (int i = 0; i < currentPlayer.playerTaxis.size(); i++) {
 
+                    TaxiCard card = currentPlayer.playerTaxis.get(i);
                     card.border.x = textXAxis;
                     card.border.y = currentHandY;
-                    card.border.width = cardW;
-                    card.border.height = cardH;
-                    g.drawImage(card.cardImage, textXAxis, currentHandY, cardW,
-                            cardH, this);
+                    int w = card.border.width;
+                    int h = card.border.height;
+                    g.drawImage(card.cardImage, textXAxis, currentHandY, w,
+                            h, this);
 
                     if (card.type.equalsIgnoreCase("BLUE")) {
                         g.drawString("x" + amountOfCard[0],
@@ -280,11 +273,10 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
                     card.border.x = activeCardX;
                     card.border.y = handY;
-                    card.border.width = cardW;
-                    card.border.height = cardH;
-
-                    g.drawImage(card.cardImage, activeCardX, handY, cardW,
-                            cardH, this);
+                    int w = card.border.width;
+                    int h = card.border.height;
+                    g.drawImage(card.cardImage, activeCardX, handY, w,
+                            h, this);
                     handY += 60;
                 }
 
@@ -293,13 +285,13 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
                 int cardY = height / 2 + 100;
                 //Draw the dest card deck
-                g.drawImage(destBackImg, activeCardX, cardY, cardW,
-                        cardH, this);
+                g.drawImage(destBackImg, activeCardX, cardY, CARD_W,
+                        CARD_H, this);
                 cardY += 60;
                 //Draw the card decks on the right hand side
                 //To specify, these are the card decks that we can draw from
-                g.drawImage(taxiBackImg, activeCardX, cardY, cardW,
-                        cardH, this);
+                g.drawImage(taxiBackImg, activeCardX, cardY, CARD_W,
+                        CARD_H, this);
                 break;
             case SCORE_MENU:
 
@@ -352,9 +344,9 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
             //Game Start Initialization
             //Initialize our array deques of cards
             taxiCards = new LinkedList<>();
-            activeTaxiCards = new LinkedList<>();
+            activeTaxiCards = new ArrayList<>();
             destCards = new LinkedList<>();
-            discaredTaxis = new LinkedList<>();
+            discaredTaxis = new ArrayList<>();
 
             //Init turn number
             turnNum = 0;
@@ -362,27 +354,31 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
             //Adding taxi cards to our deck
             //6 each color and 8 rainbow
             //Use a temporary ArrayList so that we can shuffle later.
-            //The rectangle r is used for collision detected
-            Rectangle r = new Rectangle();
             ArrayList<TaxiCard> tempCards = new ArrayList<>();
             for (int i = 0; i < 6; i++) {
 
-                tempCards.add(new TaxiCard("blue", r));
-                tempCards.add(new TaxiCard("green", r));
-                tempCards.add(new TaxiCard("orange", r));
-                tempCards.add(new TaxiCard("black", r));
-                tempCards.add(new TaxiCard("pink", r));
-                tempCards.add(new TaxiCard("red", r));
+                tempCards.add(new TaxiCard("blue", new
+                        Rectangle(0, 0, CARD_W, CARD_H)));
+                tempCards.add(new TaxiCard("green", new
+                        Rectangle(0, 0, CARD_W, CARD_H)));
+                tempCards.add(new TaxiCard("orange", new
+                        Rectangle(0, 0, CARD_W, CARD_H)));
+                tempCards.add(new TaxiCard("black", new
+                        Rectangle(0, 0, CARD_W, CARD_H)));
+                tempCards.add(new TaxiCard("pink", new
+                        Rectangle(0, 0, CARD_W, CARD_H)));
+                tempCards.add(new TaxiCard("red", new
+                        Rectangle(0, 0, CARD_W, CARD_H)));
             }
             //Add the 8 locomotives
             for (int i = 0; i < 8; i++) {
-                tempCards.add(new TaxiCard("rainbow", r));
+                tempCards.add(new TaxiCard("rainbow", new
+                        Rectangle(0, 0, CARD_W, CARD_H)));
             }
             //Shuffle the taxi card deck
             Collections.shuffle(tempCards);
 
-            //Place our temp hand into the deque due to it being a data structure
-            //that handles more like a card deck.
+            //Place our temp hand into the deque it handles like a card deck.
             for (int i = 0; i < tempCards.size(); i++) {
 
                 //Add it to our deck
@@ -405,36 +401,34 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
             //Deal 5 cards face up from top of deck
             for (int i = 0; i < 5; i++) {
 
-                activeTaxiCards.addFirst(taxiCards.removeFirst());
+                activeTaxiCards.add(taxiCards.removeFirst());
             }
             //Make sure there aren't more than 3 rainbow taxi's
             //otherwise discard
             int taxiCount = 0;
-            for (int i = 0; i < activeTaxiCards.size(); i++) {
+            for (TaxiCard card : activeTaxiCards) {
 
                 //Count the amount of rainbow cards in the active deck.
-                TaxiCard t = activeTaxiCards.removeFirst();
-                if (t.type.equalsIgnoreCase("rainbow")) {
+                if (card.type.equalsIgnoreCase("rainbow")) {
                     taxiCount++;
                 }
-                //Add the card back to the bottom of the deck.
-                activeTaxiCards.addLast(t);
                 //If three taxis exist discard all 5
                 if (taxiCount == 3) {
 
                     //Remove all the cards from active to discard pile.
-                    while (activeTaxiCards.size() > 0) {
-
-                        discaredTaxis.addFirst(
-                                activeTaxiCards.removeFirst());
+                    for (int j = 0; j < activeTaxiCards.size(); j++) {
+                        discaredTaxis.add(
+                                activeTaxiCards.get(j));
                     }
+                    activeTaxiCards.clear();
 
                     //Redraw 5 new cards
                     for (int k = 0; k < 5; k++) {
 
-                        activeTaxiCards.addFirst(taxiCards.removeFirst());
+                        activeTaxiCards.add(taxiCards.removeFirst());
                     }
                     taxiCount = 0;
+                    break;
                 }
             }
 
@@ -498,9 +492,31 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
         for (TaxiCard c : activeTaxiCards) {
 
-            if (c.border.contains(pointClicked)) {
+            if (c.border.contains(pointClicked) && pickUpCount < 2) {
 
-                currentPlayer.playerTaxis.add(activeTaxiCards.removeFirst());
+                //Add the card to the players hand
+                currentPlayer.playerTaxis.add(c);
+                //Remove the card from the active pile
+                activeTaxiCards.remove(c);
+                //Draw a new card for the active pile
+                activeTaxiCards.add(taxiCards.removeFirst());
+                if (c.type.equalsIgnoreCase("rainbow")) {
+
+                    pickUpCount += 2;
+                } else {
+                    pickUpCount++;
+                }
+
+                if (pickUpCount == 2) {
+
+                    //Change players
+                    players.addLast(currentPlayer);
+                    currentPlayer = players.removeFirst();
+                    pickUpCount = 0;
+                }
+
+                repaint();
+                break;
             }
         }
     }

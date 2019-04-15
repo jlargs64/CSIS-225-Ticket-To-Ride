@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.awt.Color;
 
 /**
  * The player class for ticket to ride - New York.
