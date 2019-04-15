@@ -34,6 +34,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
     private Image[] helpImages = new Image[2];
     private int currentHelpImage;
     private Rectangle taxiDeckRect, destDeckRect;
+    private Rectangle[] roads;
     //Buttons
     private JButton playButton, helpButton, quitButton, backButton;
     private JButton switchButton;
@@ -112,6 +113,68 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
         quitButton.addActionListener(this);
         backButton.addActionListener(this);
         switchButton.addActionListener(this);
+
+        roads = new Rectangle[30];
+        //Lincoln to Midtown West
+        roads[0] = new Rectangle(81, 54, 15, 76);
+        //Lincoln to Central Park
+        roads[1] = new Rectangle(113, 23, 80, 15);
+        //Lincoln to Times Square
+        roads[2] = new Rectangle(100, 49, 10, 10);
+        //Central to Times Square
+        roads[3] = new Rectangle(160, 45, 10, 10);
+        //Midtown to Times Square
+        roads[4] = new Rectangle(98, 132, 10, 10);
+        //Times Square to United Nations
+        roads[5] = new Rectangle(193, 115, 10, 10);
+        //Central Park to United Nations
+        roads[6] = new Rectangle(225, 23, 10, 10);
+        //Times Square to Empire St.
+        roads[7] = new Rectangle(159, 148, 10, 10);
+        //Midtown to Empire St.
+        roads[8] = new Rectangle(101, 155, 10, 10);
+        //United to Empire St.
+        roads[9] = new Rectangle(214, 145, 10, 10);
+        //Midtown to Chelsea
+        roads[10] = new Rectangle(81, 169, 10, 10);
+        //Chelsea to Empire St.
+        roads[11] = new Rectangle(120, 205, 10, 10);
+        //Empire St. to Gramercy Park
+        roads[12] = new Rectangle(208, 217, 10, 10);
+        //Chelsea to Gramercy Park
+        roads[13] = new Rectangle(148, 256, 10, 10);
+        //United Nations to Gramercy Park
+        roads[14] = new Rectangle(294, 139, 10, 10);
+        //Gramercy Park to Greenwich Village
+        roads[15] = new Rectangle(234, 263, 10, 10);
+        //Gramercy Park to East Village
+        roads[16] = new Rectangle(270, 271, 10, 10);
+        //Chelsea to Soho
+        roads[17] = new Rectangle(96, 287, 10, 10);
+        //Chelsea to Greenwich Village
+        roads[18] = new Rectangle(114, 280, 10, 10);
+        //Soho to Wall St.
+        roads[19] = new Rectangle(164, 463, 10, 10);
+        //Greenwich Village to Soho
+        roads[20] = new Rectangle(158, 371, 10, 10);
+        //Greenwich Village to Chinatown
+        roads[21] = new Rectangle(223, 371, 10, 10);
+        //East Village to Lower East Side
+        roads[22] = new Rectangle(330, 361, 10, 10);
+        //Greenwich to Lower East Side
+        roads[23] = new Rectangle(250, 365, 10, 10);
+        //Greenwich to East Village
+        roads[24] = new Rectangle(247, 341, 10, 10);
+        //Chinatown to Lower East Side
+        roads[25] = new Rectangle(271, 417, 10, 10);
+        //Wall St. to Chinatown
+        roads[26] = new Rectangle(235, 470, 10, 10);
+        //Chinatown to Brooklyn
+        roads[27] = new Rectangle(271, 461, 10, 10);
+        //Wall St. to Brooklyn
+        roads[28] = new Rectangle(239, 531, 10, 10);
+        //Lower East Side to Brooklyn
+        roads[29] = new Rectangle(330, 430, 10, 10);
     }
 
     /**
@@ -334,6 +397,13 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                         CARD_H, this);
                 taxiDeckRect = new Rectangle(activeCardX, cardY, CARD_W,
                         CARD_H);
+
+                //Collision boxes for the graph
+                for (int i = 0; i < roads.length; i++) {
+                    g.drawRect(roads[i].x, roads[i].y, roads[i].width,
+                            roads[i].height);
+                }
+
                 break;
             case SCORE_MENU:
 
@@ -526,6 +596,11 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
      */
     @Override
     public void mouseClicked(MouseEvent e) {
+
+        //This was for debugging where to put collision boxes over the routes
+        //int x = e.getX();
+        //int y = e.getY();
+        //System.out.println("X:" + x + " Y:" + y);
 
         Point pointClicked = e.getPoint();
 
