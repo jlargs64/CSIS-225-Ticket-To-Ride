@@ -19,26 +19,23 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
     //instance variables
     private final int width;
     private final int height;
+    private final int CARD_W = 100;
+    private final int CARD_H = 50;
     //Game state related variables
     private GameState currentState;
     private Graph map;
     private Toolkit toolkit;
     private int turnNum;
-
     //Image related variables
     private Image mainMenuImg, woodenImage, gameMap, scoreCard;
     private Image taxiBackImg, destBackImg;
     private Image[] helpImages = new Image[2];
     private int currentHelpImage;
-
     //Buttons
     private JButton playButton, helpButton, quitButton, backButton;
     private JButton switchButton;
-
     //Card objects
     private Deque<TaxiCard> taxiCards;
-    private final int CARD_W = 100;
-    private final int CARD_H = 50;
     private Deque<DestCard> destCards;
     private ArrayList<TaxiCard> activeTaxiCards;
     private ArrayList<TaxiCard> discaredTaxis;
@@ -206,7 +203,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
                 //An array of card counts per type
                 int[] amountOfCard = currentPlayer.getCardTypes();
-
+                boolean[] hasBeenDrawn = new boolean[7];
                 //Now draw the players hand
                 for (int i = 0; i < currentPlayer.playerTaxis.size(); i++) {
 
@@ -215,34 +212,71 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                     card.border.y = currentHandY;
                     int w = card.border.width;
                     int h = card.border.height;
-                    g.drawImage(card.cardImage, textXAxis, currentHandY, w,
-                            h, this);
 
-                    if (card.type.equalsIgnoreCase("BLUE")) {
+                    if (card.type.equalsIgnoreCase("BLUE")
+                            && !hasBeenDrawn[0]) {
+
+                        hasBeenDrawn[0] = true;
+                        g.drawImage(card.cardImage, textXAxis, currentHandY, w,
+                                h, this);
                         g.drawString("x" + amountOfCard[0],
                                 textXAxis + 115, currentHandY + 30);
-                    } else if (card.type.equalsIgnoreCase("GREEN")) {
+                        currentHandY += 60;
+                    } else if (card.type.equalsIgnoreCase("GREEN")
+                            && !hasBeenDrawn[1]) {
+
+                        hasBeenDrawn[1] = true;
+                        g.drawImage(card.cardImage, textXAxis, currentHandY, w,
+                                h, this);
                         g.drawString("x" + amountOfCard[1],
                                 textXAxis + 115, currentHandY + 30);
-                    } else if (card.type.equalsIgnoreCase("BLACK")) {
+                        currentHandY += 60;
+                    } else if (card.type.equalsIgnoreCase("BLACK")
+                            && !hasBeenDrawn[2]) {
+
+                        hasBeenDrawn[2] = true;
+                        g.drawImage(card.cardImage, textXAxis, currentHandY, w,
+                                h, this);
                         g.drawString("x" + amountOfCard[2],
                                 textXAxis + 115, currentHandY + 30);
-                    } else if (card.type.equalsIgnoreCase("PINK")) {
+                        currentHandY += 60;
+                    } else if (card.type.equalsIgnoreCase("PINK")
+                            && !hasBeenDrawn[3]) {
+
+                        hasBeenDrawn[3] = true;
+                        g.drawImage(card.cardImage, textXAxis, currentHandY, w,
+                                h, this);
                         g.drawString("x" + amountOfCard[3],
                                 textXAxis + 115, currentHandY + 30);
-                    } else if (card.type.equalsIgnoreCase("ORANGE")) {
+                        currentHandY += 60;
+                    } else if (card.type.equalsIgnoreCase("ORANGE")
+                            && !hasBeenDrawn[4]) {
+
+                        hasBeenDrawn[4] = true;
+                        g.drawImage(card.cardImage, textXAxis, currentHandY, w,
+                                h, this);
                         g.drawString("x" + amountOfCard[4],
                                 textXAxis + 115, currentHandY + 30);
-                    } else if (card.type.equalsIgnoreCase("RED")) {
+                        currentHandY += 60;
+                    } else if (card.type.equalsIgnoreCase("RED")
+                            && !hasBeenDrawn[5]) {
+
+                        hasBeenDrawn[5] = true;
+                        g.drawImage(card.cardImage, textXAxis, currentHandY, w,
+                                h, this);
                         g.drawString("x" + amountOfCard[5],
                                 textXAxis + 115, currentHandY + 30);
-                    } else if (card.type.equalsIgnoreCase("RAINBOW")) {
+                        currentHandY += 60;
+                    } else if (card.type.equalsIgnoreCase("RAINBOW")
+                            && !hasBeenDrawn[6]) {
+
+                        hasBeenDrawn[6] = true;
+                        g.drawImage(card.cardImage, textXAxis, currentHandY, w,
+                                h, this);
                         g.drawString("x" + amountOfCard[6],
                                 textXAxis + 115, currentHandY + 30);
+                        currentHandY += 60;
                     }
-
-
-                    currentHandY += 60;
                 }
 
                 //Draw the current player stats:
@@ -323,11 +357,11 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
             //We add a listener to see if the dialog window how been closed.
             //If it was closed it means it was successful or program exited.
             //playerSelectForm.addWindowListener(new WindowAdapter() {
-                /**
-                 * Invoked when a window has been closed.
-                 *
-                 * @param e a window event object
-                 */
+            ///**
+            //* Invoked when a window has been closed.
+            //*
+            //* @param e a window event object
+            //*/
             //    @Override
             //    public void windowClosed(WindowEvent e) {
             //        super.windowClosed(e);
@@ -379,13 +413,10 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
             Collections.shuffle(tempCards);
 
             //Place our temp hand into the deque it handles like a card deck.
-            for (int i = 0; i < tempCards.size(); i++) {
-
-                //Add it to our deck
-                taxiCards.add(tempCards.get(i));
-                //Remove it because we don't need it anymore
-                tempCards.remove(i);
-            }
+            //Add it to our deck
+            taxiCards.addAll(tempCards);
+            //We are done with this structure now
+            tempCards.clear();
 
             //FOR DEBUGGING PURPOSES HERE IS A TEMP PLAYER DEQUE
             players.addLast(new Player("name", "blue", 19));
@@ -416,10 +447,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 if (taxiCount == 3) {
 
                     //Remove all the cards from active to discard pile.
-                    for (int j = 0; j < activeTaxiCards.size(); j++) {
-                        discaredTaxis.add(
-                                activeTaxiCards.get(j));
-                    }
+                    discaredTaxis.addAll(activeTaxiCards);
                     activeTaxiCards.clear();
 
                     //Redraw 5 new cards
@@ -492,20 +520,63 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
         for (TaxiCard c : activeTaxiCards) {
 
-            if (c.border.contains(pointClicked) && pickUpCount < 2) {
+            //Only pick up a rainbow card if no other card has been picked up.
+            if (c.border.contains(pointClicked)
+                    && c.type.equalsIgnoreCase("rainbow")
+                    && pickUpCount == 0) {
 
                 //Add the card to the players hand
                 currentPlayer.playerTaxis.add(c);
                 //Remove the card from the active pile
                 activeTaxiCards.remove(c);
-                //Draw a new card for the active pile
-                activeTaxiCards.add(taxiCards.removeFirst());
-                if (c.type.equalsIgnoreCase("rainbow")) {
+                //Draw a new card for the active pile but only if there are
+                //cards to be drawn from the deck
+                if (taxiCards.size() > 0) {
 
-                    pickUpCount += 2;
-                } else {
-                    pickUpCount++;
+                    activeTaxiCards.add(taxiCards.removeFirst());
+                } else if (taxiCards.size() == 0 && discaredTaxis.size() > 0) {
+
+                    Collections.shuffle(discaredTaxis);
+                    for (TaxiCard card : discaredTaxis) {
+
+                        taxiCards.addLast(card);
+                    }
+                    discaredTaxis.clear();
                 }
+
+                //Change players
+                players.addLast(currentPlayer);
+                currentPlayer = players.removeFirst();
+                pickUpCount = 0;
+                turnNum++;
+
+                repaint();
+                break;
+
+            } else if (c.border.contains(pointClicked)
+                    && !c.type.equalsIgnoreCase("rainbow")
+                    && pickUpCount < 2) {
+
+                //Add the card to the players hand
+                currentPlayer.playerTaxis.add(c);
+                //Remove the card from the active pile
+                activeTaxiCards.remove(c);
+                //Draw a new card for the active pile but only if there are
+                //cards to be drawn from the deck
+                if (taxiCards.size() > 0) {
+
+                    activeTaxiCards.add(taxiCards.removeFirst());
+                } else if (taxiCards.size() == 0 && discaredTaxis.size() > 0) {
+
+                    Collections.shuffle(discaredTaxis);
+                    for (TaxiCard card : discaredTaxis) {
+
+                        taxiCards.addLast(card);
+                    }
+                    discaredTaxis.clear();
+                }
+                //Taxi cards (not colored) count as 2 when you pick it up
+                pickUpCount++;
 
                 if (pickUpCount == 2) {
 
@@ -513,6 +584,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                     players.addLast(currentPlayer);
                     currentPlayer = players.removeFirst();
                     pickUpCount = 0;
+                    turnNum++;
                 }
 
                 repaint();
