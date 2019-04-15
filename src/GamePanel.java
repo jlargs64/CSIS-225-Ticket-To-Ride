@@ -21,19 +21,23 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
     private final int height;
     private final int CARD_W = 100;
     private final int CARD_H = 50;
+
     //Game state related variables
     private GameState currentState;
     private Graph map;
     private Toolkit toolkit;
     private int turnNum;
+
     //Image related variables
     private Image mainMenuImg, woodenImage, gameMap, scoreCard;
     private Image taxiBackImg, destBackImg;
     private Image[] helpImages = new Image[2];
     private int currentHelpImage;
+    private Rectangle taxiDeckRect, destDeckRect;
     //Buttons
     private JButton playButton, helpButton, quitButton, backButton;
     private JButton switchButton;
+
     //Card objects
     private Deque<TaxiCard> taxiCards;
     private Deque<DestCard> destCards;
@@ -43,9 +47,9 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
     //Player related variables
     private Deque<Player> players = new LinkedList<>();
     private Player currentPlayer;
+
     //Used for turns
     private int pickUpCount = 0;
-    private boolean hasClaimedRoute = false;
 
     //The constructor for Game Panel
     public GamePanel() {
@@ -321,11 +325,15 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 //Draw the dest card deck
                 g.drawImage(destBackImg, activeCardX, cardY, CARD_W,
                         CARD_H, this);
+                destDeckRect = new Rectangle(activeCardX, cardY, CARD_W,
+                        CARD_H);
                 cardY += 60;
                 //Draw the card decks on the right hand side
                 //To specify, these are the card decks that we can draw from
                 g.drawImage(taxiBackImg, activeCardX, cardY, CARD_W,
                         CARD_H, this);
+                taxiDeckRect = new Rectangle(activeCardX, cardY, CARD_W,
+                        CARD_H);
                 break;
             case SCORE_MENU:
 
@@ -469,6 +477,9 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
             //Repaint and end the method
             repaint();
+
+            JOptionPane.showMessageDialog(this,
+                    "It is now " + currentPlayer.name + "\'s turn");
         }
 
         //Enter the help screen
@@ -518,6 +529,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
         Point pointClicked = e.getPoint();
 
+        //This is for checking if we are picking up an active card
         for (TaxiCard c : activeTaxiCards) {
 
             //Only pick up a rainbow card if no other card has been picked up.
@@ -551,6 +563,9 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 turnNum++;
 
                 repaint();
+
+                JOptionPane.showMessageDialog(this,
+                        "It is now " + currentPlayer.name + "\'s turn");
                 break;
 
             } else if (c.border.contains(pointClicked)
@@ -559,13 +574,16 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
                 //Add the card to the players hand
                 currentPlayer.playerTaxis.add(c);
+
                 //Remove the card from the active pile
                 activeTaxiCards.remove(c);
+
                 //Draw a new card for the active pile but only if there are
                 //cards to be drawn from the deck
                 if (taxiCards.size() > 0) {
 
                     activeTaxiCards.add(taxiCards.removeFirst());
+                    repaint();
                 } else if (taxiCards.size() == 0 && discaredTaxis.size() > 0) {
 
                     Collections.shuffle(discaredTaxis);
@@ -575,7 +593,8 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                     }
                     discaredTaxis.clear();
                 }
-                //Taxi cards (not colored) count as 2 when you pick it up
+                //Add one card to our pick up since we can only take 2
+                //So 2 colored cards or 1 rainbow taxi card
                 pickUpCount++;
 
                 if (pickUpCount == 2) {
@@ -585,11 +604,68 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                     currentPlayer = players.removeFirst();
                     pickUpCount = 0;
                     turnNum++;
+                    repaint();
+                    JOptionPane.showMessageDialog(this,
+                            "It is now " +
+                                    currentPlayer.name + "\'s turn");
                 }
 
-                repaint();
                 break;
             }
+        }
+        //If we are picking up a card from the top of the taxi deck
+        if (taxiDeckRect.contains(pointClicked)) {
+
+            //Check to make sure there are enough cards to draw
+            if (taxiCards.size() > 0 && pickUpCount < 2) {
+
+                //Get our new card.
+                TaxiCard newCard = taxiCards.removeFirst();
+                if (newCard.type.equalsIgnoreCase("rainbow")
+                        && pickUpCount == 0) {
+
+                    //Change players
+                    players.addLast(currentPlayer);
+                    currentPlayer = players.removeFirst();
+                    pickUpCount = 0;
+                    turnNum++;
+                    repaint();
+                    JOptionPane.showMessageDialog(this,
+                            "It is now " + currentPlayer.name + "\'s turn");
+                }
+                //Add the new card to the player deck.
+                currentPlayer.playerTaxis.add(newCard);
+                pickUpCount++;
+                repaint();
+            }
+            //Check to make sure after taking the last card our taxi deck is
+            //not empty, if it is, move the discarded pile into the taxi deck.
+            if (taxiCards.size() == 0 && discaredTaxis.size() > 0) {
+
+                Collections.shuffle(discaredTaxis);
+                for (TaxiCard card : discaredTaxis) {
+
+                    taxiCards.addLast(card);
+                }
+                discaredTaxis.clear();
+            }
+
+            //If we hit the max amount of cards to pick up.
+            if (pickUpCount == 2) {
+
+                //Change players
+                players.addLast(currentPlayer);
+                currentPlayer = players.removeFirst();
+                pickUpCount = 0;
+                turnNum++;
+                repaint();
+                JOptionPane.showMessageDialog(this,
+                        "It is now " + currentPlayer.name + "\'s turn");
+            }
+        }
+        //Draw 2 destination cards, the player can keep 1 or both.
+        else if (destDeckRect.contains(pointClicked)) {
+
         }
     }
 
