@@ -34,7 +34,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
     private Image[] helpImages = new Image[2];
     private int currentHelpImage;
     private Rectangle taxiDeckRect, destDeckRect;
-    private Shape[] roads;
+    private Shape[] routes;
     //Buttons
     private JButton playButton, helpButton, quitButton, backButton;
     private JButton switchButton;
@@ -114,96 +114,96 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
         backButton.addActionListener(this);
         switchButton.addActionListener(this);
 
-        roads = new Shape[30];
+        routes = new Shape[30];
         //Lincoln to Midtown West
-        roads[0] = new Rectangle(81, 54, 15, 76);
+        routes[0] = new Rectangle(81, 54, 15, 76);
         //Lincoln to Central Park
-        roads[1] = new Rectangle(113, 23, 80, 15);
+        routes[1] = new Rectangle(113, 23, 80, 15);
         //Lincoln to Times Square
-        roads[2] = new Polygon(new int[]{99, 122, 158, 132},
+        routes[2] = new Polygon(new int[]{99, 122, 158, 132},
                 new int[]{53, 41, 107, 121}, 4);
         //Central to Times Square
-        roads[3] = new Polygon(new int[]{159, 186, 213, 185},
+        routes[3] = new Polygon(new int[]{159, 186, 213, 185},
                 new int[]{109, 41, 50, 121}, 4);
         //Midtown to Times Square
-        roads[4] = new Polygon(new int[]{100, 140, 142, 102},
+        routes[4] = new Polygon(new int[]{100, 140, 142, 102},
                 new int[]{135, 127, 140, 147}, 4);
         //Times Square to United Nations
-        roads[5] = new Rectangle(193, 115, 80, 15);
+        routes[5] = new Rectangle(193, 115, 80, 15);
         //Central Park to United Nations
-        roads[6] = new Polygon(
+        routes[6] = new Polygon(
                 new int[]{225, 261, 267, 296, 300, 314, 300, 287, 259, 221},
                 new int[]{24, 35, 39, 66, 71, 104, 109, 77, 50, 37},
                 10);
         //Times Square to Empire St.
-        roads[7] = new Polygon(new int[]{159, 183, 206, 182},
+        routes[7] = new Polygon(new int[]{159, 183, 206, 182},
                 new int[]{154, 138, 169, 184}, 4);
         //Midtown to Empire St.
-        roads[8] = new Polygon(new int[]{98, 169, 176, 103},
+        routes[8] = new Polygon(new int[]{98, 169, 176, 103},
                 new int[]{163, 196, 183, 151}, 4);
         //United to Empire St.
-        roads[9] = new Polygon(new int[]{212, 278, 288, 219},
+        routes[9] = new Polygon(new int[]{212, 278, 288, 219},
                 new int[]{173, 133, 144, 184}, 4);
         //Midtown to Chelsea
-        roads[10] = new Polygon(new int[]{82, 95, 116, 101},
+        routes[10] = new Polygon(new int[]{82, 95, 116, 101},
                 new int[]{169, 165, 237, 242}, 4);
         //Chelsea to Empire St.
-        roads[11] = new Polygon(new int[]{118, 182, 199, 135},
+        routes[11] = new Polygon(new int[]{118, 182, 199, 135},
                 new int[]{236, 193, 214, 259}, 4);
         //Empire St. to Gramercy Park
-        roads[12] = new Polygon(new int[]{204, 229, 254, 228},
+        routes[12] = new Polygon(new int[]{204, 229, 254, 228},
                 new int[]{217, 201, 232, 247}, 4);
         //Chelsea to Gramercy Park
-        roads[13] = new Polygon(new int[]{148, 228, 229, 147},
+        routes[13] = new Polygon(new int[]{148, 228, 229, 147},
                 new int[]{255, 250, 263, 269}, 4);
         //United Nations to Gramercy Park
-        roads[14] = new Polygon(
+        routes[14] = new Polygon(
                 new int[]{298, 315, 308, 291, 274, 260, 279, 292},
                 new int[]{136, 138, 176, 216, 248, 239, 210, 172},
                 8);
         //Gramercy Park to Greenwich Village
-        roads[15] = new Polygon(new int[]{236, 264, 247, 218},
+        routes[15] = new Polygon(new int[]{236, 264, 247, 218},
                 new int[]{260, 267, 338, 332}, 4);
         //Gramercy Park to East Village
-        roads[16] = new Polygon(new int[]{270, 282, 333, 320},
+        routes[16] = new Polygon(new int[]{270, 282, 333, 320},
                 new int[]{271, 262, 321, 331}, 4);
         //Chelsea to Soho
-        roads[17] = new Polygon(new int[]{94, 108, 162, 146},
+        routes[17] = new Polygon(new int[]{94, 108, 162, 146},
                 new int[]{285, 281, 425, 429}, 4);
         //Chelsea to Greenwich Village
-        roads[18] = new Polygon(new int[]{111, 131, 217, 198},
+        routes[18] = new Polygon(new int[]{111, 131, 217, 198},
                 new int[]{281, 260, 336, 357}, 4);
         //Soho to Wall St.
-        roads[19] = new Polygon(new int[]{163, 176, 216, 202},
+        routes[19] = new Polygon(new int[]{163, 176, 216, 202},
                 new int[]{462, 454, 521, 528}, 4);
         //Greenwich Village to Soho
-        roads[20] = new Polygon(new int[]{204, 219, 212, 208, 181, 171, 196},
+        routes[20] = new Polygon(new int[]{204, 219, 212, 208, 181, 171, 196},
                 new int[]{369, 371, 409, 415, 444, 432, 404}, 7);
         //Greenwich Village to Chinatown
-        roads[21] = new Polygon(new int[]{221, 248, 268, 238},
+        routes[21] = new Polygon(new int[]{221, 248, 268, 238},
                 new int[]{371, 365, 437, 443}, 4);
         //East Village to Lower East Side
-        roads[22] = new Polygon(new int[]{329, 344, 340, 325},
+        routes[22] = new Polygon(new int[]{329, 344, 340, 325},
                 new int[]{361, 363, 400, 399}, 4);
         //Greenwich to Lower East Side
-        roads[23] = new Polygon(new int[]{250, 258, 321, 312},
+        routes[23] = new Polygon(new int[]{250, 258, 321, 312},
                 new int[]{367, 358, 400, 411}, 4);
         //Greenwich to East Village
-        roads[24] = new Rectangle(247, 341, 80, 15);
+        routes[24] = new Rectangle(247, 341, 80, 15);
         //Chinatown to Lower East Side
-        roads[25] = new Polygon(new int[]{271, 303, 314, 280},
+        routes[25] = new Polygon(new int[]{271, 303, 314, 280},
                 new int[]{439, 416, 428, 448}, 4);
         //Wall St. to Chinatown
-        roads[26] = new Polygon(new int[]{226, 236, 266, 252},
+        routes[26] = new Polygon(new int[]{226, 236, 266, 252},
                 new int[]{507, 472, 480, 515}, 4);
         //Chinatown to Brooklyn
-        roads[27] = new Polygon(new int[]{265, 282, 374, 358},
+        routes[27] = new Polygon(new int[]{265, 282, 374, 358},
                 new int[]{475, 451, 517, 540}, 4);
         //Wall St. to Brooklyn
-        roads[28] = new Polygon(new int[]{235, 240, 357, 354},
+        routes[28] = new Polygon(new int[]{235, 240, 357, 354},
                 new int[]{556, 530, 543, 570}, 4);
         //Lower East Side to Brooklyn
-        roads[29] = new Polygon(
+        routes[29] = new Polygon(
                 new int[]{331, 341, 363, 382, 396, 381, 369, 353},
                 new int[]{433, 424, 451, 487, 525, 529, 494, 462},
                 8);
@@ -432,11 +432,11 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
                 Graphics2D g2d = (Graphics2D) g;
                 //Collision boxes for the graph
-                for (int i = 0; i < roads.length; i++) {
+                for (int i = 0; i < routes.length; i++) {
 
-                    g2d.draw(roads[i]);
-                    //g.drawRect(roads[i].x, roads[i].y, roads[i].width,
-                    //        roads[i].height);
+                    g2d.draw(routes[i]);
+                    //g.drawRect(routes[i].x, routes[i].y, routes[i].width,
+                    //        routes[i].height);
                 }
 
                 break;
@@ -776,6 +776,14 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
         //Draw 2 destination cards, the player can keep 1 or both.
         else if (destDeckRect.contains(pointClicked)) {
 
+        }
+
+        //Check if a route is being claimed
+        for (int i = 0; i < routes.length; i++) {
+
+            if (routes[i].contains(pointClicked)) {
+
+            }
         }
     }
 
