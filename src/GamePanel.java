@@ -34,7 +34,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
     private Image[] helpImages = new Image[2];
     private int currentHelpImage;
     private Rectangle taxiDeckRect, destDeckRect;
-    private Rectangle[] roads;
+    private Shape[] roads;
     //Buttons
     private JButton playButton, helpButton, quitButton, backButton;
     private JButton switchButton;
@@ -114,21 +114,27 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
         backButton.addActionListener(this);
         switchButton.addActionListener(this);
 
-        roads = new Rectangle[30];
+        roads = new Shape[30];
         //Lincoln to Midtown West
         roads[0] = new Rectangle(81, 54, 15, 76);
         //Lincoln to Central Park
         roads[1] = new Rectangle(113, 23, 80, 15);
         //Lincoln to Times Square
-        roads[2] = new Rectangle(100, 49, 10, 10);
+        roads[2] = new Polygon(new int[]{99, 122, 158, 132},
+                new int[]{53, 41, 107, 121}, 4);
         //Central to Times Square
-        roads[3] = new Rectangle(160, 45, 10, 10);
+        roads[3] = new Polygon(new int[]{159, 186, 213, 185},
+                new int[]{109, 41, 50, 121}, 4);
         //Midtown to Times Square
-        roads[4] = new Rectangle(98, 132, 10, 10);
+        roads[4] = new Polygon(new int[]{100, 140, 142, 102},
+                new int[]{135, 127, 140, 147}, 4);
         //Times Square to United Nations
-        roads[5] = new Rectangle(193, 115, 10, 10);
+        roads[5] = new Rectangle(193, 115, 80, 15);
         //Central Park to United Nations
-        roads[6] = new Rectangle(225, 23, 10, 10);
+        roads[6] = new Polygon(
+                new int[]{225, 261, 267, 296, 300, 314, 300, 287, 259, 221},
+                new int[]{24, 35, 39, 66, 71, 104, 109, 77, 50, 37},
+                10);
         //Times Square to Empire St.
         roads[7] = new Rectangle(159, 148, 10, 10);
         //Midtown to Empire St.
@@ -136,13 +142,13 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
         //United to Empire St.
         roads[9] = new Rectangle(214, 145, 10, 10);
         //Midtown to Chelsea
-        roads[10] = new Rectangle(81, 169, 10, 10);
+        roads[10] = new Rectangle(81, 169, 15, 76);
         //Chelsea to Empire St.
         roads[11] = new Rectangle(120, 205, 10, 10);
         //Empire St. to Gramercy Park
         roads[12] = new Rectangle(208, 217, 10, 10);
         //Chelsea to Gramercy Park
-        roads[13] = new Rectangle(148, 256, 10, 10);
+        roads[13] = new Rectangle(148, 250, 80, 20);
         //United Nations to Gramercy Park
         roads[14] = new Rectangle(294, 139, 10, 10);
         //Gramercy Park to Greenwich Village
@@ -156,19 +162,19 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
         //Soho to Wall St.
         roads[19] = new Rectangle(164, 463, 10, 10);
         //Greenwich Village to Soho
-        roads[20] = new Rectangle(158, 371, 10, 10);
+        roads[20] = new Rectangle(158, 371, 30, 30);
         //Greenwich Village to Chinatown
         roads[21] = new Rectangle(223, 371, 10, 10);
         //East Village to Lower East Side
-        roads[22] = new Rectangle(330, 361, 10, 10);
+        roads[22] = new Rectangle(330, 361, 13, 40);
         //Greenwich to Lower East Side
         roads[23] = new Rectangle(250, 365, 10, 10);
         //Greenwich to East Village
-        roads[24] = new Rectangle(247, 341, 10, 10);
+        roads[24] = new Rectangle(247, 341, 80, 15);
         //Chinatown to Lower East Side
-        roads[25] = new Rectangle(271, 417, 10, 10);
+        roads[25] = new Rectangle(271, 417, 30, 20);
         //Wall St. to Chinatown
-        roads[26] = new Rectangle(235, 470, 10, 10);
+        roads[26] = new Rectangle(230, 470, 30, 40);
         //Chinatown to Brooklyn
         roads[27] = new Rectangle(271, 461, 10, 10);
         //Wall St. to Brooklyn
@@ -398,10 +404,13 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 taxiDeckRect = new Rectangle(activeCardX, cardY, CARD_W,
                         CARD_H);
 
+                Graphics2D g2d = (Graphics2D) g;
                 //Collision boxes for the graph
                 for (int i = 0; i < roads.length; i++) {
-                    g.drawRect(roads[i].x, roads[i].y, roads[i].width,
-                            roads[i].height);
+
+                    g2d.draw(roads[i]);
+                    //g.drawRect(roads[i].x, roads[i].y, roads[i].width,
+                    //        roads[i].height);
                 }
 
                 break;
@@ -598,9 +607,9 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
     public void mouseClicked(MouseEvent e) {
 
         //This was for debugging where to put collision boxes over the routes
-        //int x = e.getX();
-        //int y = e.getY();
-        //System.out.println("X:" + x + " Y:" + y);
+        int x = e.getX();
+        int y = e.getY();
+        System.out.println("X:" + x + " Y:" + y);
 
         Point pointClicked = e.getPoint();
 
