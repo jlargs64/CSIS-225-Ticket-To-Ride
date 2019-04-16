@@ -34,11 +34,12 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
     private Rectangle taxiDeckRect, destDeckRect;
     private Shape[] routes;
     private boolean[] claimedRoutes;
+    private Rectangle[] districts;
 
     //Buttons
     private JButton playButton, helpButton, quitButton, backButton;
     private JButton switchButton;
-   
+
     //Card objects
     private Deque<TaxiCard> taxiCards;
     private Deque<DestCard> destCards;
@@ -208,6 +209,41 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 new int[]{331, 341, 363, 382, 396, 381, 369, 353},
                 new int[]{433, 424, 451, 487, 525, 529, 494, 462},
                 8);
+
+        //Making the districts clickable
+        districts = new Rectangle[15];
+        int boxSize = 20;
+
+        //0- Lincoln Center
+        districts[0] = new Rectangle(87, 28, boxSize, boxSize);
+        //1- Central Park
+        districts[1] = new Rectangle(200, 19, boxSize, boxSize);
+        //2- Midtown West
+        districts[2] = new Rectangle(73, 137, boxSize, boxSize);
+        //3- Times Square
+        districts[3] = new Rectangle(150, 120, boxSize, boxSize);
+        //4- United Nations
+        districts[4] = new Rectangle(295, 115, boxSize, boxSize);
+        //5- Chelsea
+        districts[5] = new Rectangle(99, 247, boxSize, boxSize);
+        //6- Empire State Building
+        districts[6] = new Rectangle(193, 186, boxSize, boxSize);
+        //7- Gramercy Park
+        districts[7] = new Rectangle(241, 239, boxSize, boxSize);
+        //8- Greenwich Village
+        districts[8] = new Rectangle(217, 341, boxSize, boxSize);
+        //9- Soho
+        districts[9] = new Rectangle(151, 434, boxSize, boxSize);
+        //10- East Village
+        districts[10] = new Rectangle(331, 332, boxSize, boxSize);
+        //11- China Town
+        districts[11] = new Rectangle(244, 451, boxSize, boxSize);
+        //12- Lower East Side
+        districts[12] = new Rectangle(318, 405, boxSize, boxSize);
+        //13- Wall St.
+        districts[13] = new Rectangle(214, 526, boxSize, boxSize);
+        //14- Brooklyn
+        districts[14] = new Rectangle(368, 540, boxSize, boxSize);
     }
 
     /**
@@ -242,13 +278,13 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
         //The back of a destination card
         imgFileLocation = "assets\\dest-card-cover.png";
         destBackImg = toolkit.getImage(imgFileLocation);
-         // helpImage 1
+        // helpImage 1
         imgFileLocation = "assets\\instructions-1.jpg";
         helpImages[0] = toolkit.getImage(imgFileLocation);
         // helpImage 2
         imgFileLocation = "assets\\instructions-2.jpg";
-        helpImages[1] = toolkit.getImage(imgFileLocation); 
-         
+        helpImages[1] = toolkit.getImage(imgFileLocation);
+
         //Switch case for dis1laying different states
         switch (currentState) {
 
@@ -273,9 +309,9 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 remove(backButton);
                 break;
             case HELP_MENU:
-            	//display images
-            	// helpImage 1
-                 g.drawImage(helpImages[currentHelpImage], 0, 0, 800, 600, this);
+                //display images
+                // helpImage 1
+                g.drawImage(helpImages[currentHelpImage], 0, 0, 800, 600, this);
                 // helpImage 2
                 /*
                 imgFileLocation = "assets\\instructions-2.jpg";
@@ -459,6 +495,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                         }
                     }
                 }
+                //Draw the current players routes
                 for (int i = 0; i < currentPlayer.claimedRoutes.length; i++) {
 
                     //If the route is claimed then draw it
@@ -468,12 +505,18 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                         g2d.draw(routes[i]);
                     }
                 }
+                //Draw the colliders around the districts
+                for (Rectangle r : districts) {
+
+                    g2d.draw(r);
+                }
 
                 break;
             case SCORE_MENU:
 
                 //This is where we show who won the game with the scorecard
                 //There will be some animations that we can add later.
+                //REFER TO ISSUE #8
 
                 break;
         }
@@ -604,24 +647,45 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
             }
 
             //Adding dest cards to our deck
-            //TO DO ISSUE #6
             List<DestCard> myDestCards = new ArrayList<DestCard>();
             try {
-                Scanner destCardsScan = new Scanner(new File("destCards.txt"));
+                //Read in the destination card data
+                Scanner destCardsScan = new Scanner(
+                        new File("destCards.txt"));
+
                 while (destCardsScan.hasNextLine()) {
-                    StringTokenizer destCardInfo = new StringTokenizer(destCardsScan.nextLine());
+
+                    //String tokenizer to parse the string
+                    StringTokenizer destCardInfo = new
+                            StringTokenizer(destCardsScan.nextLine());
+
+                    //How much the destination card is worth
                     int worth = Integer.valueOf(destCardInfo.nextToken());
-                    int startDistrict = Integer.valueOf(destCardInfo.nextToken());
+
+                    //Int representing the start city
+                    int startDistrict = Integer.valueOf(
+                            destCardInfo.nextToken());
+
+                    //Int representing the end city
                     int endDistrict = Integer.valueOf(destCardInfo.nextToken());
+
+                    //String representing the path to the image we need
                     String cardNum = destCardInfo.nextToken();
-                    myDestCards.add(new DestCard(worth, startDistrict, endDistrict, cardNum));
+                    myDestCards.add(new DestCard(worth, startDistrict,
+                            endDistrict, cardNum));
                 }
+            } catch (Exception err) {
+
+                err.printStackTrace();
             }
-            catch (Exception FileNotFoundException){}
+            //Shuffle the destination card deck and place it into the deck
             Collections.shuffle(myDestCards);
-            for (int i =0; i<myDestCards.size(); i++){
+            for (int i = 0; i < myDestCards.size(); i++) {
                 destCards.addLast(myDestCards.get(i));
             }
+
+            //DEAL THE DESTINATION CARDS TO EACH PLAYER
+            //REFER TO ISSUE #10
 
             //Set our current player to the youngest
             currentPlayer = players.removeFirst();
@@ -652,16 +716,16 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
         //Switch the help messages
         else if (e.getSource().equals(switchButton)) {
-        	if(currentHelpImage == 0) {
-        		
-        		currentHelpImage=1;  
-        	}else {
-        		
-        		currentHelpImage=0;
-        	}
-        	
-        	    
-        	repaint();
+            if (currentHelpImage == 0) {
+
+                currentHelpImage = 1;
+            } else {
+
+                currentHelpImage = 0;
+            }
+
+
+            repaint();
         }
 
         //Go back from help to the main menu
@@ -685,9 +749,9 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
     public void mouseClicked(MouseEvent e) {
 
         //This was for debugging where to put collision boxes over the routes
-        //int x = e.getX();
-        //int y = e.getY();
-        //System.out.println("X:" + x + " Y:" + y);
+        int x = e.getX();
+        int y = e.getY();
+        System.out.println("X:" + x + " Y:" + y);
 
         Point pointClicked = e.getPoint();
 
