@@ -12,7 +12,7 @@ public class DestCard {
     protected int startDistrict;
     protected int endDistrict;
     //Used for finding the correct image to display
-    protected int cardNum;
+    protected String cardNum;
 
     /**
      * Constructor for the Destination class that initialize the Destination
@@ -23,7 +23,7 @@ public class DestCard {
      * @param startDistrict the start point of the trip
      * @param endDistrict   the  end point of the trip
      */
-    public DestCard(int cardNum, int worth, int startDistrict, int endDistrict) {
+    public DestCard(int worth,  int startDistrict, int endDistrict, String cardNum) {
 
         //Initialize our instance variables
         this.worth = worth;

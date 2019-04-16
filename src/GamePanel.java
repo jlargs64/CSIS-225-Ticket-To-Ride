@@ -2,10 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.LinkedList;
+import java.util.*;
+import java.util.List;
 
 /**
  * The game panel for displaying the various game states of ticket to ride.
@@ -575,7 +573,23 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
             //Adding dest cards to our deck
             //TO DO ISSUE #6
-
+            List<DestCard> myDestCards = new ArrayList<DestCard>();
+            try {
+                Scanner destCardsScan = new Scanner(new File("destCards.txt"));
+                while (destCardsScan.hasNextLine()) {
+                    StringTokenizer destCardInfo = new StringTokenizer(destCardsScan.nextLine());
+                    int worth = Integer.valueOf(destCardInfo.nextToken());
+                    int startDistrict = Integer.valueOf(destCardInfo.nextToken());
+                    int endDistrict = Integer.valueOf(destCardInfo.nextToken());
+                    String cardNum = destCardInfo.nextToken();
+                    myDestCards.add(new DestCard(worth, startDistrict, endDistrict, cardNum));
+                }
+            }
+            catch (Exception FileNotFoundException){}
+            Collections.shuffle(myDestCards);
+            for (int i =0; i<myDestCards.size(); i++){
+                destCards.addLast(myDestCards.get(i));
+            }
 
             //Set our current player to the youngest
             currentPlayer = players.removeFirst();
