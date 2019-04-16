@@ -30,13 +30,13 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
     private Image mainMenuImg, woodenImage, gameMap, scoreCard;
     private Image taxiBackImg, destBackImg;
     private Image[] helpImages = new Image[2];
-    private int currentHelpImage;
+    private int currentHelpImage = 0;
     private Rectangle taxiDeckRect, destDeckRect;
     private Shape[] routes;
     //Buttons
     private JButton playButton, helpButton, quitButton, backButton;
     private JButton switchButton;
-
+   
     //Card objects
     private Deque<TaxiCard> taxiCards;
     private Deque<DestCard> destCards;
@@ -239,8 +239,14 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
         //The back of a destination card
         imgFileLocation = "assets\\dest-card-cover.png";
         destBackImg = toolkit.getImage(imgFileLocation);
-
-        //Switch case for displaying different states
+         // helpImage 1
+        imgFileLocation = "assets\\instructions-1.jpg";
+        helpImages[0] = toolkit.getImage(imgFileLocation);
+        // helpImage 2
+        imgFileLocation = "assets\\instructions-2.jpg";
+        helpImages[1] = toolkit.getImage(imgFileLocation); 
+         
+        //Switch case for dis1laying different states
         switch (currentState) {
 
             case MAIN_MENU:
@@ -264,6 +270,15 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 remove(backButton);
                 break;
             case HELP_MENU:
+            	//display images
+            	// helpImage 1
+                 g.drawImage(helpImages[currentHelpImage], 0, 0, 800, 600, this);
+                // helpImage 2
+                /*
+                imgFileLocation = "assets\\instructions-2.jpg";
+                helpImages[1] = toolkit.getImage(imgFileLocation);
+                g.drawImage(helpImages[1], 0, 0, 800, 600, this);
+                */
 
                 //Swap between the 2 help images and also a back to main button.
                 add(switchButton);
@@ -620,10 +635,16 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
         //Switch the help messages
         else if (e.getSource().equals(switchButton)) {
-
-
-            //Repaint and end the method
-            repaint();
+        	if(currentHelpImage == 0) {
+        		
+        		currentHelpImage=1;  
+        	}else {
+        		
+        		currentHelpImage=0;
+        	}
+        	
+        	    
+        	repaint();
         }
 
         //Go back from help to the main menu
