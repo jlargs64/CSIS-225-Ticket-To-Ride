@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -25,7 +26,9 @@ public class Player {
     //The cards that player has in hand
     protected ArrayList<DestCard> playerDestCards = new ArrayList<>();
     //The player graph
-    protected Graph claimedRoutes;
+    protected boolean[] claimedRoutes;
+    //The player Color object
+    protected Color COLOR;
 
     /**
      * Constructor for the player class that initialize the player
@@ -45,8 +48,18 @@ public class Player {
         this.age = age;
         //Set the player's starting num of taxis
         taxis = 15;
-        //Initialize the player graphs
-        //claimedRoutes = new Graph(new File("..\\Districts.txt"));
+
+        if (color.equalsIgnoreCase("BLUE")) {
+            COLOR = Color.BLUE;
+        } else if (color.equalsIgnoreCase("WHITE")) {
+            COLOR = Color.WHITE;
+        } else if (color.equalsIgnoreCase("PURPLE")) {
+            COLOR = Color.MAGENTA;
+        } else {
+            COLOR = Color.YELLOW;
+        }
+
+        claimedRoutes = new boolean[30];
     }
 
     //does nothing at the moment

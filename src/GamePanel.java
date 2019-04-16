@@ -33,6 +33,8 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
     private int currentHelpImage = 0;
     private Rectangle taxiDeckRect, destDeckRect;
     private Shape[] routes;
+    private boolean[] claimedRoutes;
+
     //Buttons
     private JButton playButton, helpButton, quitButton, backButton;
     private JButton switchButton;
@@ -113,6 +115,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
         switchButton.addActionListener(this);
 
         routes = new Shape[30];
+        claimedRoutes = new boolean[30];
         //Lincoln to Midtown West
         routes[0] = new Rectangle(81, 54, 15, 76);
         //Lincoln to Central Park
@@ -444,12 +447,26 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                         CARD_H);
 
                 Graphics2D g2d = (Graphics2D) g;
-                //Collision boxes for the graph
-                for (int i = 0; i < routes.length; i++) {
+                //Collision boxes for the graph of the other players
+                for (Player p : players) {
+                    for (int i = 0; i < routes.length; i++) {
 
-                    g2d.draw(routes[i]);
-                    //g.drawRect(routes[i].x, routes[i].y, routes[i].width,
-                    //        routes[i].height);
+                        //If the route is then draw it
+                        if (p.claimedRoutes[i]) {
+
+                            g.setColor(p.COLOR);
+                            g2d.draw(routes[i]);
+                        }
+                    }
+                }
+                for (int i = 0; i < currentPlayer.claimedRoutes.length; i++) {
+
+                    //If the route is claimed then draw it
+                    if (currentPlayer.claimedRoutes[i]) {
+
+                        g.setColor(currentPlayer.COLOR);
+                        g2d.draw(routes[i]);
+                    }
                 }
 
                 break;
@@ -668,9 +685,9 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
     public void mouseClicked(MouseEvent e) {
 
         //This was for debugging where to put collision boxes over the routes
-        int x = e.getX();
-        int y = e.getY();
-        System.out.println("X:" + x + " Y:" + y);
+        //int x = e.getX();
+        //int y = e.getY();
+        //System.out.println("X:" + x + " Y:" + y);
 
         Point pointClicked = e.getPoint();
 
@@ -810,15 +827,25 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
         }
         //Draw 2 destination cards, the player can keep 1 or both.
         else if (destDeckRect.contains(pointClicked)) {
-
+            //Do something
         }
 
         //Check if a route is being claimed
         for (int i = 0; i < routes.length; i++) {
 
-            if (routes[i].contains(pointClicked)) {
+            if (routes[i].contains(pointClicked) && claimedRoutes[i] == false) {
 
+                claimedRoutes[i] = true;
+                currentPlayer.claimedRoutes[i] = true;
+                //Change players
+                players.addLast(currentPlayer);
+                currentPlayer = players.removeFirst();
+                turnNum++;
 
+                repaint();
+                JOptionPane.showMessageDialog(this,
+                        "It is now " + currentPlayer.name + "\'s turn");
+                break;
             }
         }
     }
