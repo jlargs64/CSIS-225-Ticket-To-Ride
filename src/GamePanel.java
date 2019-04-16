@@ -136,51 +136,77 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 new int[]{24, 35, 39, 66, 71, 104, 109, 77, 50, 37},
                 10);
         //Times Square to Empire St.
-        roads[7] = new Rectangle(159, 148, 10, 10);
+        roads[7] = new Polygon(new int[]{159, 183, 206, 182},
+                new int[]{154, 138, 169, 184}, 4);
         //Midtown to Empire St.
-        roads[8] = new Rectangle(101, 155, 10, 10);
+        roads[8] = new Polygon(new int[]{98, 169, 176, 103},
+                new int[]{163, 196, 183, 151}, 4);
         //United to Empire St.
-        roads[9] = new Rectangle(214, 145, 10, 10);
+        roads[9] = new Polygon(new int[]{212, 278, 288, 219},
+                new int[]{173, 133, 144, 184}, 4);
         //Midtown to Chelsea
-        roads[10] = new Rectangle(81, 169, 15, 76);
+        roads[10] = new Polygon(new int[]{82, 95, 116, 101},
+                new int[]{169, 165, 237, 242}, 4);
         //Chelsea to Empire St.
-        roads[11] = new Rectangle(120, 205, 10, 10);
+        roads[11] = new Polygon(new int[]{118, 182, 199, 135},
+                new int[]{236, 193, 214, 259}, 4);
         //Empire St. to Gramercy Park
-        roads[12] = new Rectangle(208, 217, 10, 10);
+        roads[12] = new Polygon(new int[]{204, 229, 254, 228},
+                new int[]{217, 201, 232, 247}, 4);
         //Chelsea to Gramercy Park
-        roads[13] = new Rectangle(148, 250, 80, 20);
+        roads[13] = new Polygon(new int[]{148, 228, 229, 147},
+                new int[]{255, 250, 263, 269}, 4);
         //United Nations to Gramercy Park
-        roads[14] = new Rectangle(294, 139, 10, 10);
+        roads[14] = new Polygon(
+                new int[]{298, 315, 308, 291, 274, 260, 279, 292},
+                new int[]{136, 138, 176, 216, 248, 239, 210, 172},
+                8);
         //Gramercy Park to Greenwich Village
-        roads[15] = new Rectangle(234, 263, 10, 10);
+        roads[15] = new Polygon(new int[]{236, 264, 247, 218},
+                new int[]{260, 267, 338, 332}, 4);
         //Gramercy Park to East Village
-        roads[16] = new Rectangle(270, 271, 10, 10);
+        roads[16] = new Polygon(new int[]{270, 282, 333, 320},
+                new int[]{271, 262, 321, 331}, 4);
         //Chelsea to Soho
-        roads[17] = new Rectangle(96, 287, 10, 10);
+        roads[17] = new Polygon(new int[]{94, 108, 162, 146},
+                new int[]{285, 281, 425, 429}, 4);
         //Chelsea to Greenwich Village
-        roads[18] = new Rectangle(114, 280, 10, 10);
+        roads[18] = new Polygon(new int[]{111, 131, 217, 198},
+                new int[]{281, 260, 336, 357}, 4);
         //Soho to Wall St.
-        roads[19] = new Rectangle(164, 463, 10, 10);
+        roads[19] = new Polygon(new int[]{163, 176, 216, 202},
+                new int[]{462, 454, 521, 528}, 4);
         //Greenwich Village to Soho
-        roads[20] = new Rectangle(158, 371, 30, 30);
+        roads[20] = new Polygon(new int[]{204, 219, 212, 208, 181, 171, 196},
+                new int[]{369, 371, 409, 415, 444, 432, 404}, 7);
         //Greenwich Village to Chinatown
-        roads[21] = new Rectangle(223, 371, 10, 10);
+        roads[21] = new Polygon(new int[]{221, 248, 268, 238},
+                new int[]{371, 365, 437, 443}, 4);
         //East Village to Lower East Side
-        roads[22] = new Rectangle(330, 361, 13, 40);
+        roads[22] = new Polygon(new int[]{329, 344, 340, 325},
+                new int[]{361, 363, 400, 399}, 4);
         //Greenwich to Lower East Side
-        roads[23] = new Rectangle(250, 365, 10, 10);
+        roads[23] = new Polygon(new int[]{250, 258, 321, 312},
+                new int[]{367, 358, 400, 411}, 4);
         //Greenwich to East Village
         roads[24] = new Rectangle(247, 341, 80, 15);
         //Chinatown to Lower East Side
-        roads[25] = new Rectangle(271, 417, 30, 20);
+        roads[25] = new Polygon(new int[]{271, 303, 314, 280},
+                new int[]{439, 416, 428, 448}, 4);
         //Wall St. to Chinatown
-        roads[26] = new Rectangle(230, 470, 30, 40);
+        roads[26] = new Polygon(new int[]{226, 236, 266, 252},
+                new int[]{507, 472, 480, 515}, 4);
         //Chinatown to Brooklyn
-        roads[27] = new Rectangle(271, 461, 10, 10);
+        roads[27] = new Polygon(new int[]{265, 282, 374, 358},
+                new int[]{475, 451, 517, 540}, 4);
         //Wall St. to Brooklyn
-        roads[28] = new Rectangle(239, 531, 10, 10);
+        roads[28] = new Polygon(new int[]{235, 240, 357, 354},
+                new int[]{556, 530, 543, 570}, 4);
         //Lower East Side to Brooklyn
-        roads[29] = new Rectangle(330, 430, 10, 10);
+        roads[29] = new Polygon(
+                new int[]{331, 341, 363, 382, 396, 381, 369, 353},
+                new int[]{433, 424, 451, 487, 525, 529, 494, 462},
+                8);
     }
 
     /**
