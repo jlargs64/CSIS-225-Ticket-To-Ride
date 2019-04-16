@@ -219,27 +219,27 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
         super.paintComponent(g);
 
         //The background image
-        String imgFileLocation = "..\\assets\\wood-background.jpg";
+        String imgFileLocation = "assets\\wood-background.jpg";
         woodenImage = toolkit.getImage(imgFileLocation);
 
         //The main menu image
-        imgFileLocation = "..\\assets\\game-cover.jpg";
+        imgFileLocation = "assets\\game-cover.jpg";
         mainMenuImg = toolkit.getImage(imgFileLocation);
 
         //The game map
-        imgFileLocation = "..\\assets\\ny-board.jpg";
+        imgFileLocation = "assets\\ny-board.jpg";
         gameMap = toolkit.getImage(imgFileLocation);
 
         //Score card
-        imgFileLocation = "..\\assets\\score-card.jpg";
+        imgFileLocation = "assets\\score-card.jpg";
         scoreCard = toolkit.getImage(imgFileLocation);
 
         //The back of a taxi card
-        imgFileLocation = "..\\assets\\taxi-card-cover.png";
+        imgFileLocation = "assets\\taxi-card-cover.png";
         taxiBackImg = toolkit.getImage(imgFileLocation);
 
         //The back of a destination card
-        imgFileLocation = "..\\assets\\dest-card-cover.png";
+        imgFileLocation = "assets\\dest-card-cover.png";
         destBackImg = toolkit.getImage(imgFileLocation);
 
         //Switch case for displaying different states
@@ -248,7 +248,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
             case MAIN_MENU:
 
                 // display images
-                imgFileLocation = "..\\assets\\game-cover.jpg";
+                imgFileLocation = "assets\\game-cover.jpg";
                 mainMenuImg = toolkit.getImage(imgFileLocation);
                 g.drawImage(mainMenuImg, 0, 0, 800, 600, this);
 
@@ -782,6 +782,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
         for (int i = 0; i < routes.length; i++) {
 
             if (routes[i].contains(pointClicked)) {
+
 
             }
         }

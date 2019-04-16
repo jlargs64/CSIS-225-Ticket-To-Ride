@@ -1,3 +1,4 @@
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -23,6 +24,8 @@ public class Player {
     protected ArrayList<TaxiCard> playerTaxis = new ArrayList<>();
     //The cards that player has in hand
     protected ArrayList<DestCard> playerDestCards = new ArrayList<>();
+    //The player graph
+    protected Graph claimedRoutes;
 
     /**
      * Constructor for the player class that initialize the player
@@ -42,30 +45,8 @@ public class Player {
         this.age = age;
         //Set the player's starting num of taxis
         taxis = 15;
-    }
-
-    //does nothing at the moment
-    public void drawCards() {
-        //if the player chooses to draw cards
-        //they can pick one of the five cards 
-        //that are facing up. Or they can 
-        //draw from either the transportation deck
-        //or the destination deck
-    }
-
-    //does nothing at the moment
-    public void claimRoute() {
-        //if player has enough cards and chooses to
-        //claim a route that isn't already claimed
-    }
-
-    //does nothing at the moment
-    public void playerTurn() {
-        //The player can only do one of three things
-        //each turn.
-
-        //Draw transportation cards, Claim a route,
-        //or draw destination tickets
+        //Initialize the player graphs
+        //claimedRoutes = new Graph(new File("..\\Districts.txt"));
     }
 
     //does nothing at the moment
