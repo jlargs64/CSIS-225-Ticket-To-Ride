@@ -1132,7 +1132,6 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                     //Reset district clicked back to -1
                     districtClicked = -1;
                 } else {
-                    System.out.println(map.vertices[i].name + " is the start");
                     districtClicked = i;
                 }
                 break;
@@ -1149,7 +1148,6 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
     public void claimRoute(int index) {
 
         int endIndex = index;
-        System.out.println(map.vertices[index].name + " is the end");
 
         //We find out if we can claim this route
         Graph.Edge finger = map.vertices[districtClicked].firstEdge;
@@ -1158,7 +1156,6 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
             if (finger.dest == endIndex) {
 
-                System.out.println("There is a connection");
                 //The player can afford the route
                 if (currentPlayer.taxis - finger.cost > 0) {
 
