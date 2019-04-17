@@ -1152,10 +1152,14 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
         //We find out if we can claim this route
         Graph.Edge finger = map.vertices[districtClicked].firstEdge;
 
+        //We use was found to display a message to user if it was a valid
+        //move or not.
+        boolean wasFound = false;
         while (finger != null) {
 
             if (finger.dest == endIndex) {
 
+                wasFound = true;
                 //The player can afford the route
                 if (currentPlayer.taxis - finger.cost > 0) {
 
@@ -1168,7 +1172,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
                     //If it is a clear card, so any color will suffice
                     //that the player can afford.
-                    int[] numTypes = currentPlayer.getCardTypes();
+                    /*int[] numTypes = currentPlayer.getCardTypes();
                     ArrayList<String> possibleColors = new ArrayList<>();
                     for (int i = 0; i < numTypes.length; i++) {
 
@@ -1215,7 +1219,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                         //want to place it
                         if (selectedCardType == null) {
                             return;
-                        }
+                        }*/
 
                         /*int costLeft = finger.cost;
                         //Remove our specified type cards
@@ -1231,8 +1235,8 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                                 currentPlayer.playerTaxis.remove(c);
                                 costLeft--;
                             }
-                        }*/
-                    }
+                        }
+                    }*/
                     //Add to the players graph
                     currentPlayer.claimedRoutes.addEdge(
                             districtClicked,
@@ -1267,59 +1271,66 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                             removalFinger = removalFinger.next;
                         }
                     }
-
-                    //Add the graphical version of the route to player
-                    Route routeToClaim = null;
-                    for (Route r : routes) {
-
-                        //For claiming a single route
-                        if (r.start == districtClicked
-                                && r.end == endIndex
-                                && r.color == null) {
-
-                            routeToClaim = r;
-                            break;
-                        } else if (r.start == endIndex
-                                && r.end == districtClicked
-                                && r.color == null) {
-
-                            routeToClaim = r;
-                            break;
-                        }
-                        //For claiming a single route
-                        else if (r.start == districtClicked
-                                && r.end == endIndex
-                                && r.color == finger.color) {
-
-                            routeToClaim = r;
-                            break;
-                        } else if (r.start == endIndex
-                                && r.end == districtClicked
-                                && r.color == finger.color) {
-
-                            routeToClaim = r;
-                            break;
-                        }
-                    }
-                    //Add it to the players route to claim
-                    currentPlayer.routes.add(routeToClaim);
-                    //Remove it from the master routes list
-                    routes.remove(routeToClaim);
-
-                    //Change players
-                    currentPlayer.taxis -= finger.cost;
-                    players.addLast(currentPlayer);
-                    currentPlayer = players.removeFirst();
-                    turnNum++;
-                    repaint();
-                    JOptionPane.showMessageDialog(this,
-                            "It is now " + currentPlayer.name
-                                    + "\'s turn");
                     break;
                 }
-                //Check the next edge
-                finger = finger.next;
             }
+            //Check the next edge
+            finger = finger.next;
+        }
+
+        //If the route wasn't found OR was already claimed tell the user.
+        if (wasFound == false) {
+            JOptionPane.showMessageDialog(this,
+                    "Invalid move!");
+        } else {
+
+            //Add the graphical version of the route to player
+            Route routeToClaim = null;
+            for (Route r : routes) {
+
+                //For claiming a single route
+                if (r.start == districtClicked
+                        && r.end == endIndex
+                        && r.color == null) {
+
+                    routeToClaim = r;
+                    break;
+                } else if (r.start == endIndex
+                        && r.end == districtClicked
+                        && r.color == null) {
+
+                    routeToClaim = r;
+                    break;
+                }
+                //For claiming a double route
+                else if (r.start == districtClicked
+                        && r.end == endIndex
+                        && r.color == finger.color) {
+
+                    routeToClaim = r;
+                    break;
+                } else if (r.start == endIndex
+                        && r.end == districtClicked
+                        && r.color == finger.color) {
+
+                    routeToClaim = r;
+                    break;
+                }
+            }
+            //Add it to the players route to claim
+            currentPlayer.routes.add(routeToClaim);
+            //Remove it from the master routes list
+            routes.remove(routeToClaim);
+
+            //Change players
+            currentPlayer.taxis -= finger.cost;
+            players.addLast(currentPlayer);
+            currentPlayer = players.removeFirst();
+            turnNum++;
+            repaint();
+            JOptionPane.showMessageDialog(this,
+                    "It is now " + currentPlayer.name
+                            + "\'s turn");
         }
     }
 }
