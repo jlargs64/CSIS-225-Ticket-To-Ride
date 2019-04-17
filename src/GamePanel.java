@@ -659,6 +659,21 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
                 Graphics2D g2d = (Graphics2D) g;
 
+                //Draw all the players claimed routes
+                for (Player p : players) {
+
+                    g.setColor(p.COLOR);
+                    ArrayList<Route> playerRoutes = p.routes;
+                    for (int i = 0; i < playerRoutes.size(); i++) {
+                        g2d.fill(playerRoutes.get(i).img);
+                    }
+                }
+                //Draw the current players claimed routes
+                ArrayList<Route> playerRoutes = currentPlayer.routes;
+                g.setColor(currentPlayer.COLOR);
+                for (int i = 0; i < playerRoutes.size(); i++) {
+                    g2d.fill(playerRoutes.get(i).img);
+                }
 
                 //FOR DEBUGGING PURPOSES
                 /*for(Route r : routes){
@@ -1077,6 +1092,88 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                         if (finger.dest == endIndex) {
 
                             System.out.println("There is a connection");
+                            //Add to the players graph
+                            currentPlayer.claimedRoutes.addEdge(
+                                    districtClicked,
+                                    endIndex,
+                                    finger.color,
+                                    finger.cost);
+
+                            //Remove from the master graph (single routes)
+                            map.removeEdge(districtClicked, endIndex);
+                            map.removeEdge(endIndex, districtClicked);
+                            //For double routes
+                            //We need to check if another vertex has that same
+                            //reference.
+                            Graph.Edge removalFinger =
+                                    map.vertices[endIndex].firstEdge;
+
+                            //We need to remove the other references to the
+                            //edges.
+                            if (players.size() == 1) {
+                                while (removalFinger != null) {
+
+                                    if (removalFinger.dest == districtClicked) {
+
+                                        //Remove the other edges
+                                        map.removeEdge(endIndex,
+                                                removalFinger.dest);
+
+                                        map.removeEdge(removalFinger.dest,
+                                                endIndex);
+                                        break;
+                                    }
+                                    removalFinger = removalFinger.next;
+                                }
+                            }
+
+                            //Add the graphical version of the route to player
+                            Route routeToClaim = null;
+                            for (Route r : routes) {
+
+                                //For claiming a single route
+                                if (r.start == districtClicked
+                                        && r.end == endIndex
+                                        && r.color == null) {
+
+                                    routeToClaim = r;
+                                    break;
+                                } else if (r.start == endIndex
+                                        && r.end == districtClicked
+                                        && r.color == null) {
+
+                                    routeToClaim = r;
+                                    break;
+                                }
+                                //For claiming a single route
+                                else if (r.start == districtClicked
+                                        && r.end == endIndex
+                                        && r.color == finger.color) {
+
+                                    routeToClaim = r;
+                                    break;
+                                } else if (r.start == endIndex
+                                        && r.end == districtClicked
+                                        && r.color == finger.color) {
+
+                                    routeToClaim = r;
+                                    break;
+                                }
+                            }
+                            //Add it to the players route to claim
+                            currentPlayer.routes.add(routeToClaim);
+                            //Remove it from the master routes list
+                            routes.remove(routeToClaim);
+
+                            //Change players
+                            currentPlayer.taxis -= finger.cost;
+                            players.addLast(currentPlayer);
+                            currentPlayer = players.removeFirst();
+                            turnNum++;
+                            repaint();
+                            JOptionPane.showMessageDialog(this,
+                                    "It is now " + currentPlayer.name
+                                            + "\'s turn");
                             break;
                         }
                         //Check the next edge
@@ -1134,48 +1231,5 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
     // For managing the game state
     public enum GameState {
         MAIN_MENU, HELP_MENU, GAME_MENU, SCORE_MENU
-    }
-
-    /***
-     * A class to help display different routes
-     */
-    private class Route {
-
-        protected Color color;
-        protected int start;
-        protected int end;
-        protected Shape img;
-
-        /***
-         * This constructor is for single routes, no color needed.
-         *
-         * @param start start district index
-         * @param end end district index
-         * @param img the polygon to draw
-         */
-        public Route(int start, int end, Shape img) {
-
-            this.start = start;
-            this.end = end;
-            this.img = img;
-            color = null;
-        }
-
-        /***
-         * This constructor is for double routes, color is needed
-         * to specify which one.
-         *
-         * @param start start district index
-         * @param end end district index
-         * @param img the polygon to draw
-         * @param color the color of the route
-         */
-        public Route(Color color, int start, int end, Shape img) {
-
-            this.color = color;
-            this.start = start;
-            this.end = end;
-            this.img = img;
-        }
     }
 }

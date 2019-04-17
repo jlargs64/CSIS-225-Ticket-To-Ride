@@ -27,6 +27,8 @@ public class Player {
     protected ArrayList<DestCard> playerDestCards = new ArrayList<>();
     //The player graph
     protected Graph claimedRoutes;
+    //The players images of claimed routes
+    protected ArrayList<Route> routes;
     //The player Color object
     protected Color COLOR;
 
@@ -65,6 +67,9 @@ public class Player {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        //Initialize the routes
+        routes = new ArrayList<>();
     }
 
     //does nothing at the moment
