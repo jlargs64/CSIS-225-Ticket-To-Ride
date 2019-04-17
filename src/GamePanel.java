@@ -129,24 +129,28 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 new Rectangle(81, 54, 15, 76)));
         //Lincoln to Times Square Green
         routes.add(new Route(
+                Color.GREEN,
                 0,
                 3,
                 new Polygon(new int[]{99, 110, 145, 133},
                         new int[]{55, 47, 115, 119}, 4)));
         //Lincoln to Times Square Blue
         routes.add(new Route(
+                Color.BLUE,
                 0,
                 3,
                 new Polygon(new int[]{111, 124, 158, 147},
                         new int[]{46, 40, 106, 114}, 4)));
         //Central to Times Square Black
         routes.add(new Route(
+                Color.BLACK,
                 1,
                 3,
                 new Polygon(new int[]{187, 199, 172, 160},
                         new int[]{40, 44, 114, 109}, 4)));
         //Central to Times Square Red
         routes.add(new Route(
+                Color.RED,
                 1,
                 3,
                 new Polygon(new int[]{200, 214, 188, 174},
@@ -172,12 +176,14 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                         10)));
         //Times Square to Empire St. Orange
         routes.add(new Route(
+                Color.ORANGE,
                 3,
                 6,
                 new Polygon(new int[]{157, 170, 193, 180},
                         new int[]{153, 145, 176, 183}, 4)));
         //Times Square to Empire St. Pink
         routes.add(new Route(
+                Color.PINK,
                 3,
                 6,
                 new Polygon(new int[]{171, 183, 206, 194},
@@ -214,12 +220,14 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                         new int[]{249, 204, 214, 259}, 4)));
         //Empire St. to Gramercy Park Red
         routes.add(new Route(
+                Color.RED,
                 6,
                 7,
                 new Polygon(new int[]{205, 217, 239, 229},
                         new int[]{219, 212, 241, 246}, 4)));
         //Empire St. to Gramercy Park Blue
         routes.add(new Route(
+                Color.BLUE,
                 6,
                 7,
                 new Polygon(new int[]{218, 229, 251, 240},
@@ -240,12 +248,14 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                         8)));
         //Gramercy Park to Greenwich Village Black
         routes.add(new Route(
+                Color.BLACK,
                 7,
                 8,
                 new Polygon(new int[]{236, 250, 232, 219},
                         new int[]{260, 263, 335, 331}, 4)));
         //Gramercy Park to Greenwich Village Pink
         routes.add(new Route(
+                Color.PINK,
                 7,
                 8,
                 new Polygon(new int[]{250, 264, 246, 234},
@@ -264,12 +274,14 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                         new int[]{285, 281, 425, 429}, 4)));
         //Chelsea to Greenwich Village Green
         routes.add(new Route(
+                Color.GREEN,
                 5,
                 8,
                 new Polygon(new int[]{112, 122, 206, 198},
                         new int[]{281, 271, 347, 355}, 4)));
         //Chelsea to Greenwich Village Red
         routes.add(new Route(
+                Color.RED,
                 5,
                 8,
                 new Polygon(new int[]{123, 132, 218, 208},
@@ -331,30 +343,35 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                         new int[]{472, 477, 511, 507}, 4)));
         //Wall St. to Chinatown Pink
         routes.add(new Route(
+                Color.PINK,
                 13,
                 11,
                 new Polygon(new int[]{253, 267, 253, 241},
                         new int[]{477, 481, 515, 511}, 4)));
         //Chinatown to Brooklyn Red
         routes.add(new Route(
+                Color.RED,
                 11,
                 14,
                 new Polygon(new int[]{264, 272, 366, 359},
                         new int[]{473, 464, 534, 541}, 4)));
         //Chinatown to Brooklyn Orange
         routes.add(new Route(
+                Color.ORANGE,
                 11,
                 14,
                 new Polygon(new int[]{275, 282, 376, 367},
                         new int[]{462, 452, 521, 532}, 4)));
         //Wall St. to Brooklyn Black
         routes.add(new Route(
+                Color.BLACK,
                 13,
                 14,
                 new Polygon(new int[]{236, 237, 356, 355},
                         new int[]{556, 543, 557, 570}, 4)));
         //Wall St. to Brooklyn Blue
         routes.add(new Route(
+                Color.BLUE,
                 13,
                 14,
                 new Polygon(new int[]{238, 240, 357, 356},
@@ -1107,12 +1124,38 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
      */
     private class Route {
 
+        protected Color color;
         protected int start;
         protected int end;
         protected Shape img;
 
+        /***
+         * This constructor is for single routes, no color needed.
+         *
+         * @param start start district index
+         * @param end end district index
+         * @param img the polygon to draw
+         */
         public Route(int start, int end, Shape img) {
 
+            this.start = start;
+            this.end = end;
+            this.img = img;
+            color = null;
+        }
+
+        /***
+         * This constructor is for double routes, color is needed
+         * to specify which one.
+         *
+         * @param start start district index
+         * @param end end district index
+         * @param img the polygon to draw
+         * @param color the color of the route
+         */
+        public Route(Color color, int start, int end, Shape img) {
+
+            this.color = color;
             this.start = start;
             this.end = end;
             this.img = img;
