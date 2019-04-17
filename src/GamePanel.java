@@ -51,6 +51,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
     //Used for turns
     private int pickUpCount = 0;
+    private boolean lessThanTwoTaxis;
 
     //The constructor for Game Panel
     public GamePanel() {
@@ -749,6 +750,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
             //Init our district clicked
             districtClicked = -1;
+            lessThanTwoTaxis = false;
 
             //Adding taxi cards to our deck
             //6 each color and 8 rainbow
@@ -1155,14 +1157,16 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
         //We use was found to display a message to user if it was a valid
         //move or not.
         boolean wasFound = false;
+        boolean canAfford = false;
         while (finger != null) {
 
             if (finger.dest == endIndex) {
 
                 wasFound = true;
                 //The player can afford the route
-                if (currentPlayer.taxis - finger.cost > 0) {
+                if (currentPlayer.taxis - finger.cost >= 0) {
 
+                    canAfford = true;
                     //The player has enough cards
                     //For single routes this can be easily handled
                     //For double routes OR clear routes the player should
@@ -1282,7 +1286,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
         if (wasFound == false) {
             JOptionPane.showMessageDialog(this,
                     "Invalid move!");
-        } else {
+        } else if (wasFound && canAfford) {
 
             //Add the graphical version of the route to player
             Route routeToClaim = null;
@@ -1316,6 +1320,14 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                     routeToClaim = r;
                     break;
                 }
+            }
+            if (currentPlayer.taxis <= 2) {
+                lessThanTwoTaxis = true;
+                JOptionPane.showMessageDialog(this,
+                        "A player has less than two taxis," +
+                                "everyone has one more turn!",
+                        "End Game",
+                        0);
             }
             //Add it to the players route to claim
             currentPlayer.routes.add(routeToClaim);
