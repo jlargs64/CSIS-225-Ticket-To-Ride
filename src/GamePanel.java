@@ -1176,52 +1176,300 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                     canAfford = true;
 
                     //Remove the cards needed
-                    removeCards(finger, endIndex);
+                    if (removeCards(finger, endIndex, wasFound, canAfford)) {
 
-                    //Remove the cost from the player
-                    //currentPlayer.taxis -= finger.cost;
+                        //Add to the players graph
+                        currentPlayer.claimedRoutes.addEdge(
+                                districtClicked,
+                                endIndex,
+                                finger.color,
+                                finger.cost);
 
-                    //Add to the players graph
-                    currentPlayer.claimedRoutes.addEdge(
-                            districtClicked,
-                            endIndex,
-                            finger.color,
-                            finger.cost);
+                        //Remove from the master graph (single routes)
+                        map.removeEdge(districtClicked, endIndex);
+                        map.removeEdge(endIndex, districtClicked);
+                        //For double routes
+                        //We need to check if another vertex has that same
+                        //reference.
+                        Graph.Edge removalFinger =
+                                map.vertices[endIndex].firstEdge;
 
-                    //Remove from the master graph (single routes)
-                    map.removeEdge(districtClicked, endIndex);
-                    map.removeEdge(endIndex, districtClicked);
-                    //For double routes
-                    //We need to check if another vertex has that same
-                    //reference.
-                    Graph.Edge removalFinger =
-                            map.vertices[endIndex].firstEdge;
+                        //We need to remove the other references to the
+                        //edges.
+                        if (players.size() == 1) {
+                            while (removalFinger != null) {
 
-                    //We need to remove the other references to the
-                    //edges.
-                    if (players.size() == 1) {
-                        while (removalFinger != null) {
+                                if (removalFinger.dest == districtClicked) {
 
-                            if (removalFinger.dest == districtClicked) {
+                                    //Remove the other edges
+                                    map.removeEdge(endIndex,
+                                            removalFinger.dest);
 
-                                //Remove the other edges
-                                map.removeEdge(endIndex,
-                                        removalFinger.dest);
-
-                                map.removeEdge(removalFinger.dest,
-                                        endIndex);
-                                break;
+                                    map.removeEdge(removalFinger.dest,
+                                            endIndex);
+                                    break;
+                                }
+                                removalFinger = removalFinger.next;
                             }
-                            removalFinger = removalFinger.next;
                         }
+                        break;
                     }
-                    break;
                 }
             }
             //Check the next edge
             finger = finger.next;
         }
+    }
 
+    public boolean removeCards(Graph.Edge finger, int endIndex, boolean wasFound,
+                               boolean canAfford) {
+
+        //Check player has enough cards
+        int[] numTypes = currentPlayer.getCardTypes();
+
+        //ArrayList is for joptionpane for clear
+        ArrayList<String> possibleColors = new ArrayList<>();
+        //Find out if we can afford it
+        for (int i = 0; i < numTypes.length; i++) {
+
+            if ((numTypes[i] >= finger.cost)
+                    || (i != 6 &&
+                    numTypes[i] + numTypes[6] >= finger.cost)) {
+
+                if (i == 0) {
+                    possibleColors.add("BLUE");
+                } else if (i == 1) {
+                    possibleColors.add("GREEN");
+                } else if (i == 2) {
+                    possibleColors.add("BLACK");
+                } else if (i == 3) {
+                    possibleColors.add("PINK");
+                } else if (i == 4) {
+                    possibleColors.add("ORANGE");
+                } else if (i == 5) {
+                    possibleColors.add("RED");
+                } else if (i == 6) {
+                    possibleColors.add("RAINBOW");
+                }
+            }
+        }
+        //If the route is clear
+        if (finger.color.equals(Color.WHITE)) {
+
+            Object[] colors = possibleColors.toArray();
+            if (colors.length == 0) {
+                JOptionPane.showMessageDialog(this,
+                        "Invalid move");
+                return false;
+            }
+            //Select the correct color
+            Object selectedCardType =
+                    JOptionPane.showInputDialog(
+                            null,
+                            "Choose preferred card type",
+                            "Card Selection",
+                            JOptionPane.INFORMATION_MESSAGE,
+                            null,
+                            colors, colors[0]);
+
+            //If there is a null value assume the player didn't
+            //want to place it
+            if (selectedCardType == null) {
+                return false;
+            }
+            String selectedColor = (String) selectedCardType;
+
+            int costLeft = finger.cost;
+
+            //This is for just normal routes
+            for (int i = 0; i < currentPlayer.playerTaxis.size(); i++) {
+
+                if (costLeft == 0) {
+                    break;
+                }
+                TaxiCard t = currentPlayer.playerTaxis.get(i);
+                if (t.type.equalsIgnoreCase(selectedColor)) {
+
+                    discaredTaxis.add(t);
+                    currentPlayer.playerTaxis.remove(t);
+                    currentPlayer.taxis--;
+                    costLeft--;
+                    i = -1;
+                }
+            }
+            if (costLeft > 0) {
+
+                //Use rainbow trains
+                for (int i = 0; i < currentPlayer.playerTaxis.size(); i++) {
+
+                    if (costLeft == 0) {
+                        break;
+                    }
+                    TaxiCard t = currentPlayer.playerTaxis.get(i);
+                    if (t.type.equalsIgnoreCase("RAINBOW")) {
+
+                        discaredTaxis.add(t);
+                        currentPlayer.playerTaxis.remove(t);
+                        currentPlayer.taxis--;
+                        costLeft--;
+                        i = -1;
+                    }
+                }
+            }
+        }
+        boolean isDouble = false;
+        Graph.Edge findDoubleFinger =
+                map.vertices[endIndex].firstEdge;
+        Color[] doubleRouteColors = new Color[2];
+        while (findDoubleFinger != null) {
+
+            if (findDoubleFinger.dest == districtClicked) {
+
+                //Stop searching if we found our colors
+                if (doubleRouteColors[1] != null) {
+                    break;
+                }
+                //Confirmed there is a double route
+                //Store both colors in an array
+                if (doubleRouteColors[0] == null) {
+
+                    doubleRouteColors[0] = findDoubleFinger.color;
+                } else {
+                    doubleRouteColors[1] = findDoubleFinger.color;
+                    isDouble = true;
+                }
+
+            }
+            findDoubleFinger = findDoubleFinger.next;
+        }
+
+        if (isDouble) {
+
+
+            //Prompt player to select which card to take
+            String[] strDoubleColors = new String[2];
+            for (int i = 0; i < doubleRouteColors.length; i++) {
+
+                if (doubleRouteColors[i].equals(Color.BLUE)) {
+                    strDoubleColors[i] = "BLUE";
+                } else if (doubleRouteColors[i].equals(Color.BLACK)) {
+                    strDoubleColors[i] = "BLACK";
+                } else if (doubleRouteColors[i].equals(Color.ORANGE)) {
+                    strDoubleColors[i] = "ORANGE";
+                } else if (doubleRouteColors[i].equals(Color.GREEN)) {
+                    strDoubleColors[i] = "GREEN";
+                } else if (doubleRouteColors[i].equals(Color.PINK)) {
+                    strDoubleColors[i] = "PINK";
+                } else if (doubleRouteColors[i].equals(Color.RED)) {
+                    strDoubleColors[i] = "RED";
+                }
+            }
+            Object[] objColors = strDoubleColors;
+            Object selectedCardType =
+                    JOptionPane.showInputDialog(
+                            null,
+                            "Choose preferred card type",
+                            "Card Selection",
+                            JOptionPane.INFORMATION_MESSAGE,
+                            null,
+                            objColors, objColors[0]);
+            if (selectedCardType == null) {
+                return false;
+            }
+
+            //Convert the string to a color
+            String selectedColor = (String) selectedCardType;
+            int costLeft = finger.cost;
+
+            //This is for just normal routes
+            for (int i = 0; i < currentPlayer.playerTaxis.size(); i++) {
+
+                if (costLeft == 0) {
+                    break;
+                }
+                TaxiCard t = currentPlayer.playerTaxis.get(i);
+                if (t.type.equalsIgnoreCase(selectedColor)) {
+
+                    //Add the card to the discard pile, remove it from
+                    //our deck then decrement from our taxis and cost
+                    //also reset the search.
+                    discaredTaxis.add(t);
+                    currentPlayer.playerTaxis.remove(t);
+                    currentPlayer.taxis--;
+                    costLeft--;
+                    i = -1;
+                }
+            }
+            if (costLeft > 0) {
+
+                //Use rainbow trains
+                for (int i = 0; i < currentPlayer.playerTaxis.size(); i++) {
+
+                    if (costLeft == 0) {
+                        break;
+                    }
+                    TaxiCard t = currentPlayer.playerTaxis.get(i);
+                    if (t.type.equalsIgnoreCase("RAINBOW")) {
+
+                        //Add the card to the discard pile, remove it from
+                        //our deck then decrement from our taxis and cost
+                        //also reset the search.
+                        discaredTaxis.add(t);
+                        currentPlayer.playerTaxis.remove(t);
+                        currentPlayer.taxis--;
+                        costLeft--;
+                        i = -1;
+                    }
+                }
+            }
+        } else {
+
+            //It is a single color route
+            int costLeft = finger.cost;
+
+            //This is for just normal routes
+            for (int i = 0; i < currentPlayer.playerTaxis.size(); i++) {
+
+                if (costLeft == 0) {
+                    break;
+                }
+                TaxiCard t = currentPlayer.playerTaxis.get(i);
+                if (t.type.equalsIgnoreCase(finger.strColor)) {
+
+                    //Add the card to the discard pile, remove it from
+                    //our deck then decrement from our taxis and cost
+                    //also reset the search.
+                    discaredTaxis.add(t);
+                    currentPlayer.playerTaxis.remove(t);
+                    currentPlayer.taxis--;
+                    costLeft--;
+                    i = -1;
+                }
+            }
+            //If we still have to pay, use our rainbow cards
+            if (costLeft > 0) {
+
+                //Use rainbow trains
+                for (int i = 0; i < currentPlayer.playerTaxis.size(); i++) {
+
+                    if (costLeft == 0) {
+                        break;
+                    }
+                    TaxiCard t = currentPlayer.playerTaxis.get(i);
+                    if (t.type.equalsIgnoreCase("RAINBOW")) {
+
+                        //Add the card to the discard pile, remove it from
+                        //our deck then decrement from our taxis and cost
+                        //also reset the search.
+                        discaredTaxis.add(t);
+                        currentPlayer.playerTaxis.remove(t);
+                        currentPlayer.taxis--;
+                        costLeft--;
+                        i = -1;
+                    }
+                }
+            }
+        }
         //If the route wasn't found OR was already claimed tell the user.
         if (wasFound == false) {
             JOptionPane.showMessageDialog(this,
@@ -1283,252 +1531,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                     "It is now " + currentPlayer.name
                             + "\'s turn");
         }
-    }
 
-    public void removeCards(Graph.Edge finger, int endIndex) {
-
-        //Check player has enough cards
-        int[] numTypes = currentPlayer.getCardTypes();
-
-        //ArrayList is for joptionpane for clear
-        ArrayList<String> possibleColors = new ArrayList<>();
-        //Find out if we can afford it
-        for (int i = 0; i < numTypes.length; i++) {
-
-            if ((numTypes[i] >= finger.cost)
-                    || (i != 6 &&
-                    numTypes[i] + numTypes[6] >= finger.cost)) {
-
-                if (i == 0) {
-                    possibleColors.add("BLUE");
-                } else if (i == 1) {
-                    possibleColors.add("GREEN");
-                } else if (i == 2) {
-                    possibleColors.add("BLACK");
-                } else if (i == 3) {
-                    possibleColors.add("PINK");
-                } else if (i == 4) {
-                    possibleColors.add("ORANGE");
-                } else if (i == 5) {
-                    possibleColors.add("RED");
-                } else if (i == 6) {
-                    possibleColors.add("RAINBOW");
-                }
-            }
-        }
-        //If the route is clear
-        if (finger.color.equals(Color.WHITE)) {
-
-            Object[] colors = possibleColors.toArray();
-            if (colors.length == 0) {
-                JOptionPane.showMessageDialog(this,
-                        "Invalid move");
-                return;
-            }
-            //Select the correct color
-            Object selectedCardType =
-                    JOptionPane.showInputDialog(
-                            null,
-                            "Choose preferred card type",
-                            "Card Selection",
-                            JOptionPane.INFORMATION_MESSAGE,
-                            null,
-                            colors, colors[0]);
-
-            //If there is a null value assume the player didn't
-            //want to place it
-            if (selectedCardType == null) {
-                return;
-            }
-            String selectedColor = (String) selectedCardType;
-
-            int costLeft = finger.cost;
-
-            //This is for just normal routes
-            for (int i = 0; i < currentPlayer.playerTaxis.size(); i++) {
-
-                if (costLeft == 0) {
-                    break;
-                }
-                TaxiCard t = currentPlayer.playerTaxis.get(i);
-                if (t.type.equalsIgnoreCase(selectedColor)) {
-
-                    discaredTaxis.add(t);
-                    currentPlayer.playerTaxis.remove(t);
-                    currentPlayer.taxis--;
-                    costLeft--;
-                    i = -1;
-                }
-            }
-            if (costLeft > 0) {
-
-                //Use rainbow trains
-                for (int i = 0; i < currentPlayer.playerTaxis.size(); i++) {
-
-                    if (costLeft == 0) {
-                        break;
-                    }
-                    TaxiCard t = currentPlayer.playerTaxis.get(i);
-                    if (t.type.equalsIgnoreCase("RAINBOW")) {
-
-                        discaredTaxis.add(t);
-                        currentPlayer.playerTaxis.remove(t);
-                        currentPlayer.taxis--;
-                        costLeft--;
-                        i = -1;
-                    }
-                }
-            }
-            return;
-        }
-        boolean isDouble = false;
-        Graph.Edge findDoubleFinger =
-                map.vertices[endIndex].firstEdge;
-        Color[] doubleRouteColors = new Color[2];
-        while (findDoubleFinger != null) {
-
-            if (findDoubleFinger.dest == districtClicked) {
-
-                //Stop searching if we found our colors
-                if (doubleRouteColors[1] != null) {
-                    break;
-                }
-                //Confirmed there is a double route
-                //Store both colors in an array
-                if (doubleRouteColors[0] == null) {
-
-                    doubleRouteColors[0] = findDoubleFinger.color;
-                } else {
-                    doubleRouteColors[1] = findDoubleFinger.color;
-                    isDouble = true;
-                }
-
-            }
-            findDoubleFinger = findDoubleFinger.next;
-        }
-
-        if (isDouble) {
-
-
-            //Prompt player to select which card to take
-            String[] strDoubleColors = new String[2];
-            for (int i = 0; i < doubleRouteColors.length; i++) {
-
-                if (doubleRouteColors[i].equals(Color.BLUE)) {
-                    strDoubleColors[i] = "BLUE";
-                } else if (doubleRouteColors[i].equals(Color.BLACK)) {
-                    strDoubleColors[i] = "BLACK";
-                } else if (doubleRouteColors[i].equals(Color.ORANGE)) {
-                    strDoubleColors[i] = "ORANGE";
-                } else if (doubleRouteColors[i].equals(Color.GREEN)) {
-                    strDoubleColors[i] = "GREEN";
-                } else if (doubleRouteColors[i].equals(Color.PINK)) {
-                    strDoubleColors[i] = "PINK";
-                } else if (doubleRouteColors[i].equals(Color.RED)) {
-                    strDoubleColors[i] = "RED";
-                }
-            }
-            Object[] objColors = strDoubleColors;
-            Object selectedCardType =
-                    JOptionPane.showInputDialog(
-                            null,
-                            "Choose preferred card type",
-                            "Card Selection",
-                            JOptionPane.INFORMATION_MESSAGE,
-                            null,
-                            objColors, objColors[0]);
-            if (selectedCardType == null) {
-                return;
-            }
-
-            //Convert the string to a color
-            String selectedColor = (String) selectedCardType;
-            int costLeft = finger.cost;
-
-            //This is for just normal routes
-            for (int i = 0; i < currentPlayer.playerTaxis.size(); i++) {
-
-                if (costLeft == 0) {
-                    break;
-                }
-                TaxiCard t = currentPlayer.playerTaxis.get(i);
-                if (t.type.equalsIgnoreCase(selectedColor)) {
-
-                    discaredTaxis.add(t);
-                    currentPlayer.playerTaxis.remove(t);
-                    currentPlayer.taxis--;
-                    costLeft--;
-                    i = -1;
-                }
-            }
-            if (costLeft > 0) {
-
-                //Use rainbow trains
-                for (int i = 0; i < currentPlayer.playerTaxis.size(); i++) {
-
-                    if (costLeft == 0) {
-                        break;
-                    }
-                    TaxiCard t = currentPlayer.playerTaxis.get(i);
-                    if (t.type.equalsIgnoreCase("RAINBOW")) {
-
-                        discaredTaxis.add(t);
-                        currentPlayer.playerTaxis.remove(t);
-                        currentPlayer.taxis--;
-                        costLeft--;
-                        i = -1;
-                    }
-                }
-            }
-        } else {
-
-            //It is a single color route
-            int costLeft = finger.cost;
-
-            //This is for just normal routes
-            for (int i = 0; i < currentPlayer.playerTaxis.size(); i++) {
-
-                if (costLeft == 0) {
-                    break;
-                }
-                TaxiCard t = currentPlayer.playerTaxis.get(i);
-                if (t.type.equalsIgnoreCase(finger.strColor)) {
-
-                    discaredTaxis.add(t);
-                    currentPlayer.playerTaxis.remove(t);
-                    currentPlayer.taxis--;
-                    costLeft--;
-                    i = -1;
-                }
-            }
-            if (costLeft > 0) {
-
-                //Use rainbow trains
-                for (int i = 0; i < currentPlayer.playerTaxis.size(); i++) {
-
-                    if (costLeft == 0) {
-                        break;
-                    }
-                    TaxiCard t = currentPlayer.playerTaxis.get(i);
-                    if (t.type.equalsIgnoreCase("RAINBOW")) {
-
-                        discaredTaxis.add(t);
-                        currentPlayer.playerTaxis.remove(t);
-                        currentPlayer.taxis--;
-                        costLeft--;
-                        i = -1;
-                    }
-                }
-            }
-        }
-
-        //For single routes this can be easily handled
-        //For double routes OR clear routes the player should
-        //choose which cards they would like to use.
-        //A option pane with the radio buttons for cards they can
-        //use would be good.
-
-        //If it is a clear card, so any color will suffice
-        //that the player can afford.
+        return true;
     }
 }
