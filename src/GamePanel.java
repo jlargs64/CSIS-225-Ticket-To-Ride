@@ -1160,94 +1160,166 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 if (currentPlayer.taxis - finger.cost > 0) {
 
                     //The player has enough cards
-                    //TO DO add a drag able card
-                }
-                //Add to the players graph
-                currentPlayer.claimedRoutes.addEdge(
-                        districtClicked,
-                        endIndex,
-                        finger.color,
-                        finger.cost);
+                    //For single routes this can be easily handled
+                    //For double routes OR clear routes the player should
+                    //choose which cards they would like to use.
+                    //A option pane with the radio buttons for cards they can
+                    //use would be good.
 
-                //Remove from the master graph (single routes)
-                map.removeEdge(districtClicked, endIndex);
-                map.removeEdge(endIndex, districtClicked);
-                //For double routes
-                //We need to check if another vertex has that same
-                //reference.
-                Graph.Edge removalFinger =
-                        map.vertices[endIndex].firstEdge;
+                    //If it is a clear card, so any color will suffice
+                    //that the player can afford.
+                    int[] numTypes = currentPlayer.getCardTypes();
+                    ArrayList<String> possibleColors = new ArrayList<>();
+                    for (int i = 0; i < numTypes.length; i++) {
 
-                //We need to remove the other references to the
-                //edges.
-                if (players.size() == 1) {
-                    while (removalFinger != null) {
+                        if ((numTypes[i] >= finger.cost)
+                                || (i != 6 &&
+                                numTypes[i] + numTypes[6] >= finger.cost)) {
 
-                        if (removalFinger.dest == districtClicked) {
+                            if (i == 0) {
+                                possibleColors.add("BLUE");
+                            } else if (i == 1) {
+                                possibleColors.add("GREEN");
+                            } else if (i == 2) {
+                                possibleColors.add("BLACK");
+                            } else if (i == 3) {
+                                possibleColors.add("PINK");
+                            } else if (i == 4) {
+                                possibleColors.add("ORANGE");
+                            } else if (i == 5) {
+                                possibleColors.add("RED");
+                            } else if (i == 6) {
+                                possibleColors.add("RAINBOW");
+                            }
+                        }
+                    }
+                    if (finger.color.equals(Color.WHITE)) {
 
-                            //Remove the other edges
-                            map.removeEdge(endIndex,
-                                    removalFinger.dest);
+                        Object[] colors = possibleColors.toArray();
+                        if (colors.length == 0) {
+                            JOptionPane.showMessageDialog(this,
+                                    "Invalid move");
+                            return;
+                        }
+                        //Select the correct color
+                        Object selectedCardType =
+                                JOptionPane.showInputDialog(
+                                        null,
+                                        "Choose preferred card type",
+                                        "Card Selection",
+                                        JOptionPane.INFORMATION_MESSAGE,
+                                        null,
+                                        colors, colors[0]);
 
-                            map.removeEdge(removalFinger.dest,
-                                    endIndex);
+                        //If there is a null value assume the player didn't
+                        //want to place it
+                        if (selectedCardType == null) {
+                            return;
+                        }
+
+                        /*int costLeft = finger.cost;
+                        //Remove our specified type cards
+                        for (TaxiCard c : currentPlayer.playerTaxis) {
+
+                            //Remove the card from deck
+                            if (c.type.equalsIgnoreCase(
+                                    (String) selectedCardType)
+                                    || c.type.equalsIgnoreCase(
+                                    "RAINBOW")) {
+
+                                discaredTaxis.add(c);
+                                currentPlayer.playerTaxis.remove(c);
+                                costLeft--;
+                            }
+                        }*/
+                    }
+                    //Add to the players graph
+                    currentPlayer.claimedRoutes.addEdge(
+                            districtClicked,
+                            endIndex,
+                            finger.color,
+                            finger.cost);
+
+                    //Remove from the master graph (single routes)
+                    map.removeEdge(districtClicked, endIndex);
+                    map.removeEdge(endIndex, districtClicked);
+                    //For double routes
+                    //We need to check if another vertex has that same
+                    //reference.
+                    Graph.Edge removalFinger =
+                            map.vertices[endIndex].firstEdge;
+
+                    //We need to remove the other references to the
+                    //edges.
+                    if (players.size() == 1) {
+                        while (removalFinger != null) {
+
+                            if (removalFinger.dest == districtClicked) {
+
+                                //Remove the other edges
+                                map.removeEdge(endIndex,
+                                        removalFinger.dest);
+
+                                map.removeEdge(removalFinger.dest,
+                                        endIndex);
+                                break;
+                            }
+                            removalFinger = removalFinger.next;
+                        }
+                    }
+
+                    //Add the graphical version of the route to player
+                    Route routeToClaim = null;
+                    for (Route r : routes) {
+
+                        //For claiming a single route
+                        if (r.start == districtClicked
+                                && r.end == endIndex
+                                && r.color == null) {
+
+                            routeToClaim = r;
+                            break;
+                        } else if (r.start == endIndex
+                                && r.end == districtClicked
+                                && r.color == null) {
+
+                            routeToClaim = r;
                             break;
                         }
-                        removalFinger = removalFinger.next;
+                        //For claiming a single route
+                        else if (r.start == districtClicked
+                                && r.end == endIndex
+                                && r.color == finger.color) {
+
+                            routeToClaim = r;
+                            break;
+                        } else if (r.start == endIndex
+                                && r.end == districtClicked
+                                && r.color == finger.color) {
+
+                            routeToClaim = r;
+                            break;
+                        }
                     }
+                    //Add it to the players route to claim
+                    currentPlayer.routes.add(routeToClaim);
+                    //Remove it from the master routes list
+                    routes.remove(routeToClaim);
+
+                    //Change players
+                    currentPlayer.taxis -= finger.cost;
+                    players.addLast(currentPlayer);
+                    currentPlayer = players.removeFirst();
+                    turnNum++;
+                    repaint();
+                    JOptionPane.showMessageDialog(this,
+                            "It is now " + currentPlayer.name
+                                    + "\'s turn");
+                    break;
                 }
-
-                //Add the graphical version of the route to player
-                Route routeToClaim = null;
-                for (Route r : routes) {
-
-                    //For claiming a single route
-                    if (r.start == districtClicked
-                            && r.end == endIndex
-                            && r.color == null) {
-
-                        routeToClaim = r;
-                        break;
-                    } else if (r.start == endIndex
-                            && r.end == districtClicked
-                            && r.color == null) {
-
-                        routeToClaim = r;
-                        break;
-                    }
-                    //For claiming a single route
-                    else if (r.start == districtClicked
-                            && r.end == endIndex
-                            && r.color == finger.color) {
-
-                        routeToClaim = r;
-                        break;
-                    } else if (r.start == endIndex
-                            && r.end == districtClicked
-                            && r.color == finger.color) {
-
-                        routeToClaim = r;
-                        break;
-                    }
-                }
-                //Add it to the players route to claim
-                currentPlayer.routes.add(routeToClaim);
-                //Remove it from the master routes list
-                routes.remove(routeToClaim);
-
-                //Change players
-                currentPlayer.taxis -= finger.cost;
-                players.addLast(currentPlayer);
-                currentPlayer = players.removeFirst();
-                turnNum++;
-                repaint();
-                JOptionPane.showMessageDialog(this,
-                        "It is now " + currentPlayer.name
-                                + "\'s turn");
-                break;
+                //Check the next edge
+                finger = finger.next;
             }
-            //Check the next edge
-            finger = finger.next;
         }
     }
 }
