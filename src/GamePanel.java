@@ -913,9 +913,9 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
     public void mouseClicked(MouseEvent e) {
 
         //This was for debugging where to put collision boxes over the routes
-        int x = e.getX();
-        int y = e.getY();
-        System.out.println("X:" + x + " Y:" + y);
+        //int x = e.getX();
+        //int y = e.getY();
+        //System.out.println("X:" + x + " Y:" + y);
 
         Point pointClicked = e.getPoint();
 
@@ -1056,6 +1056,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
         //Draw 2 destination cards, the player can keep 1 or both.
         else if (destDeckRect.contains(pointClicked)) {
             //Do something
+            //ISSUE #10
         }
 
         //Check if a route is being claimed
@@ -1065,12 +1066,28 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
                 if (districtClicked != -1) {
 
+                    int endIndex = i;
+                    System.out.println(map.vertices[i].name + " is the end");
+
+                    //We find out if we can claim this route
+                    Graph.Edge finger = map.vertices[districtClicked].firstEdge;
+
+                    while (finger != null) {
+
+                        if (finger.dest == endIndex) {
+
+                            System.out.println("There is a connection");
+                            break;
+                        }
+                        //Check the next edge
+                        finger = finger.next;
+                    }
+
                     //Reset district clicked back to -1
                     districtClicked = -1;
 
-                    //We find out if we can claim this route
                 } else {
-
+                    System.out.println(map.vertices[i].name + " is the start");
                     districtClicked = i;
                 }
                 break;

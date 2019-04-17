@@ -11,7 +11,7 @@ import java.util.Scanner;
  */
 public class Graph {
 
-    private Vertex[] vertices;
+    protected Vertex[] vertices;
     private Scanner s;
 
     /**
@@ -138,11 +138,11 @@ public class Graph {
     /***
      * A class to hold each district as a vertex on the graph.
      */
-    private class Vertex {
+    protected class Vertex {
 
-        private Edge firstEdge;
-        private boolean isAttraction;
-        private String name;
+        protected Edge firstEdge;
+        protected boolean isAttraction;
+        protected String name;
 
         /**
          * Constructor for Vertex
@@ -161,11 +161,11 @@ public class Graph {
     /***
      * A class to hold each route as a edge on the graph.
      */
-    private class Edge {
-        private int dest;
-        private Edge next;
-        private Color color;
-        private int cost;
+    protected class Edge {
+        protected int dest;
+        protected Edge next;
+        protected Color color;
+        protected int cost;
 
         /**
          * Constructor for Edge
