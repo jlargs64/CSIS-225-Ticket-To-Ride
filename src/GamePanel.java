@@ -1227,7 +1227,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
         //Check player has enough cards
         int[] numTypes = currentPlayer.getCardTypes();
 
-        //The string representation of the seleceted color
+        //The string representation of the selected color
         String selectedColor = "";
 
         //ArrayList is for joptionpane for clear
@@ -1256,8 +1256,34 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 }
             }
         }
-        //If the route is clear
-        if (finger.color.equals(Color.WHITE)) {
+        //If the route is clear and not a double
+        boolean isDouble = false;
+        Graph.Edge findDoubleFinger =
+                map.vertices[endIndex].firstEdge;
+        Color[] doubleRouteColors = new Color[2];
+        while (findDoubleFinger != null) {
+
+            if (findDoubleFinger.dest == districtClicked) {
+
+                //Stop searching if we found our colors
+                if (doubleRouteColors[1] != null) {
+                    break;
+                }
+                //Confirmed there is a double route
+                //Store both colors in an array
+                if (doubleRouteColors[0] == null) {
+
+                    doubleRouteColors[0] = findDoubleFinger.color;
+                } else {
+                    doubleRouteColors[1] = findDoubleFinger.color;
+                    isDouble = true;
+                }
+            }
+            findDoubleFinger = findDoubleFinger.next;
+        }
+
+        //If it a clear route and not a double
+        if (finger.color.equals(Color.WHITE) && !isDouble) {
 
             Object[] colors = possibleColors.toArray();
             if (colors.length == 0) {
@@ -1320,68 +1346,46 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 }
             }
         }
-        boolean isDouble = false;
-        Graph.Edge findDoubleFinger =
-                map.vertices[endIndex].firstEdge;
-        Color[] doubleRouteColors = new Color[2];
-        while (findDoubleFinger != null) {
-
-            if (findDoubleFinger.dest == districtClicked) {
-
-                //Stop searching if we found our colors
-                if (doubleRouteColors[1] != null) {
-                    break;
-                }
-                //Confirmed there is a double route
-                //Store both colors in an array
-                if (doubleRouteColors[0] == null) {
-
-                    doubleRouteColors[0] = findDoubleFinger.color;
-                } else {
-                    doubleRouteColors[1] = findDoubleFinger.color;
-                    isDouble = true;
-                }
-
-            }
-            findDoubleFinger = findDoubleFinger.next;
-        }
-
         if (isDouble) {
 
 
             //Prompt player to select which card to take
             String[] strDoubleColors = new String[2];
-            for (int i = 0; i < doubleRouteColors.length; i++) {
+            if (finger.color != Color.WHITE) {
 
-                if (doubleRouteColors[i].equals(Color.BLUE)) {
-                    strDoubleColors[i] = "BLUE";
-                } else if (doubleRouteColors[i].equals(Color.BLACK)) {
-                    strDoubleColors[i] = "BLACK";
-                } else if (doubleRouteColors[i].equals(Color.ORANGE)) {
-                    strDoubleColors[i] = "ORANGE";
-                } else if (doubleRouteColors[i].equals(Color.GREEN)) {
-                    strDoubleColors[i] = "GREEN";
-                } else if (doubleRouteColors[i].equals(Color.PINK)) {
-                    strDoubleColors[i] = "PINK";
-                } else if (doubleRouteColors[i].equals(Color.RED)) {
-                    strDoubleColors[i] = "RED";
+                for (int i = 0; i < doubleRouteColors.length; i++) {
+
+                    if (doubleRouteColors[i].equals(Color.BLUE)) {
+                        strDoubleColors[i] = "BLUE";
+                    } else if (doubleRouteColors[i].equals(Color.BLACK)) {
+                        strDoubleColors[i] = "BLACK";
+                    } else if (doubleRouteColors[i].equals(Color.ORANGE)) {
+                        strDoubleColors[i] = "ORANGE";
+                    } else if (doubleRouteColors[i].equals(Color.GREEN)) {
+                        strDoubleColors[i] = "GREEN";
+                    } else if (doubleRouteColors[i].equals(Color.PINK)) {
+                        strDoubleColors[i] = "PINK";
+                    } else if (doubleRouteColors[i].equals(Color.RED)) {
+                        strDoubleColors[i] = "RED";
+                    }
                 }
-            }
-            Object[] objColors = strDoubleColors;
-            Object selectedCardType =
-                    JOptionPane.showInputDialog(
-                            null,
-                            "Choose preferred card type",
-                            "Card Selection",
-                            JOptionPane.INFORMATION_MESSAGE,
-                            null,
-                            objColors, objColors[0]);
-            if (selectedCardType == null) {
-                return false;
+                Object[] objColors = strDoubleColors;
+                Object selectedCardType =
+                        JOptionPane.showInputDialog(
+                                null,
+                                "Choose preferred card type",
+                                "Card Selection",
+                                JOptionPane.INFORMATION_MESSAGE,
+                                null,
+                                objColors, objColors[0]);
+                if (selectedCardType == null) {
+                    return false;
+                }
+
+                //Convert the string to a color
+                selectedColor = (String) selectedCardType;
             }
 
-            //Convert the string to a color
-            selectedColor = (String) selectedCardType;
             int costLeft = finger.cost;
 
             //This is for just normal routes
