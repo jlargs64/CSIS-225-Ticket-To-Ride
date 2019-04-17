@@ -26,7 +26,7 @@ public class Player {
     //The cards that player has in hand
     protected ArrayList<DestCard> playerDestCards = new ArrayList<>();
     //The player graph
-    protected boolean[] claimedRoutes;
+    protected Graph claimedRoutes;
     //The player Color object
     protected Color COLOR;
 
@@ -59,7 +59,12 @@ public class Player {
             COLOR = Color.YELLOW;
         }
 
-        claimedRoutes = new boolean[30];
+        //Initialize the routes the player has claimed
+        try {
+            claimedRoutes = new Graph(new File("Districts.txt"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     //does nothing at the moment

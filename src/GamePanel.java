@@ -32,10 +32,9 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
     private Image[] helpImages = new Image[2];
     private int currentHelpImage = 0;
     private Rectangle taxiDeckRect, destDeckRect;
-    private Shape[] routes;
-    private boolean[] claimedRoutes;
+    private ArrayList<Route> routes;
     private Rectangle[] districts;
-
+    private int districtClicked;
     //Buttons
     private JButton playButton, helpButton, quitButton, backButton;
     private JButton switchButton;
@@ -115,100 +114,259 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
         backButton.addActionListener(this);
         switchButton.addActionListener(this);
 
-        routes = new Shape[30];
-        claimedRoutes = new boolean[30];
-        //Lincoln to Midtown West
-        routes[0] = new Rectangle(81, 54, 15, 76);
+        //Init our routes array
+        routes = new ArrayList<>();
+
         //Lincoln to Central Park
-        routes[1] = new Rectangle(113, 23, 80, 15);
-        //Lincoln to Times Square
-        routes[2] = new Polygon(new int[]{99, 122, 158, 132},
-                new int[]{53, 41, 107, 121}, 4);
-        //Central to Times Square
-        routes[3] = new Polygon(new int[]{159, 186, 213, 185},
-                new int[]{109, 41, 50, 121}, 4);
+        routes.add(new Route(
+                0,
+                1,
+                new Rectangle(113, 23, 80, 15)));
+        //Lincoln to Midtown West
+        routes.add(new Route(
+                0,
+                2,
+                new Rectangle(81, 54, 15, 76)));
+        //Lincoln to Times Square Green
+        routes.add(new Route(
+                0,
+                3,
+                new Polygon(new int[]{99, 110, 145, 133},
+                        new int[]{55, 47, 115, 119}, 4)));
+        //Lincoln to Times Square Blue
+        routes.add(new Route(
+                0,
+                3,
+                new Polygon(new int[]{111, 124, 158, 147},
+                        new int[]{46, 40, 106, 114}, 4)));
+        //Central to Times Square Black
+        routes.add(new Route(
+                1,
+                3,
+                new Polygon(new int[]{187, 199, 172, 160},
+                        new int[]{40, 44, 114, 109}, 4)));
+        //Central to Times Square Red
+        routes.add(new Route(
+                1,
+                3,
+                new Polygon(new int[]{200, 214, 188, 174},
+                        new int[]{45, 49, 121, 115}, 4)));
         //Midtown to Times Square
-        routes[4] = new Polygon(new int[]{100, 140, 142, 102},
-                new int[]{135, 127, 140, 147}, 4);
+        routes.add(new Route(
+                2,
+                3,
+                new Polygon(new int[]{100, 140, 142, 102},
+                        new int[]{135, 127, 140, 147}, 4)));
         //Times Square to United Nations
-        routes[5] = new Rectangle(193, 115, 80, 15);
+        routes.add(new Route(
+                3,
+                4,
+                new Rectangle(193, 115, 80, 15)));
         //Central Park to United Nations
-        routes[6] = new Polygon(
-                new int[]{225, 261, 267, 296, 300, 314, 300, 287, 259, 221},
-                new int[]{24, 35, 39, 66, 71, 104, 109, 77, 50, 37},
-                10);
-        //Times Square to Empire St.
-        routes[7] = new Polygon(new int[]{159, 183, 206, 182},
-                new int[]{154, 138, 169, 184}, 4);
+        routes.add(new Route(
+                1,
+                4,
+                new Polygon(
+                        new int[]{225, 261, 267, 296, 300, 314, 300, 287, 259, 221},
+                        new int[]{24, 35, 39, 66, 71, 104, 109, 77, 50, 37},
+                        10)));
+        //Times Square to Empire St. Orange
+        routes.add(new Route(
+                3,
+                6,
+                new Polygon(new int[]{157, 170, 193, 180},
+                        new int[]{153, 145, 176, 183}, 4)));
+        //Times Square to Empire St. Pink
+        routes.add(new Route(
+                3,
+                6,
+                new Polygon(new int[]{171, 183, 206, 194},
+                        new int[]{147, 140, 169, 175}, 4)));
         //Midtown to Empire St.
-        routes[8] = new Polygon(new int[]{98, 169, 176, 103},
-                new int[]{163, 196, 183, 151}, 4);
+        routes.add(new Route(
+                2,
+                6,
+                new Polygon(new int[]{98, 169, 176, 103},
+                        new int[]{163, 196, 183, 151}, 4)));
         //United to Empire St.
-        routes[9] = new Polygon(new int[]{212, 278, 288, 219},
-                new int[]{173, 133, 144, 184}, 4);
+        routes.add(new Route(
+                4,
+                6,
+                new Polygon(new int[]{212, 278, 288, 219},
+                        new int[]{173, 133, 144, 184}, 4)));
         //Midtown to Chelsea
-        routes[10] = new Polygon(new int[]{82, 95, 116, 101},
-                new int[]{169, 165, 237, 242}, 4);
-        //Chelsea to Empire St.
-        routes[11] = new Polygon(new int[]{118, 182, 199, 135},
-                new int[]{236, 193, 214, 259}, 4);
-        //Empire St. to Gramercy Park
-        routes[12] = new Polygon(new int[]{204, 229, 254, 228},
-                new int[]{217, 201, 232, 247}, 4);
+        routes.add(new Route(
+                2,
+                5,
+                new Polygon(new int[]{82, 95, 116, 101},
+                        new int[]{169, 165, 237, 242}, 4)));
+        //Chelsea to Empire St. Clear
+        routes.add(new Route(
+                5,
+                6,
+                new Polygon(new int[]{118, 182, 191, 126},
+                        new int[]{235, 191, 202, 247}, 4)));
+        //Chelsea to Empire St. Clear
+        routes.add(new Route(
+                5,
+                6,
+                new Polygon(new int[]{128, 191, 201, 135},
+                        new int[]{249, 204, 214, 259}, 4)));
+        //Empire St. to Gramercy Park Red
+        routes.add(new Route(
+                6,
+                7,
+                new Polygon(new int[]{205, 217, 239, 229},
+                        new int[]{219, 212, 241, 246}, 4)));
+        //Empire St. to Gramercy Park Blue
+        routes.add(new Route(
+                6,
+                7,
+                new Polygon(new int[]{218, 229, 251, 240},
+                        new int[]{210, 203, 232, 238}, 4)));
         //Chelsea to Gramercy Park
-        routes[13] = new Polygon(new int[]{148, 228, 229, 147},
-                new int[]{255, 250, 263, 269}, 4);
+        routes.add(new Route(
+                5,
+                7,
+                new Polygon(new int[]{148, 228, 229, 147},
+                        new int[]{255, 250, 263, 269}, 4)));
         //United Nations to Gramercy Park
-        routes[14] = new Polygon(
-                new int[]{298, 315, 308, 291, 274, 260, 279, 292},
-                new int[]{136, 138, 176, 216, 248, 239, 210, 172},
-                8);
-        //Gramercy Park to Greenwich Village
-        routes[15] = new Polygon(new int[]{236, 264, 247, 218},
-                new int[]{260, 267, 338, 332}, 4);
+        routes.add(new Route(
+                4,
+                7,
+                new Polygon(
+                        new int[]{298, 315, 308, 291, 274, 260, 279, 292},
+                        new int[]{136, 138, 176, 216, 248, 239, 210, 172},
+                        8)));
+        //Gramercy Park to Greenwich Village Black
+        routes.add(new Route(
+                7,
+                8,
+                new Polygon(new int[]{236, 250, 232, 219},
+                        new int[]{260, 263, 335, 331}, 4)));
+        //Gramercy Park to Greenwich Village Pink
+        routes.add(new Route(
+                7,
+                8,
+                new Polygon(new int[]{250, 264, 246, 234},
+                        new int[]{263, 266, 338, 335}, 4)));
         //Gramercy Park to East Village
-        routes[16] = new Polygon(new int[]{270, 282, 333, 320},
-                new int[]{271, 262, 321, 331}, 4);
+        routes.add(new Route(
+                7,
+                10,
+                new Polygon(new int[]{270, 282, 333, 320},
+                        new int[]{271, 262, 321, 331}, 4)));
         //Chelsea to Soho
-        routes[17] = new Polygon(new int[]{94, 108, 162, 146},
-                new int[]{285, 281, 425, 429}, 4);
-        //Chelsea to Greenwich Village
-        routes[18] = new Polygon(new int[]{111, 131, 217, 198},
-                new int[]{281, 260, 336, 357}, 4);
+        routes.add(new Route(
+                5,
+                9,
+                new Polygon(new int[]{94, 108, 162, 146},
+                        new int[]{285, 281, 425, 429}, 4)));
+        //Chelsea to Greenwich Village Green
+        routes.add(new Route(
+                5,
+                8,
+                new Polygon(new int[]{112, 122, 206, 198},
+                        new int[]{281, 271, 347, 355}, 4)));
+        //Chelsea to Greenwich Village Red
+        routes.add(new Route(
+                5,
+                8,
+                new Polygon(new int[]{123, 132, 218, 208},
+                        new int[]{270, 261, 336, 346}, 4)));
         //Soho to Wall St.
-        routes[19] = new Polygon(new int[]{163, 176, 216, 202},
-                new int[]{462, 454, 521, 528}, 4);
+        routes.add(new Route(
+                9,
+                13,
+                new Polygon(new int[]{163, 176, 216, 202},
+                        new int[]{462, 454, 521, 528}, 4)));
         //Greenwich Village to Soho
-        routes[20] = new Polygon(new int[]{204, 219, 212, 208, 181, 171, 196},
-                new int[]{369, 371, 409, 415, 444, 432, 404}, 7);
-        //Greenwich Village to Chinatown
-        routes[21] = new Polygon(new int[]{221, 248, 268, 238},
-                new int[]{371, 365, 437, 443}, 4);
+        routes.add(new Route(
+                8,
+                9,
+                new Polygon(
+                        new int[]{204, 219, 212, 208, 181, 171, 196},
+                        new int[]{369, 371, 409, 415, 444, 432, 404},
+                        7)));
+        //Greenwich Village to Chinatown Clear
+        routes.add(new Route(
+                8,
+                11,
+                new Polygon(new int[]{221, 233, 254, 240},
+                        new int[]{371, 367, 440, 444}, 4)));
+        //Greenwich Village to Chinatown Clear
+        routes.add(new Route(
+                8,
+                11,
+                new Polygon(new int[]{234, 248, 268, 256},
+                        new int[]{369, 365, 435, 440}, 4)));
         //East Village to Lower East Side
-        routes[22] = new Polygon(new int[]{329, 344, 340, 325},
-                new int[]{361, 363, 400, 399}, 4);
+        routes.add(new Route(
+                10,
+                12,
+                new Polygon(new int[]{329, 344, 340, 325},
+                        new int[]{361, 363, 400, 399}, 4)));
         //Greenwich to Lower East Side
-        routes[23] = new Polygon(new int[]{250, 258, 321, 312},
-                new int[]{367, 358, 400, 411}, 4);
+        routes.add(new Route(
+                8,
+                12,
+                new Polygon(new int[]{250, 258, 321, 312},
+                        new int[]{367, 358, 400, 411}, 4)));
         //Greenwich to East Village
-        routes[24] = new Rectangle(247, 341, 80, 15);
+        routes.add(new Route(
+                8,
+                10,
+                new Rectangle(247, 341, 80, 15)));
         //Chinatown to Lower East Side
-        routes[25] = new Polygon(new int[]{271, 303, 314, 280},
-                new int[]{439, 416, 428, 448}, 4);
-        //Wall St. to Chinatown
-        routes[26] = new Polygon(new int[]{226, 236, 266, 252},
-                new int[]{507, 472, 480, 515}, 4);
-        //Chinatown to Brooklyn
-        routes[27] = new Polygon(new int[]{265, 282, 374, 358},
-                new int[]{475, 451, 517, 540}, 4);
-        //Wall St. to Brooklyn
-        routes[28] = new Polygon(new int[]{235, 240, 357, 354},
-                new int[]{556, 530, 543, 570}, 4);
+        routes.add(new Route(
+                11,
+                12,
+                new Polygon(new int[]{271, 303, 314, 280},
+                        new int[]{439, 416, 428, 448}, 4)));
+        //Wall St. to Chinatown Green
+        routes.add(new Route(
+                13,
+                11,
+                new Polygon(new int[]{238, 252, 238, 226},
+                        new int[]{472, 477, 511, 507}, 4)));
+        //Wall St. to Chinatown Pink
+        routes.add(new Route(
+                13,
+                11,
+                new Polygon(new int[]{253, 267, 253, 241},
+                        new int[]{477, 481, 515, 511}, 4)));
+        //Chinatown to Brooklyn Red
+        routes.add(new Route(
+                11,
+                14,
+                new Polygon(new int[]{264, 272, 366, 359},
+                        new int[]{473, 464, 534, 541}, 4)));
+        //Chinatown to Brooklyn Orange
+        routes.add(new Route(
+                11,
+                14,
+                new Polygon(new int[]{275, 282, 376, 367},
+                        new int[]{462, 452, 521, 532}, 4)));
+        //Wall St. to Brooklyn Black
+        routes.add(new Route(
+                13,
+                14,
+                new Polygon(new int[]{236, 237, 356, 355},
+                        new int[]{556, 543, 557, 570}, 4)));
+        //Wall St. to Brooklyn Blue
+        routes.add(new Route(
+                13,
+                14,
+                new Polygon(new int[]{238, 240, 357, 356},
+                        new int[]{542, 530, 543, 556}, 4)));
         //Lower East Side to Brooklyn
-        routes[29] = new Polygon(
-                new int[]{331, 341, 363, 382, 396, 381, 369, 353},
-                new int[]{433, 424, 451, 487, 525, 529, 494, 462},
-                8);
+        routes.add(new Route(
+                12,
+                14,
+                new Polygon(
+                        new int[]{331, 341, 363, 382, 396, 381, 369, 353},
+                        new int[]{433, 424, 451, 487, 525, 529, 494, 462},
+                        8)));
 
         //Making the districts clickable
         districts = new Rectangle[15];
@@ -483,33 +641,19 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                         CARD_H);
 
                 Graphics2D g2d = (Graphics2D) g;
-                //Collision boxes for the graph of the other players
-                for (Player p : players) {
-                    for (int i = 0; i < routes.length; i++) {
 
-                        //If the route is then draw it
-                        if (p.claimedRoutes[i]) {
 
-                            g.setColor(p.COLOR);
-                            g2d.draw(routes[i]);
-                        }
-                    }
-                }
-                //Draw the current players routes
-                for (int i = 0; i < currentPlayer.claimedRoutes.length; i++) {
+                //FOR DEBUGGING PURPOSES
+                /*for(Route r : routes){
 
-                    //If the route is claimed then draw it
-                    if (currentPlayer.claimedRoutes[i]) {
-
-                        g.setColor(currentPlayer.COLOR);
-                        g2d.draw(routes[i]);
-                    }
-                }
+                    g2d.fill(r.img);
+                }*/
+                //UNCOMMENT ONLY FOR DEBUGGING PURPOSES
                 //Draw the colliders around the districts
-                for (Rectangle r : districts) {
+                /*for (Rectangle r : districts) {
 
                     g2d.draw(r);
-                }
+                }*/
 
                 break;
             case SCORE_MENU:
@@ -570,6 +714,9 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
             //Init turn number
             turnNum = 0;
+
+            //Init our district clicked
+            districtClicked = -1;
 
             //Adding taxi cards to our deck
             //6 each color and 8 rainbow
@@ -895,20 +1042,20 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
         }
 
         //Check if a route is being claimed
-        for (int i = 0; i < routes.length; i++) {
+        for (int i = 0; i < districts.length; i++) {
 
-            if (routes[i].contains(pointClicked) && claimedRoutes[i] == false) {
+            if (districts[i].contains(pointClicked)) {
 
-                claimedRoutes[i] = true;
-                currentPlayer.claimedRoutes[i] = true;
-                //Change players
-                players.addLast(currentPlayer);
-                currentPlayer = players.removeFirst();
-                turnNum++;
+                if (districtClicked != -1) {
 
-                repaint();
-                JOptionPane.showMessageDialog(this,
-                        "It is now " + currentPlayer.name + "\'s turn");
+                    //Reset district clicked back to -1
+                    districtClicked = -1;
+
+                    //We find out if we can claim this route
+                } else {
+
+                    districtClicked = i;
+                }
                 break;
             }
         }
@@ -953,5 +1100,22 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
     // For managing the game state
     public enum GameState {
         MAIN_MENU, HELP_MENU, GAME_MENU, SCORE_MENU
+    }
+
+    /***
+     * A class to help display different routes
+     */
+    private class Route {
+
+        protected int start;
+        protected int end;
+        protected Shape img;
+
+        public Route(int start, int end, Shape img) {
+
+            this.start = start;
+            this.end = end;
+            this.img = img;
+        }
     }
 }

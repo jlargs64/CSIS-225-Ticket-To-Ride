@@ -135,6 +135,9 @@ public class Graph {
         }
     }
 
+    /***
+     * A class to hold each district as a vertex on the graph.
+     */
     private class Vertex {
 
         private Edge firstEdge;
@@ -155,7 +158,9 @@ public class Graph {
         }
     }
 
-    // A private class to represent edges to other districts
+    /***
+     * A class to hold each route as a edge on the graph.
+     */
     private class Edge {
         private int dest;
         private Edge next;
