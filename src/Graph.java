@@ -165,6 +165,7 @@ public class Graph {
         protected int dest;
         protected Edge next;
         protected Color color;
+        protected String strColor;
         protected int cost;
 
         /**
@@ -179,6 +180,22 @@ public class Graph {
             this.next = next;
             this.color = color;
             this.cost = cost;
+
+            if (color.equals(Color.RED)) {
+                strColor = "RED";
+            } else if (color.equals(Color.BLUE)) {
+                strColor = "BLUE";
+            } else if (color.equals(Color.ORANGE)) {
+                strColor = "BLUE";
+            } else if (color.equals(Color.PINK)) {
+                strColor = "PINK";
+            } else if (color.equals(Color.GREEN)) {
+                strColor = "GREEN";
+            } else if (color.equals(Color.WHITE)) {
+                strColor = "CLEAR";
+            } else if (color.equals(Color.BLACK)) {
+                strColor = "BLACK";
+            }
         }
     }
 }
