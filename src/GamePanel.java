@@ -1227,6 +1227,9 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
         //Check player has enough cards
         int[] numTypes = currentPlayer.getCardTypes();
 
+        //The string representation of the seleceted color
+        String selectedColor = "";
+
         //ArrayList is for joptionpane for clear
         ArrayList<String> possibleColors = new ArrayList<>();
         //Find out if we can afford it
@@ -1277,7 +1280,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
             if (selectedCardType == null) {
                 return false;
             }
-            String selectedColor = (String) selectedCardType;
+            selectedColor = (String) selectedCardType;
 
             int costLeft = finger.cost;
 
@@ -1378,7 +1381,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
             }
 
             //Convert the string to a color
-            String selectedColor = (String) selectedCardType;
+            selectedColor = (String) selectedCardType;
             int costLeft = finger.cost;
 
             //This is for just normal routes
@@ -1477,6 +1480,21 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
         } else if (wasFound && canAfford) {
 
             //Add the graphical version of the route to player
+            Color colorSelected = null;
+            if (selectedColor.equalsIgnoreCase("BLUE")) {
+
+                colorSelected = Color.BLUE;
+            } else if (selectedColor.equalsIgnoreCase("GREEN")) {
+                colorSelected = Color.GREEN;
+            } else if (selectedColor.equalsIgnoreCase("RED")) {
+                colorSelected = Color.RED;
+            } else if (selectedColor.equalsIgnoreCase("BLACK")) {
+                colorSelected = Color.BLACK;
+            } else if (selectedColor.equalsIgnoreCase("PINK")) {
+                colorSelected = Color.PINK;
+            } else if (selectedColor.equalsIgnoreCase("ORANGE")) {
+                colorSelected = Color.ORANGE;
+            }
             Route routeToClaim = null;
             for (Route r : routes) {
 
@@ -1497,13 +1515,13 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 //For claiming a double route
                 else if (r.start == districtClicked
                         && r.end == endIndex
-                        && r.color == finger.color) {
+                        && r.color == colorSelected) {
 
                     routeToClaim = r;
                     break;
                 } else if (r.start == endIndex
                         && r.end == districtClicked
-                        && r.color == finger.color) {
+                        && r.color == colorSelected) {
 
                     routeToClaim = r;
                     break;
