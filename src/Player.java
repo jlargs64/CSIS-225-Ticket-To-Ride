@@ -88,7 +88,7 @@ public class Player {
     /**
      * This method returns an int[] that holds how many of each card type a
      * player has.
-     * From 0 to 7 respectively we have blue, green, black, pink, orange, red,
+     * From 0 to 6 respectively we have blue, green, black, pink, orange, red,
      * and rainbow(taxi).
      *
      * @return amountOfCard the int amount of each card type

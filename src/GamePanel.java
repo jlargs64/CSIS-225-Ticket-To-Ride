@@ -52,6 +52,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
     //Used for turns
     private int pickUpCount = 0;
     private boolean lessThanTwoTaxis;
+    private Player lastPlayer;
 
     //The constructor for Game Panel
     public GamePanel() {
@@ -791,8 +792,9 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
             tempCards.clear();
 
             //FOR DEBUGGING PURPOSES HERE IS A TEMP PLAYER DEQUE
-            players.addLast(new Player("name", "blue", 19));
-            players.addLast(new Player("name2", "white", 20));
+            players.addLast(new Player("Person1", "blue", 19));
+            players.addLast(new Player("Person2", "white", 20));
+            //players.addLast(new Player("Person3", "yellow", 21));
 
             //Deal 2 taxi cards to all players
             for (Player p : players) {
@@ -969,15 +971,8 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 }
 
                 //Change players
-                players.addLast(currentPlayer);
-                currentPlayer = players.removeFirst();
                 pickUpCount = 0;
-                turnNum++;
-
-                repaint();
-
-                JOptionPane.showMessageDialog(this,
-                        "It is now " + currentPlayer.name + "\'s turn");
+                changeTurns();
                 break;
 
             } else if (c.border.contains(pointClicked)
@@ -1012,14 +1007,8 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 if (pickUpCount == 2) {
 
                     //Change players
-                    players.addLast(currentPlayer);
-                    currentPlayer = players.removeFirst();
                     pickUpCount = 0;
-                    turnNum++;
-                    repaint();
-                    JOptionPane.showMessageDialog(this,
-                            "It is now " +
-                                    currentPlayer.name + "\'s turn");
+                    changeTurns();
                 }
 
                 break;
@@ -1037,13 +1026,8 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                         && pickUpCount == 0) {
 
                     //Change players
-                    players.addLast(currentPlayer);
-                    currentPlayer = players.removeFirst();
                     pickUpCount = 0;
-                    turnNum++;
-                    repaint();
-                    JOptionPane.showMessageDialog(this,
-                            "It is now " + currentPlayer.name + "\'s turn");
+                    changeTurns();
                 }
                 //Add the new card to the player deck.
                 currentPlayer.playerTaxis.add(newCard);
@@ -1066,13 +1050,8 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
             if (pickUpCount == 2) {
 
                 //Change players
-                players.addLast(currentPlayer);
-                currentPlayer = players.removeFirst();
                 pickUpCount = 0;
-                turnNum++;
-                repaint();
-                JOptionPane.showMessageDialog(this,
-                        "It is now " + currentPlayer.name + "\'s turn");
+                changeTurns();
             }
         }
         //Draw 2 destination cards, the player can keep 1 or both.
@@ -1256,11 +1235,14 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 }
             }
         }
-        //If the route is clear and not a double
+
+        //Search for routes that are a double
         boolean isDouble = false;
         Graph.Edge findDoubleFinger =
                 map.vertices[endIndex].firstEdge;
         Color[] doubleRouteColors = new Color[2];
+
+        int doubleCost = 0;
         while (findDoubleFinger != null) {
 
             if (findDoubleFinger.dest == districtClicked) {
@@ -1274,12 +1256,21 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 if (doubleRouteColors[0] == null) {
 
                     doubleRouteColors[0] = findDoubleFinger.color;
+                    doubleCost = findDoubleFinger.cost;
                 } else {
                     doubleRouteColors[1] = findDoubleFinger.color;
                     isDouble = true;
                 }
             }
             findDoubleFinger = findDoubleFinger.next;
+        }
+
+        for (int i = 0; i < doubleRouteColors.length; i++) {
+
+            int colorNum = colorToNumber(doubleRouteColors[i]);
+            if (numTypes[colorNum] < doubleCost) {
+                doubleRouteColors[i] = null;
+            }
         }
 
         //If it a clear route and not a double
@@ -1291,6 +1282,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                         "Invalid move");
                 return false;
             }
+
             //Select the correct color
             Object selectedCardType =
                     JOptionPane.showInputDialog(
@@ -1350,26 +1342,22 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
 
             //Prompt player to select which card to take
-            String[] strDoubleColors = new String[2];
+            ArrayList<String> strDoubleColors = new ArrayList<>();
             if (finger.color != Color.WHITE) {
 
                 for (int i = 0; i < doubleRouteColors.length; i++) {
 
-                    if (doubleRouteColors[i].equals(Color.BLUE)) {
-                        strDoubleColors[i] = "BLUE";
-                    } else if (doubleRouteColors[i].equals(Color.BLACK)) {
-                        strDoubleColors[i] = "BLACK";
-                    } else if (doubleRouteColors[i].equals(Color.ORANGE)) {
-                        strDoubleColors[i] = "ORANGE";
-                    } else if (doubleRouteColors[i].equals(Color.GREEN)) {
-                        strDoubleColors[i] = "GREEN";
-                    } else if (doubleRouteColors[i].equals(Color.PINK)) {
-                        strDoubleColors[i] = "PINK";
-                    } else if (doubleRouteColors[i].equals(Color.RED)) {
-                        strDoubleColors[i] = "RED";
+                    //If we removed a color from the array don't add it so
+                    //we avoid null pointer exception
+                    if (doubleRouteColors[i] != null) {
+
+                        strDoubleColors.add(
+                                colorToString(doubleRouteColors[i]));
                     }
                 }
-                Object[] objColors = strDoubleColors;
+                //Convert our string arraylist to a array so we can use it in
+                //the joptionpane
+                Object[] objColors = strDoubleColors.toArray();
                 Object selectedCardType =
                         JOptionPane.showInputDialog(
                                 null,
@@ -1533,6 +1521,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
             }
             if (currentPlayer.taxis <= 2) {
                 lessThanTwoTaxis = true;
+                lastPlayer = currentPlayer;
                 JOptionPane.showMessageDialog(this,
                         "A player has less than two taxis," +
                                 "everyone has one more turn!",
@@ -1544,16 +1533,87 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
             //Remove it from the master routes list
             routes.remove(routeToClaim);
 
-            //Change players
-            players.addLast(currentPlayer);
-            currentPlayer = players.removeFirst();
-            turnNum++;
-            repaint();
-            JOptionPane.showMessageDialog(this,
-                    "It is now " + currentPlayer.name
-                            + "\'s turn");
+            //Change the player turn
+            changeTurns();
         }
 
         return true;
+    }
+
+    /***
+     *
+     * This is a method to reuse when changing players turns
+     */
+    public void changeTurns() {
+
+        //Change players
+        players.addLast(currentPlayer);
+        currentPlayer = players.removeFirst();
+
+        if (lessThanTwoTaxis && lastPlayer == currentPlayer) {
+
+            //Go score the players
+            currentState = GameState.values()[3];
+        }
+        turnNum++;
+        repaint();
+        JOptionPane.showMessageDialog(this,
+                "It is now " + currentPlayer.name
+                        + "\'s turn");
+    }
+
+    /***
+     * A useful method to see a string representation of a color
+     * @param color a color object to be turned into the string of its color.
+     * @return the string version of the color
+     */
+    public String colorToString(Color color) {
+
+        String result = "";
+        if (color.equals(Color.BLUE)) {
+            result = "BLUE";
+        } else if (color.equals(Color.BLACK)) {
+            result = "BLACK";
+        } else if (color.equals(Color.ORANGE)) {
+            result = "ORANGE";
+        } else if (color.equals(Color.GREEN)) {
+            result = "GREEN";
+        } else if (color.equals(Color.PINK)) {
+            result = "PINK";
+        } else if (color.equals(Color.RED)) {
+            result = "RED";
+        }
+
+        return result;
+    }
+
+    /***
+     * This method is for seeing which amount we have of a card type.
+     * From 0 to 6 respectively we have blue, green, black, pink, orange, red,
+     * and rainbow(taxi).
+     * @param color the desired color we would like to see as a number.
+     * @return the number form of the color
+     */
+    public int colorToNumber(Color color) {
+
+        int result = 0;
+
+        if (color.equals(Color.BLUE)) {
+            result = 0;
+        } else if (color.equals(Color.GREEN)) {
+            result = 1;
+        } else if (color.equals(Color.BLACK)) {
+            result = 2;
+        } else if (color.equals(Color.PINK)) {
+            result = 3;
+        } else if (color.equals(Color.ORANGE)) {
+            result = 4;
+        } else if (color.equals(Color.RED)) {
+            result = 5;
+        } else {
+            result = 6;
+        }
+
+        return result;
     }
 }
