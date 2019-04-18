@@ -1263,7 +1263,8 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
                             TaxiCard t = currentPlayer.playerTaxis.get(i);
 
-                            if (t.type.equalsIgnoreCase(selectedColor)) {
+                            if (t.type.equalsIgnoreCase(
+                                    numberToColor(routeColor))) {
 
                                 discaredTaxis.add(t);
                                 currentPlayer.playerTaxis.remove(t);
