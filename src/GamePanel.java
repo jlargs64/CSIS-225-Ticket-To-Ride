@@ -488,7 +488,8 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
             case HELP_MENU:
                 //display images
                 // helpImage 1
-                g.drawImage(helpImages[currentHelpImage], 0, 0, 800, 600, this);
+                g.drawImage(helpImages[currentHelpImage], 0, 0,
+                        800, 600, this);
                 // helpImage 2
                 /*
                 imgFileLocation = "assets\\instructions-2.jpg";
@@ -1137,71 +1138,351 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
         int endIndex = index;
 
+        //Used to help organize the code of removing cards
+        boolean canAfford = false;
+        String selectedColor = "";
         //We find out if we can claim this route
         Graph.Edge finger = map.vertices[districtClicked].firstEdge;
 
         //We use was found to display a message to user if it was a valid
         //move or not.
-        boolean wasFound = false;
-        boolean canAfford = false;
         while (finger != null) {
-
+            //We found the route
             if (finger.dest == endIndex) {
 
-                wasFound = true;
                 //The player can afford the route
                 if (currentPlayer.taxis - finger.cost >= 0) {
 
                     canAfford = true;
-
-                    //Remove the cards needed
-                    if (removeCards(finger, endIndex, wasFound, canAfford)) {
-
-                        //Add to the players graph
-                        currentPlayer.claimedRoutes.addEdge(
-                                districtClicked,
-                                endIndex,
-                                finger.color,
-                                finger.cost);
-
-                        //Remove from the master graph (single routes)
-                        map.removeEdge(districtClicked, endIndex);
-                        map.removeEdge(endIndex, districtClicked);
-                        //For double routes
-                        //We need to check if another vertex has that same
-                        //reference.
-                        Graph.Edge removalFinger =
-                                map.vertices[endIndex].firstEdge;
-
-                        //We need to remove the other references to the
-                        //edges.
-                        if (players.size() == 1) {
-                            while (removalFinger != null) {
-
-                                if (removalFinger.dest == districtClicked) {
-
-                                    //Remove the other edges
-                                    map.removeEdge(endIndex,
-                                            removalFinger.dest);
-
-                                    map.removeEdge(removalFinger.dest,
-                                            endIndex);
-                                    break;
-                                }
-                                removalFinger = removalFinger.next;
-                            }
-                        }
-                        break;
-                    }
                 }
+                break;
             }
             //Check the next edge
             finger = finger.next;
         }
+
+        if (canAfford) {
+
+            int[] cardTypeNum = currentPlayer.getCardTypes();
+
+            //If the player doesn't have enough cards in deck to even
+            //Cover the cost
+            if (currentPlayer.playerTaxis.size() < finger.cost) {
+
+                JOptionPane.showMessageDialog(this,
+                        "Not enough cards to claim!");
+                return;
+            }
+
+            //If the route color is specified
+            if (finger.color != Color.WHITE) {
+
+                //Get the routes color in number form
+                int routeColor = colorToNumber(finger.color);
+
+                //For the type + rainbow condition
+                int sumOfType = cardTypeNum[routeColor] + cardTypeNum[6];
+
+                //There is not enough of the singular cards type to
+                //claim by itself and not enough if combined
+                if (cardTypeNum[routeColor] < finger.cost
+                        && sumOfType < finger.cost) {
+
+                    JOptionPane.showMessageDialog(this,
+                            "Not enough cards to claim!");
+                    return;
+                } else {
+
+                    if (cardTypeNum[6] >= finger.cost
+                            && cardTypeNum[routeColor] >= finger.cost) {
+
+                        Object[] colors = {finger.color, "RAINBOW"};
+                        //Select the correct color
+                        Object selectedCardType =
+                                JOptionPane.showInputDialog(
+                                        null,
+                                        "Choose preferred card type",
+                                        "Card Selection",
+                                        JOptionPane.INFORMATION_MESSAGE,
+                                        null,
+                                        colors, colors[0]);
+                        selectedColor = selectedCardType.toString();
+
+                        //Now remove cards
+                        //Start removing using our selected color
+                        for (int i = 0; i <
+                                currentPlayer.playerTaxis.size(); i++) {
+
+                            TaxiCard t = currentPlayer.playerTaxis.get(i);
+
+                            if (t.type.equalsIgnoreCase(selectedColor)) {
+
+                                discaredTaxis.add(t);
+                                currentPlayer.playerTaxis.remove(t);
+                                currentPlayer.taxis--;
+                                i = -1;
+                            }
+                        }
+                    } else if (cardTypeNum[routeColor] >= finger.cost) {
+
+                        for (int i = 0; i <
+                                currentPlayer.playerTaxis.size(); i++) {
+
+                            TaxiCard t = currentPlayer.playerTaxis.get(i);
+
+                            if (t.type.equalsIgnoreCase(
+                                    numberToColor(routeColor))) {
+
+                                discaredTaxis.add(t);
+                                currentPlayer.playerTaxis.remove(t);
+                                currentPlayer.taxis--;
+                                i = -1;
+                            }
+                        }
+                    } else if (cardTypeNum[6] >= finger.cost) {
+
+                        for (int i = 0; i <
+                                currentPlayer.playerTaxis.size(); i++) {
+
+                            TaxiCard t = currentPlayer.playerTaxis.get(i);
+
+                            if (t.type.equalsIgnoreCase("RAINBOW")) {
+
+                                discaredTaxis.add(t);
+                                currentPlayer.playerTaxis.remove(t);
+                                currentPlayer.taxis--;
+                                i = -1;
+                            }
+                        }
+                    } else {
+
+                        int costLeft = finger.cost;
+                        //Start removing using our selected color
+                        for (int i = 0; i <
+                                currentPlayer.playerTaxis.size(); i++) {
+
+                            TaxiCard t = currentPlayer.playerTaxis.get(i);
+
+                            if (t.type.equalsIgnoreCase(selectedColor)) {
+
+                                discaredTaxis.add(t);
+                                currentPlayer.playerTaxis.remove(t);
+                                currentPlayer.taxis--;
+                                costLeft--;
+                                i = -1;
+                            }
+                        }
+                        //If there is still a cost left it means we are using
+                        //rainbow to make up the left over cost
+                        if (costLeft > 0) {
+                            for (int i = 0; i <
+                                    currentPlayer.playerTaxis.size(); i++) {
+
+                                TaxiCard t = currentPlayer.playerTaxis.get(i);
+
+                                if (t.type.equalsIgnoreCase("RAINBOW")) {
+
+                                    discaredTaxis.add(t);
+                                    currentPlayer.playerTaxis.remove(t);
+                                    currentPlayer.taxis--;
+                                    costLeft--;
+                                    i = -1;
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+
+                //The route is clear
+                //The colors we can choose from
+                ArrayList<String> colors = new ArrayList<>();
+
+                //Find which cards can remove something
+                for (int i = 0; i < cardTypeNum.length; i++) {
+
+                    //For card type + rainbow condition
+                    int sumOfType = cardTypeNum[i] + cardTypeNum[6];
+
+                    //If the card type by itself is sufficient
+                    if (cardTypeNum[i] >= finger.cost) {
+
+                        colors.add(numberToColor(i));
+                    }
+                    //If the sumOfType is sufficient
+                    else if (i != 6 && sumOfType >= finger.cost) {
+
+                        colors.add(numberToColor(i));
+                    }
+                }
+                //If we don't have enough cards to fulfill them individually
+                if (colors.size() == 0) {
+
+                    JOptionPane.showMessageDialog(this,
+                            "Not enough cards to claim!");
+                    return;
+                }
+
+                Object[] colorsArray = colors.toArray();
+                //Select the correct color
+                Object selectedCardType =
+                        JOptionPane.showInputDialog(
+                                null,
+                                "Choose preferred card type",
+                                "Card Selection",
+                                JOptionPane.INFORMATION_MESSAGE,
+                                null,
+                                colorsArray, colorsArray[0]);
+
+                //If there is a null value assume the player didn't
+                //want to place it
+                if (selectedCardType == null) {
+                    return;
+                }
+                selectedColor = selectedCardType.toString();
+                int costLeft = finger.cost;
+                //Start removing using our selected color
+                for (int i = 0; i < currentPlayer.playerTaxis.size(); i++) {
+
+                    TaxiCard t = currentPlayer.playerTaxis.get(i);
+
+                    if (t.type.equalsIgnoreCase(selectedColor)) {
+
+                        discaredTaxis.add(t);
+                        currentPlayer.playerTaxis.remove(t);
+                        currentPlayer.taxis--;
+                        costLeft--;
+                        i = -1;
+                    }
+                }
+                //If there is still a cost left it means we are using rainbow
+                //to make up the left over cost
+                if (costLeft > 0) {
+                    for (int i = 0; i < currentPlayer.playerTaxis.size(); i++) {
+
+                        TaxiCard t = currentPlayer.playerTaxis.get(i);
+
+                        if (t.type.equalsIgnoreCase("RAINBOW")) {
+
+                            discaredTaxis.add(t);
+                            currentPlayer.playerTaxis.remove(t);
+                            currentPlayer.taxis--;
+                            costLeft--;
+                            i = -1;
+                        }
+                    }
+                }
+
+            }
+
+            //Add to the players graph
+            currentPlayer.claimedRoutes.addEdge(
+                    districtClicked,
+                    endIndex,
+                    finger.color,
+                    finger.cost);
+
+            //Remove from the master graph (single routes)
+            map.removeEdge(districtClicked, endIndex);
+            map.removeEdge(endIndex, districtClicked);
+            //For double routes
+            //We need to check if another vertex has that same
+            //reference.
+            Graph.Edge removalFinger =
+                    map.vertices[endIndex].firstEdge;
+
+            //We need to remove the other references to the
+            //edges.
+            if (players.size() == 1) {
+                while (removalFinger != null) {
+
+                    if (removalFinger.dest == districtClicked) {
+
+                        //Remove the other edges
+                        map.removeEdge(endIndex,
+                                removalFinger.dest);
+
+                        map.removeEdge(removalFinger.dest,
+                                endIndex);
+                        break;
+                    }
+                    removalFinger = removalFinger.next;
+                }
+            }
+
+            //Add the graphical version of the route to player
+            Color colorSelected = null;
+            if (selectedColor.equalsIgnoreCase("BLUE")) {
+                colorSelected = Color.BLUE;
+            } else if (selectedColor.equalsIgnoreCase("GREEN")) {
+                colorSelected = Color.GREEN;
+            } else if (selectedColor.equalsIgnoreCase("RED")) {
+                colorSelected = Color.RED;
+            } else if (selectedColor.equalsIgnoreCase("BLACK")) {
+                colorSelected = Color.BLACK;
+            } else if (selectedColor.equalsIgnoreCase("PINK")) {
+                colorSelected = Color.PINK;
+            } else if (selectedColor.equalsIgnoreCase("ORANGE")) {
+                colorSelected = Color.ORANGE;
+            }
+            Route routeToClaim = null;
+            for (Route r : routes) {
+
+                //For claiming a single route
+                if (r.start == districtClicked
+                        && r.end == endIndex
+                        && r.color == null) {
+
+                    routeToClaim = r;
+                    break;
+                } else if (r.start == endIndex
+                        && r.end == districtClicked
+                        && r.color == null) {
+
+                    routeToClaim = r;
+                    break;
+                }
+                //For claiming a double route
+                else if (r.start == districtClicked
+                        && r.end == endIndex
+                        && r.color == colorSelected) {
+
+                    routeToClaim = r;
+                    break;
+                } else if (r.start == endIndex
+                        && r.end == districtClicked
+                        && r.color == colorSelected) {
+
+                    routeToClaim = r;
+                    break;
+                }
+            }
+            if (currentPlayer.taxis <= 2) {
+                lessThanTwoTaxis = true;
+                lastPlayer = currentPlayer;
+                JOptionPane.showMessageDialog(this,
+                        "A player has less than two taxis," +
+                                "everyone has one more turn!",
+                        "End Game",
+                        0);
+            }
+            //Add it to the players route to claim
+            currentPlayer.routes.add(routeToClaim);
+            //Remove it from the master routes list
+            routes.remove(routeToClaim);
+
+            //Change the player turn
+            changeTurns();
+        }
     }
 
-    public boolean removeCards(Graph.Edge finger, int endIndex, boolean wasFound,
-                               boolean canAfford) {
+
+    /***
+     * This determines how to remove cards from the deck when claiming a route
+     * @param finger the edge or route we are on
+     * @param endIndex the second district that was clicked(or the end district)
+     */
+    public void removeCards(Graph.Edge finger, int endIndex) {
 
         //Check player has enough cards
         int[] numTypes = currentPlayer.getCardTypes();
@@ -1218,24 +1499,11 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                     || (i != 6 &&
                     numTypes[i] + numTypes[6] >= finger.cost)) {
 
-                if (i == 0) {
-                    possibleColors.add("BLUE");
-                } else if (i == 1) {
-                    possibleColors.add("GREEN");
-                } else if (i == 2) {
-                    possibleColors.add("BLACK");
-                } else if (i == 3) {
-                    possibleColors.add("PINK");
-                } else if (i == 4) {
-                    possibleColors.add("ORANGE");
-                } else if (i == 5) {
-                    possibleColors.add("RED");
-                } else if (i == 6) {
-                    possibleColors.add("RAINBOW");
-                }
+
+                possibleColors.add(numberToColor(i));
+
             }
         }
-
         //Search for routes that are a double
         boolean isDouble = false;
         Graph.Edge findDoubleFinger =
@@ -1280,7 +1548,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
             if (colors.length == 0) {
                 JOptionPane.showMessageDialog(this,
                         "Invalid move");
-                return false;
+                return;
             }
 
             //Select the correct color
@@ -1296,7 +1564,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
             //If there is a null value assume the player didn't
             //want to place it
             if (selectedCardType == null) {
-                return false;
+                return;
             }
             selectedColor = (String) selectedCardType;
 
@@ -1367,7 +1635,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                                 null,
                                 objColors, objColors[0]);
                 if (selectedCardType == null) {
-                    return false;
+                    return;
                 }
 
                 //Convert the string to a color
@@ -1465,79 +1733,6 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 }
             }
         }
-        //If the route wasn't found OR was already claimed tell the user.
-        if (wasFound == false) {
-            JOptionPane.showMessageDialog(this,
-                    "Invalid move!");
-        } else if (wasFound && canAfford) {
-
-            //Add the graphical version of the route to player
-            Color colorSelected = null;
-            if (selectedColor.equalsIgnoreCase("BLUE")) {
-
-                colorSelected = Color.BLUE;
-            } else if (selectedColor.equalsIgnoreCase("GREEN")) {
-                colorSelected = Color.GREEN;
-            } else if (selectedColor.equalsIgnoreCase("RED")) {
-                colorSelected = Color.RED;
-            } else if (selectedColor.equalsIgnoreCase("BLACK")) {
-                colorSelected = Color.BLACK;
-            } else if (selectedColor.equalsIgnoreCase("PINK")) {
-                colorSelected = Color.PINK;
-            } else if (selectedColor.equalsIgnoreCase("ORANGE")) {
-                colorSelected = Color.ORANGE;
-            }
-            Route routeToClaim = null;
-            for (Route r : routes) {
-
-                //For claiming a single route
-                if (r.start == districtClicked
-                        && r.end == endIndex
-                        && r.color == null) {
-
-                    routeToClaim = r;
-                    break;
-                } else if (r.start == endIndex
-                        && r.end == districtClicked
-                        && r.color == null) {
-
-                    routeToClaim = r;
-                    break;
-                }
-                //For claiming a double route
-                else if (r.start == districtClicked
-                        && r.end == endIndex
-                        && r.color == colorSelected) {
-
-                    routeToClaim = r;
-                    break;
-                } else if (r.start == endIndex
-                        && r.end == districtClicked
-                        && r.color == colorSelected) {
-
-                    routeToClaim = r;
-                    break;
-                }
-            }
-            if (currentPlayer.taxis <= 2) {
-                lessThanTwoTaxis = true;
-                lastPlayer = currentPlayer;
-                JOptionPane.showMessageDialog(this,
-                        "A player has less than two taxis," +
-                                "everyone has one more turn!",
-                        "End Game",
-                        0);
-            }
-            //Add it to the players route to claim
-            currentPlayer.routes.add(routeToClaim);
-            //Remove it from the master routes list
-            routes.remove(routeToClaim);
-
-            //Change the player turn
-            changeTurns();
-        }
-
-        return true;
     }
 
     /***
@@ -1612,6 +1807,35 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
             result = 5;
         } else {
             result = 6;
+        }
+
+        return result;
+    }
+
+    /***
+     * A helpful method to convert a number representation of a color to a
+     * string.
+     * @param number the number we would like to become a color string
+     * @return the string version of that color from the number
+     */
+    public String numberToColor(int number) {
+
+        String result = "";
+
+        if (number == 0) {
+            result = "BLUE";
+        } else if (number == 1) {
+            result = "GREEN";
+        } else if (number == 2) {
+            result = "BLACK";
+        } else if (number == 3) {
+            result = "PINK";
+        } else if (number == 4) {
+            result = "ORANGE";
+        } else if (number == 5) {
+            result = "RED";
+        } else {
+            result = "RAINBOW";
         }
 
         return result;
