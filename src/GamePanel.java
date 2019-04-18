@@ -87,7 +87,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
             clip.loop(Clip.LOOP_CONTINUOUSLY);
         }
         catch (Exception ex){
-            System.err.println("Error in Mouse click");
+            System.err.println("Error playing theme");
             ex.printStackTrace();
         }
         
