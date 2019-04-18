@@ -67,13 +67,14 @@ public class Graph {
      * @param src  source vertex to remove from
      * @param dest edge being removed
      */
-    public void removeEdge(int src, int dest) {
+    public void removeEdge(int src, int dest, Color color) {
 
         // empty list, none to remove
         if (vertices[src].firstEdge == null) return;
 
         // remove first?  To do so, just bypass it in the list
-        if (vertices[src].firstEdge.dest == dest) {
+        if (vertices[src].firstEdge.dest == dest &&
+                vertices[src].firstEdge.color == color) {
             vertices[src].firstEdge = vertices[src].firstEdge.next;
             return;
         }
@@ -82,7 +83,7 @@ public class Graph {
         // easily "bypass" that node in the list by manipulating next references
         Edge e = vertices[src].firstEdge;
         while (e.next != null) {
-            if (e.next.dest == dest) {
+            if (e.next.dest == dest && e.next.color == color) {
                 e.next = e.next.next;
                 return;
             }
@@ -136,6 +137,30 @@ public class Graph {
     }
 
     /***
+     * Used for if a edge exists within the given graph
+     * @param src the source vertex
+     * @param dest the destination edge
+     * @return true if it exits, false if not
+     */
+    public boolean contains(int src, int dest, Color color) {
+
+        //The finger to traverse the graph
+        Edge finger = vertices[src].firstEdge;
+
+        //Loop to check all the edges
+        while (finger != null) {
+
+            //If the finger was found return true
+            if (finger.dest == dest && finger.color == color) {
+                return true;
+            }
+            //Otherwise keep looking
+            finger = finger.next;
+        }
+        return false;
+    }
+
+    /***
      * A class to hold each district as a vertex on the graph.
      */
     protected class Vertex {
@@ -186,7 +211,7 @@ public class Graph {
             } else if (color.equals(Color.BLUE)) {
                 strColor = "BLUE";
             } else if (color.equals(Color.ORANGE)) {
-                strColor = "BLUE";
+                strColor = "ORANGE";
             } else if (color.equals(Color.PINK)) {
                 strColor = "PINK";
             } else if (color.equals(Color.GREEN)) {
