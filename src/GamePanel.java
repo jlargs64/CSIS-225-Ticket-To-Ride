@@ -4,7 +4,7 @@ import java.awt.event.*;
 import java.io.File;
 import java.util.*;
 import java.util.List;
-
+import javax.sound.sampled.*;
 /**
  * The game panel for displaying the various game states of ticket to ride.
  *
@@ -53,6 +53,8 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
     private int pickUpCount = 0;
     private boolean lessThanTwoTaxis;
     private Player lastPlayer;
+    
+    String theme = "../assets/TicketToRide-TitleTheme.wav";
 
     //The constructor for Game Panel
     public GamePanel() {
@@ -76,7 +78,20 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
             e.printStackTrace();
         }
-
+        
+        try{
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(theme).getCanonicalFile());
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+            clip.start();
+            clip.loop(Clip.LOOP_CONTINUOUSLY);
+        }
+        catch (Exception ex){
+            System.err.println("Error in Mouse click");
+            ex.printStackTrace();
+        }
+        
+        
         //Set our current state
         currentState = GameState.values()[0];
 
