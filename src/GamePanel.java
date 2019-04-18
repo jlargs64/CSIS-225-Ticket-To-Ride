@@ -80,7 +80,8 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
         }
         
         try{
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(theme).getCanonicalFile());
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream
+            (new File(theme).getCanonicalFile());
             Clip clip = AudioSystem.getClip();
             clip.open(audioInputStream);
             clip.start();
