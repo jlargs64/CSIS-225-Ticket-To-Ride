@@ -1545,13 +1545,15 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 //For claiming a double route
                 if (r.start == districtClicked
                         && r.end == endIndex
-                        && r.color == colorSelected) {
+                        && (r.color == colorSelected
+                        || r.color == Color.WHITE)) {
 
                     routeToClaim = r;
                     break;
                 } else if (r.start == endIndex
                         && r.end == districtClicked
-                        && r.color == colorSelected) {
+                        && (r.color == colorSelected
+                        || r.color == Color.WHITE)) {
 
                     routeToClaim = r;
                     break;
