@@ -1245,7 +1245,8 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                     }
 
                     //If we have a match in the graph
-                    if (findDoubleFinger.dest == districtClicked) {
+                    if (findDoubleFinger.dest == districtClicked
+                            || findDoubleFinger.dest == endIndex) {
 
                         //Add selected color to ArrayList
                         doubleRouteColors.add(findDoubleFinger.color);
@@ -1272,6 +1273,23 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 for (int i = 0; i < doubleRouteColors.size(); i++) {
 
                     strColors.add(colorToString(doubleRouteColors.get(i)));
+                }
+
+                boolean noCardType = true;
+                for (int i = 0; i < doubleRouteColors.size(); i++) {
+
+                    if (currentPlayer.playerTaxis.get(i).border.equals(
+                            doubleRouteColors.get(i))) {
+
+                        noCardType = false;
+                    }
+                }
+
+                if (noCardType) {
+
+                    JOptionPane.showMessageDialog(this,
+                            "Incorrect card type!");
+                    return;
                 }
 
                 if (isDouble) {
@@ -1475,8 +1493,15 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 //Start removing using our selected color
                 for (int i = 0; i < currentPlayer.playerTaxis.size(); i++) {
 
+                    //Stop taking cards if cost has been met
+                    if (costLeft == 0) {
+                        break;
+                    }
+
+                    //Select our card
                     TaxiCard t = currentPlayer.playerTaxis.get(i);
 
+                    //Remove it from deck if we find the match with route color
                     if (t.type.equalsIgnoreCase(selectedColor)) {
 
                         discardedTaxis.add(t);
@@ -1496,8 +1521,10 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                             break;
                         }
 
+                        //Select our card
                         TaxiCard t = currentPlayer.playerTaxis.get(i);
 
+                        //Discard card if found specific type
                         if (t.type.equalsIgnoreCase("RAINBOW")) {
 
                             discardedTaxis.add(t);
