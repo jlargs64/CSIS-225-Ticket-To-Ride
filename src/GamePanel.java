@@ -5,6 +5,7 @@ import java.io.File;
 import java.util.*;
 import java.util.List;
 import javax.sound.sampled.*;
+
 /**
  * The game panel for displaying the various game states of ticket to ride.
  *
@@ -19,13 +20,12 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
     private final int height;
     private final int CARD_W = 100;
     private final int CARD_H = 50;
-
+    String theme = "assets/TicketToRide-TitleTheme.wav";
     //Game state related variables
     private GameState currentState;
     private Graph map;
     private Toolkit toolkit;
     private int turnNum;
-
     //Image related variables
     private Image mainMenuImg, woodenImage, gameMap, scoreCard;
     private Image taxiBackImg, destBackImg;
@@ -38,23 +38,18 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
     //Buttons
     private JButton playButton, helpButton, quitButton, backButton;
     private JButton switchButton;
-
     //Card objects
     private Deque<TaxiCard> taxiCards;
     private Deque<DestCard> destCards;
     private ArrayList<TaxiCard> activeTaxiCards;
     private ArrayList<TaxiCard> discardedTaxis;
-
     //Player related variables
     private Deque<Player> players = new LinkedList<>();
     private Player currentPlayer;
-
     //Used for turns
     private int pickUpCount = 0;
     private boolean lessThanTwoTaxis;
     private Player lastPlayer;
-    
-    String theme = "../assets/TicketToRide-TitleTheme.wav";
 
     //The constructor for Game Panel
     public GamePanel() {
@@ -78,21 +73,20 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
             e.printStackTrace();
         }
-        
-        try{
+
+        try {
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream
-            (new File(theme).getCanonicalFile());
+                    (new File(theme).getCanonicalFile());
             Clip clip = AudioSystem.getClip();
             clip.open(audioInputStream);
             clip.start();
             clip.loop(Clip.LOOP_CONTINUOUSLY);
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             System.err.println("Error playing theme");
             ex.printStackTrace();
         }
-        
-        
+
+
         //Set our current state
         currentState = GameState.values()[0];
 
@@ -226,12 +220,14 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                         new int[]{169, 165, 237, 242}, 4)));
         //Chelsea to Empire St. Clear
         routes.add(new Route(
+                Color.WHITE,
                 5,
                 6,
                 new Polygon(new int[]{118, 182, 191, 126},
                         new int[]{235, 191, 202, 247}, 4)));
         //Chelsea to Empire St. Clear
         routes.add(new Route(
+                Color.WHITE,
                 5,
                 6,
                 new Polygon(new int[]{128, 191, 201, 135},
@@ -320,12 +316,14 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                         7)));
         //Greenwich Village to Chinatown Clear
         routes.add(new Route(
+                Color.WHITE,
                 8,
                 11,
                 new Polygon(new int[]{221, 233, 254, 240},
                         new int[]{371, 367, 440, 444}, 4)));
         //Greenwich Village to Chinatown Clear
         routes.add(new Route(
+                Color.WHITE,
                 8,
                 11,
                 new Polygon(new int[]{234, 248, 268, 256},
@@ -355,6 +353,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                         new int[]{439, 416, 428, 448}, 4)));
         //Wall St. to Chinatown Green
         routes.add(new Route(
+                Color.GREEN,
                 13,
                 11,
                 new Polygon(new int[]{238, 252, 238, 226},
@@ -1190,6 +1189,29 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
             return;
         }
 
+        //Check if the route has already been claimed by current player
+        ArrayList<Route> playerRoutes = currentPlayer.routes;
+        for (int i = 0; i < playerRoutes.size(); i++) {
+
+            Route currentRoute = playerRoutes.get(i);
+            //We found matching start
+            boolean currentCoord = currentRoute.start == districtClicked
+                    && currentRoute.end == endIndex;
+            boolean flippedCoord = currentRoute.end == districtClicked
+                    && currentRoute.start == endIndex;
+            if (currentCoord || flippedCoord) {
+
+                if (currentRoute.color != finger.color) {
+
+                    //Already claimed so exit
+                    JOptionPane.showMessageDialog(this,
+                            "Route already claimed!");
+                    return;
+                }
+            }
+        }
+
+
         if (canAfford) {
 
             int[] cardTypeNum = currentPlayer.getCardTypes();
@@ -1303,33 +1325,79 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                     JOptionPane.showMessageDialog(this,
                             "Not enough cards to claim!");
                     return;
+                }
+
+                //If the route can be claimed with just the specified card
+                if (cardTypeNum[routeColor] >= costLeft) {
+
+                    for (int i = 0; i <
+                            currentPlayer.playerTaxis.size(); i++) {
+
+                        //To prevent discarding more cards than needed
+                        if (costLeft == 0) {
+                            break;
+                        }
+
+                        TaxiCard t = currentPlayer.playerTaxis.get(i);
+
+                        if (t.type.equalsIgnoreCase(
+                                numberToColor(routeColor))) {
+
+                            discardedTaxis.add(t);
+                            currentPlayer.playerTaxis.remove(t);
+                            currentPlayer.taxis--;
+                            costLeft--;
+                            i = -1;
+                        }
+                    }
+                }
+                //If the route can be claimed with only rainbow
+                else if (cardTypeNum[6] >= costLeft) {
+
+                    for (int i = 0; i <
+                            currentPlayer.playerTaxis.size(); i++) {
+
+                        //To prevent discarding more cards than needed
+                        if (costLeft == 0) {
+                            break;
+                        }
+
+                        TaxiCard t = currentPlayer.playerTaxis.get(i);
+
+                        if (t.type.equalsIgnoreCase("RAINBOW")) {
+
+                            discardedTaxis.add(t);
+                            currentPlayer.playerTaxis.remove(t);
+                            currentPlayer.taxis--;
+                            i = -1;
+                        }
+                    }
                 } else {
 
-                    //If we can afford to use both
-                    if (cardTypeNum[6] >= costLeft
-                            && cardTypeNum[routeColor] >= costLeft) {
+                    //Start removing using our selected color
+                    for (int i = 0; i <
+                            currentPlayer.playerTaxis.size(); i++) {
 
-                        //Now remove cards
-                        //Start removing using our selected color
-                        for (int i = 0; i <
-                                currentPlayer.playerTaxis.size(); i++) {
+                        //To prevent discarding more cards than needed
+                        if (costLeft == 0) {
+                            break;
+                        }
 
-                            TaxiCard t = currentPlayer.playerTaxis.get(i);
+                        TaxiCard t = currentPlayer.playerTaxis.get(i);
 
-                            //If the card is the card we need then discard it
-                            //and research the deck
-                            if (t.type.equalsIgnoreCase(selectedColor)) {
+                        if (t.type.equalsIgnoreCase(
+                                numberToColor(routeColor))) {
 
-                                discardedTaxis.add(t);
-                                currentPlayer.playerTaxis.remove(t);
-                                currentPlayer.taxis--;
-                                i = -1;
-                            }
+                            discardedTaxis.add(t);
+                            currentPlayer.playerTaxis.remove(t);
+                            currentPlayer.taxis--;
+                            costLeft--;
+                            i = -1;
                         }
                     }
-                    //If the route can be claimed with just the specified card
-                    else if (cardTypeNum[routeColor] >= costLeft) {
-
+                    //If there is still a cost left it means we are using
+                    //rainbow to make up the left over cost
+                    if (costLeft > 0) {
                         for (int i = 0; i <
                                 currentPlayer.playerTaxis.size(); i++) {
 
@@ -1337,30 +1405,6 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                             if (costLeft == 0) {
                                 break;
                             }
-
-                            TaxiCard t = currentPlayer.playerTaxis.get(i);
-
-                            if (t.type.equalsIgnoreCase(
-                                    numberToColor(routeColor))) {
-
-                                discardedTaxis.add(t);
-                                currentPlayer.playerTaxis.remove(t);
-                                currentPlayer.taxis--;
-                                i = -1;
-                            }
-                        }
-                    }
-                    //If the route can be claimed with only rainbow
-                    else if (cardTypeNum[6] >= costLeft) {
-
-                        for (int i = 0; i <
-                                currentPlayer.playerTaxis.size(); i++) {
-
-                            //To prevent discarding more cards than needed
-                            if (costLeft == 0) {
-                                break;
-                            }
-
                             TaxiCard t = currentPlayer.playerTaxis.get(i);
 
                             if (t.type.equalsIgnoreCase("RAINBOW")) {
@@ -1368,52 +1412,8 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                                 discardedTaxis.add(t);
                                 currentPlayer.playerTaxis.remove(t);
                                 currentPlayer.taxis--;
-                                i = -1;
-                            }
-                        }
-                    } else {
-
-                        //Start removing using our selected color
-                        for (int i = 0; i <
-                                currentPlayer.playerTaxis.size(); i++) {
-
-                            //To prevent discarding more cards than needed
-                            if (costLeft == 0) {
-                                break;
-                            }
-
-                            TaxiCard t = currentPlayer.playerTaxis.get(i);
-
-                            if (t.type.equalsIgnoreCase(
-                                    numberToColor(routeColor))) {
-
-                                discardedTaxis.add(t);
-                                currentPlayer.playerTaxis.remove(t);
-                                currentPlayer.taxis--;
                                 costLeft--;
                                 i = -1;
-                            }
-                        }
-                        //If there is still a cost left it means we are using
-                        //rainbow to make up the left over cost
-                        if (costLeft > 0) {
-                            for (int i = 0; i <
-                                    currentPlayer.playerTaxis.size(); i++) {
-
-                                //To prevent discarding more cards than needed
-                                if (costLeft == 0) {
-                                    break;
-                                }
-                                TaxiCard t = currentPlayer.playerTaxis.get(i);
-
-                                if (t.type.equalsIgnoreCase("RAINBOW")) {
-
-                                    discardedTaxis.add(t);
-                                    currentPlayer.playerTaxis.remove(t);
-                                    currentPlayer.taxis--;
-                                    costLeft--;
-                                    i = -1;
-                                }
                             }
                         }
                     }
@@ -1574,8 +1574,10 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
             }
 
             //Remove from the master graph (single routes)
-            map.removeEdge(districtClicked, endIndex, finger.color);
-            map.removeEdge(endIndex, districtClicked, finger.color);
+            map.removeEdge(districtClicked, endIndex,
+                    stringToColor(selectedColor));
+            map.removeEdge(endIndex, districtClicked,
+                    stringToColor(selectedColor));
 
             //We need to remove the other references to the
             //edges.
