@@ -644,11 +644,14 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
                 //Draw the cards available
                 int activeCardX = textXAxis + 150;
-                g.drawString("Available Cards", activeCardX, 80);
+                int totalCards = taxiCards.size() + activeTaxiCards.size();
+                g.drawString("Available Cards-" + totalCards,
+                        activeCardX, 80);
 
                 int handY = 100;
-                for (TaxiCard card : activeTaxiCards) {
+                for (int i = 0; i < activeTaxiCards.size(); i++) {
 
+                    TaxiCard card = activeTaxiCards.get(i);
                     card.border.x = activeCardX;
                     card.border.y = handY;
                     int w = card.border.width;
@@ -810,7 +813,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
             //FOR DEBUGGING PURPOSES HERE IS A TEMP PLAYER DEQUE
             players.addLast(new Player("Person1", "blue", 19));
             players.addLast(new Player("Person2", "white", 20));
-            players.addLast(new Player("Person3", "yellow", 21));
+            //players.addLast(new Player("Person3", "yellow", 21));
 
             //Deal 2 taxi cards to all players
             for (Player p : players) {
@@ -1027,6 +1030,15 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                     changeTurns();
                 }
 
+                //If the last card was picked up and there are no cards left,
+                //continue the game because it will stop it otherwise.
+                if (pickUpCount == 1 && taxiCards.size() == 0) {
+
+                    //Change players
+                    pickUpCount = 0;
+                    changeTurns();
+                }
+
                 break;
             }
         }
@@ -1050,20 +1062,18 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 pickUpCount++;
                 repaint();
             }
-            //Check to make sure after taking the last card our taxi deck is
-            //not empty, if it is, move the discarded pile into the taxi deck.
-            if (taxiCards.size() == 0 && discardedTaxis.size() > 0) {
-
-                Collections.shuffle(discardedTaxis);
-                for (TaxiCard card : discardedTaxis) {
-
-                    taxiCards.addLast(card);
-                }
-                discardedTaxis.clear();
-            }
 
             //If we hit the max amount of cards to pick up.
             if (pickUpCount == 2) {
+
+                //Change players
+                pickUpCount = 0;
+                changeTurns();
+            }
+
+            //If the last card was picked up and there are no cards left,
+            //continue the game because it will stop it otherwise.
+            if (pickUpCount == 1 && taxiCards.size() == 0) {
 
                 //Change players
                 pickUpCount = 0;
@@ -1255,6 +1265,40 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                     findDoubleFinger = findDoubleFinger.next;
                 }
 
+                //Check to see if the player is trying to claim a route using
+                //colors they don't have
+                boolean noCardType = true;
+                for (int i = 0; i < doubleRouteColors.size(); i++) {
+
+                    String routeColor = colorToString(
+                            doubleRouteColors.get(i));
+                    for (int j = 0; j < currentPlayer.playerTaxis.size(); j++) {
+
+                        //If the player has a card to claim a route selected
+                        // then continue to claim it
+                        TaxiCard currentCard = currentPlayer.playerTaxis.get(j);
+
+                        //If the card equals a rainbow or one of the colors to
+                        //select than we continue
+                        if (currentCard.type.equalsIgnoreCase(routeColor)
+                                || currentCard.type.equalsIgnoreCase(
+                                "RAINBOW")) {
+
+                            noCardType = false;
+                            break;
+                        }
+                    }
+                }
+
+                //Prompt the user that the card types in deck don't match
+                //the ones that they want to claim.
+                if (noCardType) {
+
+                    JOptionPane.showMessageDialog(this,
+                            "Incorrect card type!");
+                    return;
+                }
+
                 //Here we check to see of the colors we can choose one,
                 //which color we can actually draw from.
                 for (int i = 0; i < doubleRouteColors.size(); i++) {
@@ -1269,27 +1313,17 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                     }
                 }
 
+                if (doubleRouteColors.size() == 0) {
+
+                    JOptionPane.showMessageDialog(this,
+                            "Incorrect amount of cards!");
+                    return;
+                }
+
                 ArrayList<String> strColors = new ArrayList<>();
                 for (int i = 0; i < doubleRouteColors.size(); i++) {
 
                     strColors.add(colorToString(doubleRouteColors.get(i)));
-                }
-
-                boolean noCardType = true;
-                for (int i = 0; i < doubleRouteColors.size(); i++) {
-
-                    if (currentPlayer.playerTaxis.get(i).border.equals(
-                            doubleRouteColors.get(i))) {
-
-                        noCardType = false;
-                    }
-                }
-
-                if (noCardType) {
-
-                    JOptionPane.showMessageDialog(this,
-                            "Incorrect card type!");
-                    return;
                 }
 
                 if (isDouble) {
@@ -1916,6 +1950,18 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
      * This is a method to reuse when changing players turns
      */
     public void changeTurns() {
+
+        //Check to make sure after taking the last card our taxi deck is
+        //not empty, if it is, move the discarded pile into the taxi deck.
+        if (taxiCards.size() == 0 && discardedTaxis.size() > 0) {
+
+            Collections.shuffle(discardedTaxis);
+            for (TaxiCard card : discardedTaxis) {
+
+                taxiCards.addLast(card);
+            }
+            discardedTaxis.clear();
+        }
 
         //Change players
         players.addLast(currentPlayer);
