@@ -813,7 +813,8 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
             //FOR DEBUGGING PURPOSES HERE IS A TEMP PLAYER DEQUE
             players.addLast(new Player("Person1", "blue", 19));
             players.addLast(new Player("Person2", "white", 20));
-            //players.addLast(new Player("Person3", "yellow", 21));
+            players.addLast(new Player("Person3", "yellow", 21));
+            players.addLast(new Player("Person4", "purple", 22));
 
             //Deal 2 taxi cards to all players
             for (Player p : players) {
