@@ -1101,6 +1101,9 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
         //1) That the taxi card deck is not empty
         if (taxiCards.size() == 0 && discardedTaxis.size() > 0) {
 
+            JOptionPane.showMessageDialog(this, "Deck " +
+                    "has been redistributed due to the transport cards being " +
+                    "empty!");
             //Shuffle the discards
             Collections.shuffle(discardedTaxis);
             //Add the discards into the transport card deck
