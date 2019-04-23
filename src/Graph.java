@@ -161,6 +161,40 @@ public class Graph {
     }
 
     /***
+     * Determines if the graph contains a path from source to destination
+     * @param src, the int value of the source vertex
+     * @param dest, the int value of the destination vertex
+     * @return true if the graph contains the given path
+     */
+    public boolean findPath(int src, int dest) {
+        //The finger to traverse the graph
+        Edge finger = vertices[src].firstEdge;
+        while (finger!= null){
+        //If the destination was found return true
+            if (finger.dest==dest){
+                return true;
+            }
+        finger = finger.next;
+        }
+        //There is not a path from given source to given destination
+        return false;
+    }
+
+    /***
+     * Counts the number of attractions in the graph
+     * @return an int, the count of attractions
+     */
+    public int numAttractions(){
+        int attractionCount = 0;
+        for (Vertex v: vertices){
+            if (v.isAttraction){
+                attractionCount++;
+            }
+        }
+        return attractionCount;
+    }
+
+    /***
      * A class to hold each district as a vertex on the graph.
      */
     protected class Vertex {

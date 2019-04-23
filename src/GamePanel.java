@@ -51,6 +51,9 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
     private boolean lessThanTwoTaxis;
     private Player lastPlayer;
 
+    //Used for claimed edges
+    private int E;
+
     //The constructor for Game Panel
     public GamePanel() {
 
@@ -719,6 +722,29 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 //This is where we show who won the game with the scorecard
                 //There will be some animations that we can add later.
                 //REFER TO ISSUE #8
+                Player winner = players.getFirst();
+                for (Player p : players) {
+
+                    //Add points for attractions
+                    p.points += p.claimedRoutes.numAttractions();
+
+                    //Add points for completed destination cards, subtract for incomplete destination cards
+                    for (DestCard c : p.playerDestCards){
+                        if (p.claimedRoutes.findPath(c.startDistrict, c.endDistrict)
+                                || p.claimedRoutes.findPath(c.endDistrict, c.startDistrict)){
+                            p.points+= c.worth;
+                        }
+                        else {
+                            p.points = p.points-c.worth;
+                        }
+                    }
+
+                    //Determine the winner
+                    if (p.points>winner.points){
+                        winner = p;
+                    }
+
+                }
 
                 break;
         }
@@ -883,9 +909,9 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                             endDistrict, cardNum));
                 }
             } catch (Exception err) {
-
                 err.printStackTrace();
             }
+
             //Shuffle the destination card deck and place it into the deck
             Collections.shuffle(myDestCards);
             for (int i = 0; i < myDestCards.size(); i++) {
@@ -893,7 +919,12 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
             }
 
             //DEAL THE DESTINATION CARDS TO EACH PLAYER
-            //REFER TO ISSUE #10
+            //REFER TO ISSUE #10 Fix to make option to take 1 or both
+            for (Player p : players) {
+
+                p.playerDestCards.add(destCards.removeFirst());
+                p.playerDestCards.add(destCards.removeFirst());
+            }
 
             //Set our current player to the youngest
             currentPlayer = players.removeFirst();
@@ -1678,6 +1709,22 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                     endIndex,
                     finger.color,
                     finger.cost);
+            E++;
+
+            //Add points for route claimed
+            if (finger.cost==1){
+                currentPlayer.points+=1;
+            }
+            if (finger.cost==2){
+                currentPlayer.points+=2;
+            }
+            if (finger.cost==3){
+                currentPlayer.points+=4;
+            }
+            if (finger.cost==4){
+                currentPlayer.points+=7;
+            }
+
 
             //Add the graphical version of the route to player
             Color colorSelected = null;
