@@ -43,7 +43,8 @@ During each turn one of the following actions must be completed:
      new cards from the deck face up to replace them. 
      • When the deck is empty, shuffle the discarded cards to create a new Transportation cards deck.
  Claim a Route 
-     • To claim a Route, you must discard a number of cards from your hand equal to the number of spaces of this Route and place a Taxi on each of those spaces. 
+     • To claim a Route, you must discard a number of cards from your hand equal to the number of spaces of this Route
+       and place a Taxi on each of those spaces.
      • Most Routes require a speci¬fically colored set of cards. 
      • The gray Routes can be claimed with a set of cards of any one color
      • You can claim any open Route on the board, even if it is not connected to a Route you previously claimed. 

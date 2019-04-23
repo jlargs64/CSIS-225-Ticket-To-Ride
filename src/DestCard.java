@@ -18,6 +18,7 @@ public class DestCard {
     //The image we need to represent the dest card
     protected Image cardImage;
 
+
     /**
      * Constructor for the Destination class that initialize the Destination
      * trip array.
