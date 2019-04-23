@@ -27,7 +27,8 @@ public class DestCard {
      * @param startDistrict the start point of the trip
      * @param endDistrict   the  end point of the trip
      */
-    public DestCard(int worth, int startDistrict, int endDistrict, String cardNum) {
+    public DestCard(int worth, int startDistrict, int endDistrict,
+                    String cardNum) {
 
         //Initialize our instance variables
         this.worth = worth;

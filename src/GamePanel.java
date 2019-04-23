@@ -183,7 +183,8 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 1,
                 4,
                 new Polygon(
-                        new int[]{225, 261, 267, 296, 300, 314, 300, 287, 259, 221},
+                        new int[]{225, 261, 267, 296, 300, 314, 300, 287,
+                                259, 221},
                         new int[]{24, 35, 39, 66, 71, 104, 109, 77, 50, 37},
                         10)));
         //Times Square to Empire St. Orange
