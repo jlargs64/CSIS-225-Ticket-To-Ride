@@ -37,7 +37,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
     private int districtClicked;
     //Buttons
     private JButton playButton, helpButton, quitButton, backButton;
-    private JButton switchButton;
+    private JButton switchButton, showDestCards;
     //Card objects
     private Deque<TaxiCard> taxiCards;
     private Deque<DestCard> destCards;
@@ -122,12 +122,18 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
         switchButton.setHorizontalTextPosition(AbstractButton.CENTER);
         switchButton.setBounds(width - 250, height - 100, 200, 100);
 
+        showDestCards = new JButton("Destination Cards");
+        showDestCards.setVerticalTextPosition(AbstractButton.CENTER);
+        showDestCards.setHorizontalTextPosition(AbstractButton.CENTER);
+        showDestCards.setBounds(width - 250, height - 50, 200, 50);
+
         // Add action listeners for if a button is clicked
         helpButton.addActionListener(this);
         playButton.addActionListener(this);
         quitButton.addActionListener(this);
         backButton.addActionListener(this);
         switchButton.addActionListener(this);
+        showDestCards.addActionListener(this);
 
         //Init our routes array
         routes = new ArrayList<>();
@@ -531,6 +537,9 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 remove(playButton);
                 remove(helpButton);
                 remove(quitButton);
+
+                //Add buttons
+                add(showDestCards);
 
                 //Make the font for text
                 Font titleFont = new Font("Monospace", Font.BOLD, 16);
@@ -990,6 +999,9 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
             //Repaint and end the method
             repaint();
+        } else if (e.getSource().equals(showDestCards)) {
+
+            JOptionPane.showMessageDialog(this, "DEST CARDS SHOWN HERE");
         }
     }
 
