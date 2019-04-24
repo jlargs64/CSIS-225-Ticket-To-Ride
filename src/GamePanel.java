@@ -730,18 +730,17 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                     p.points += p.claimedRoutes.numAttractions();
 
                     //Add points for completed destination cards, subtract for incomplete destination cards
-                    for (DestCard c : p.playerDestCards){
+                    for (DestCard c : p.playerDestCards) {
                         if (p.claimedRoutes.findPath(c.startDistrict, c.endDistrict)
-                                || p.claimedRoutes.findPath(c.endDistrict, c.startDistrict)){
-                            p.points+= c.worth;
-                        }
-                        else {
-                            p.points = p.points-c.worth;
+                                || p.claimedRoutes.findPath(c.endDistrict, c.startDistrict)) {
+                            p.points += c.worth;
+                        } else {
+                            p.points = p.points - c.worth;
                         }
                     }
 
                     //Determine the winner
-                    if (p.points>winner.points){
+                    if (p.points > winner.points) {
                         winner = p;
                     }
 
@@ -764,177 +763,192 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
             //Send the player set up form
             //We pass in the player deque to get our data
-            //PlayerSelectionFrame playerSelectForm =
-            //       new PlayerSelectionFrame(players);
+            PlayerSelectionFrame playerSelectForm =
+                    new PlayerSelectionFrame(players);
             //Prompt the users with the form
-            //JDialog playerSelect = new JDialog(playerSelectForm);
+            JDialog playerSelect = new JDialog(playerSelectForm);
 
             //We add a listener to see if the dialog window how been closed.
             //If it was closed it means it was successful or program exited.
-            //playerSelectForm.addWindowListener(new WindowAdapter() {
-            ///**
-            //* Invoked when a window has been closed.
-            //*
-            //* @param e a window event object
-            //*/
-            //    @Override
-            //    public void windowClosed(WindowEvent e) {
-            //        super.windowClosed(e);
+            playerSelectForm.addWindowListener(new WindowAdapter() {
+                /**
+                 * Invoked when a window has been closed.
+                 *
+                 * @param e a window event object
+                 */
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    super.windowClosed(e);
 
-            //The code below belongs in here but for debugging purposes
-            //I am leaving it out so the form doesn't have to be filled
-            //out every time.
-            //}
-            //});
+                    //Set our current state to player selection
+                    currentState = GameState.values()[2];
 
-            //Set our current state to player selection
-            currentState = GameState.values()[2];
+                    //Game Start Initialization
+                    //Initialize our array deques of cards
+                    taxiCards = new LinkedList<>();
+                    activeTaxiCards = new ArrayList<>();
+                    destCards = new LinkedList<>();
+                    discardedTaxis = new ArrayList<>();
 
-            //Game Start Initialization
-            //Initialize our array deques of cards
-            taxiCards = new LinkedList<>();
-            activeTaxiCards = new ArrayList<>();
-            destCards = new LinkedList<>();
-            discardedTaxis = new ArrayList<>();
+                    //Init turn number
+                    turnNum = 0;
 
-            //Init turn number
-            turnNum = 0;
+                    //Init our district clicked
+                    districtClicked = -1;
+                    lessThanTwoTaxis = false;
 
-            //Init our district clicked
-            districtClicked = -1;
-            lessThanTwoTaxis = false;
+                    //Adding taxi cards to our deck
+                    //6 each color and 8 rainbow
+                    //Use a temporary ArrayList so that we can shuffle later.
+                    ArrayList<TaxiCard> tempCards = new ArrayList<>();
+                    for (int i = 0; i < 6; i++) {
 
-            //Adding taxi cards to our deck
-            //6 each color and 8 rainbow
-            //Use a temporary ArrayList so that we can shuffle later.
-            ArrayList<TaxiCard> tempCards = new ArrayList<>();
-            for (int i = 0; i < 6; i++) {
+                        tempCards.add(new TaxiCard("blue", new
+                                Rectangle(0, 0, CARD_W, CARD_H)));
+                        tempCards.add(new TaxiCard("green", new
+                                Rectangle(0, 0, CARD_W, CARD_H)));
+                        tempCards.add(new TaxiCard("orange", new
+                                Rectangle(0, 0, CARD_W, CARD_H)));
+                        tempCards.add(new TaxiCard("black", new
+                                Rectangle(0, 0, CARD_W, CARD_H)));
+                        tempCards.add(new TaxiCard("pink", new
+                                Rectangle(0, 0, CARD_W, CARD_H)));
+                        tempCards.add(new TaxiCard("red", new
+                                Rectangle(0, 0, CARD_W, CARD_H)));
+                    }
+                    //Add the 8 locomotives
+                    for (int i = 0; i < 8; i++) {
+                        tempCards.add(new TaxiCard("rainbow", new
+                                Rectangle(0, 0, CARD_W, CARD_H)));
+                    }
+                    //Shuffle the taxi card deck
+                    Collections.shuffle(tempCards);
 
-                tempCards.add(new TaxiCard("blue", new
-                        Rectangle(0, 0, CARD_W, CARD_H)));
-                tempCards.add(new TaxiCard("green", new
-                        Rectangle(0, 0, CARD_W, CARD_H)));
-                tempCards.add(new TaxiCard("orange", new
-                        Rectangle(0, 0, CARD_W, CARD_H)));
-                tempCards.add(new TaxiCard("black", new
-                        Rectangle(0, 0, CARD_W, CARD_H)));
-                tempCards.add(new TaxiCard("pink", new
-                        Rectangle(0, 0, CARD_W, CARD_H)));
-                tempCards.add(new TaxiCard("red", new
-                        Rectangle(0, 0, CARD_W, CARD_H)));
-            }
-            //Add the 8 locomotives
-            for (int i = 0; i < 8; i++) {
-                tempCards.add(new TaxiCard("rainbow", new
-                        Rectangle(0, 0, CARD_W, CARD_H)));
-            }
-            //Shuffle the taxi card deck
-            Collections.shuffle(tempCards);
+                    //Place our temp hand into the deque it handles
+                    // like a card deck.
+                    //Add it to our deck
+                    taxiCards.addAll(tempCards);
+                    //We are done with this structure now
+                    tempCards.clear();
 
-            //Place our temp hand into the deque it handles like a card deck.
-            //Add it to our deck
-            taxiCards.addAll(tempCards);
-            //We are done with this structure now
-            tempCards.clear();
+                    //Deal 2 taxi cards to all players
+                    for (Player p : players) {
 
-            //FOR DEBUGGING PURPOSES HERE IS A TEMP PLAYER DEQUE
-            players.addLast(new Player("Person1", "blue", 19));
-            players.addLast(new Player("Person2", "white", 20));
-            players.addLast(new Player("Person3", "yellow", 21));
-            players.addLast(new Player("Person4", "purple", 22));
+                        p.playerTaxis.add(taxiCards.removeFirst());
+                        p.playerTaxis.add(taxiCards.removeFirst());
+                    }
 
-            //Deal 2 taxi cards to all players
-            for (Player p : players) {
-
-                p.playerTaxis.add(taxiCards.removeFirst());
-                p.playerTaxis.add(taxiCards.removeFirst());
-            }
-
-            //Deal 5 cards face up from top of deck
-            for (int i = 0; i < 5; i++) {
-
-                activeTaxiCards.add(taxiCards.removeFirst());
-            }
-            //Make sure there aren't more than 3 rainbow taxi's
-            //otherwise discard
-            int taxiCount = 0;
-            for (TaxiCard card : activeTaxiCards) {
-
-                //Count the amount of rainbow cards in the active deck.
-                if (card.type.equalsIgnoreCase("rainbow")) {
-                    taxiCount++;
-                }
-                //If three taxis exist discard all 5
-                if (taxiCount == 3) {
-
-                    //Remove all the cards from active to discard pile.
-                    discardedTaxis.addAll(activeTaxiCards);
-                    activeTaxiCards.clear();
-
-                    //Redraw 5 new cards
-                    for (int k = 0; k < 5; k++) {
+                    //Deal 5 cards face up from top of deck
+                    for (int i = 0; i < 5; i++) {
 
                         activeTaxiCards.add(taxiCards.removeFirst());
                     }
-                    taxiCount = 0;
-                    break;
+                    //Make sure there aren't more than 3 rainbow taxi's
+                    //otherwise discard
+                    int taxiCount = 0;
+                    for (TaxiCard card : activeTaxiCards) {
+
+                        //Count the amount of rainbow cards in the active deck.
+                        if (card.type.equalsIgnoreCase("rainbow")) {
+                            taxiCount++;
+                        }
+                        //If three taxis exist discard all 5
+                        if (taxiCount == 3) {
+
+                            //Remove all the cards from active to discard pile.
+                            discardedTaxis.addAll(activeTaxiCards);
+                            activeTaxiCards.clear();
+
+                            //Redraw 5 new cards
+                            for (int k = 0; k < 5; k++) {
+
+                                activeTaxiCards.add(taxiCards.removeFirst());
+                            }
+                            break;
+                        }
+                    }
+
+                    //Adding dest cards to our deck
+                    List<DestCard> myDestCards = new ArrayList<DestCard>();
+                    try {
+                        //Read in the destination card data
+                        Scanner destCardsScan = new Scanner(
+                                new File("destCards.txt"));
+
+                        while (destCardsScan.hasNextLine()) {
+
+                            //String tokenizer to parse the string
+                            StringTokenizer destCardInfo = new
+                                    StringTokenizer(destCardsScan.nextLine());
+
+                            //How much the destination card is worth
+                            int worth = Integer.valueOf(
+                                    destCardInfo.nextToken());
+
+                            //Int representing the start city
+                            int startDistrict = Integer.valueOf(
+                                    destCardInfo.nextToken());
+
+                            //Int representing the end city
+                            int endDistrict = Integer.valueOf(
+                                    destCardInfo.nextToken());
+
+                            //String representing the path to the image we need
+                            String cardNum = destCardInfo.nextToken();
+                            myDestCards.add(new DestCard(worth, startDistrict,
+                                    endDistrict, cardNum));
+                        }
+                    } catch (Exception err) {
+                        err.printStackTrace();
+                    }
+
+                    //Shuffle the destination card deck and place it
+                    // into the deck
+                    Collections.shuffle(myDestCards);
+                    for (int i = 0; i < myDestCards.size(); i++) {
+                        destCards.addLast(myDestCards.get(i));
+                    }
+
+                    //DEAL THE DESTINATION CARDS TO EACH PLAYER
+                    //REFER TO ISSUE #10 Fix to make option to take 1 or both
+            /*for (int i = 0; i < players.size(); i++) {
+
+                //Set our current player to the youngest
+                currentPlayer = players.removeFirst();
+
+                Object[] destCardsDealt = {destCards.removeFirst(),
+                        destCards.removeFirst()};
+
+                DestCardSelectionFrame destCardForm =
+                        new DestCardSelectionFrame(destCardsDealt,
+                                currentPlayer);
+
+                //Prompt the users with the form
+                JDialog destCardSelection = new JDialog(destCardForm);
+
+                destCardSelection.addWindowListener(new WindowAdapter() {
+
+                    /**
+                     * Invoked when a window has been closed.
+                     *
+                     * @param e a window event object
+                     *//*
+                    @Override
+                    public void windowClosed(WindowEvent e) {
+                        super.windowClosed(e);
+                    }
+                });
+                players.addLast(currentPlayer);
+                currentPlayer = players.removeFirst();
+            }*/
+
+                    //Set our current player to the youngest
+                    currentPlayer = players.removeFirst();
+
+                    //Repaint and end the method
+                    repaint();
                 }
-            }
-
-            //Adding dest cards to our deck
-            List<DestCard> myDestCards = new ArrayList<DestCard>();
-            try {
-                //Read in the destination card data
-                Scanner destCardsScan = new Scanner(
-                        new File("destCards.txt"));
-
-                while (destCardsScan.hasNextLine()) {
-
-                    //String tokenizer to parse the string
-                    StringTokenizer destCardInfo = new
-                            StringTokenizer(destCardsScan.nextLine());
-
-                    //How much the destination card is worth
-                    int worth = Integer.valueOf(destCardInfo.nextToken());
-
-                    //Int representing the start city
-                    int startDistrict = Integer.valueOf(
-                            destCardInfo.nextToken());
-
-                    //Int representing the end city
-                    int endDistrict = Integer.valueOf(destCardInfo.nextToken());
-
-                    //String representing the path to the image we need
-                    String cardNum = destCardInfo.nextToken();
-                    myDestCards.add(new DestCard(worth, startDistrict,
-                            endDistrict, cardNum));
-                }
-            } catch (Exception err) {
-                err.printStackTrace();
-            }
-
-            //Shuffle the destination card deck and place it into the deck
-            Collections.shuffle(myDestCards);
-            for (int i = 0; i < myDestCards.size(); i++) {
-                destCards.addLast(myDestCards.get(i));
-            }
-
-            //DEAL THE DESTINATION CARDS TO EACH PLAYER
-            //REFER TO ISSUE #10 Fix to make option to take 1 or both
-            for (Player p : players) {
-
-                p.playerDestCards.add(destCards.removeFirst());
-                p.playerDestCards.add(destCards.removeFirst());
-            }
-
-            //Set our current player to the youngest
-            currentPlayer = players.removeFirst();
-
-            //Repaint and end the method
-            repaint();
-
-            JOptionPane.showMessageDialog(this,
-                    "It is now " + currentPlayer.name + "\'s turn");
+            });
         }
 
         //Enter the help screen
@@ -1713,17 +1727,17 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
             E++;
 
             //Add points for route claimed
-            if (finger.cost==1){
-                currentPlayer.points+=1;
+            if (finger.cost == 1) {
+                currentPlayer.points += 1;
             }
-            if (finger.cost==2){
-                currentPlayer.points+=2;
+            if (finger.cost == 2) {
+                currentPlayer.points += 2;
             }
-            if (finger.cost==3){
-                currentPlayer.points+=4;
+            if (finger.cost == 3) {
+                currentPlayer.points += 4;
             }
-            if (finger.cost==4){
-                currentPlayer.points+=7;
+            if (finger.cost == 4) {
+                currentPlayer.points += 7;
             }
 
 
