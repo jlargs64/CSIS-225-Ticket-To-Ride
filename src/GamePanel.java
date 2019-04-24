@@ -20,7 +20,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
     private final int height;
     private final int CARD_W = 100;
     private final int CARD_H = 50;
-    String theme = "assets/TicketToRide-TitleTheme.wav";
+    String theme = "../assets/TicketToRide-TitleTheme.wav";
     //Game state related variables
     private GameState currentState;
     private Graph map;
