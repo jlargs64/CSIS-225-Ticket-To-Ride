@@ -281,7 +281,7 @@ public class PlayerSelectionPanel extends JPanel implements ActionListener {
 
             //If the color is not in the colors array it is either
             //Already used or not a valid choice
-            if (!colors.contains(playerColors.get(i).toUpperCase())) {
+            if (!colors.contains(playerColors.get(i).toUpperCase().trim())) {
                 return false;
             } else {
                 //Remove it so it can't be picked again

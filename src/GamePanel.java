@@ -1021,6 +1021,9 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
         Point pointClicked = e.getPoint();
 
+        //Check if a route is being claimed
+        findRoute(pointClicked);
+
         //This is for checking if we are picking up an active card
         for (int i = 0; i < activeTaxiCards.size(); i++) {
 
@@ -1114,32 +1117,13 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
                 //Get our new card.
                 TaxiCard newCard = taxiCards.removeFirst();
-                if (newCard.type.equalsIgnoreCase("RAINBOW")
-                        && pickUpCount == 0) {
 
-                    //Change players
-                    pickUpCount = 0;
-                    changeTurns();
-                } else if (newCard.type.equalsIgnoreCase("RAINBOW")
-                        && pickUpCount == 1) {
-                    //We can't pick up rainbow so discard and prompt user to
-                    //pick another card
-                    discardedTaxis.add(newCard);
-
-                    JOptionPane.showMessageDialog(this,
-                            "You can't pick up a rainbow since " +
-                                    "you already picked up a card! Draw a new" +
-                                    "card!");
-                    return;
-                } else {
-
-                    //Add the new card to the player deck.
-                    currentPlayer.playerTaxis.add(newCard);
-                    pickUpCount++;
-                }
-
-                repaint();
+                //Add the new card to the player deck.
+                currentPlayer.playerTaxis.add(newCard);
+                pickUpCount++;
             }
+
+            repaint();
 
             //If we hit the max amount of cards to pick up.
             if (pickUpCount == 2) {
@@ -1243,9 +1227,6 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 }
             }
         }
-
-        //Check if a route is being claimed
-        findRoute(pointClicked);
     }
 
     /**
@@ -1291,24 +1272,28 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
      */
     public void findRoute(Point pointClicked) {
 
-        if (pickUpCount == 0) {
-            for (int i = 0; i < districts.length; i++) {
-                if (districts[i].contains(pointClicked)) {
 
-                    if (districtClicked != -1) {
+        for (int i = 0; i < districts.length; i++) {
+            if (districts[i].contains(pointClicked)) {
 
-                        //Claim the route
-                        claimRoute(i);
+                if (districtClicked != -1) {
 
-                        //Reset district clicked back to -1
-                        districtClicked = -1;
-                        repaint();
-                    } else {
-                        districtClicked = i;
-                        repaint();
+                    //Claim the route
+                    claimRoute(i);
+
+                    //Reset district clicked back to -1
+                    districtClicked = -1;
+                    repaint();
+                } else {
+                    if (pickUpCount == 1) {
+                        JOptionPane.showMessageDialog(this, "You already picked up a " +
+                                "card, pick up one more card to continue!");
+                        return;
                     }
-                    break;
+                    districtClicked = i;
+                    repaint();
                 }
+                break;
             }
         }
     }
