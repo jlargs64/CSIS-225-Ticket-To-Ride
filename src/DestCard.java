@@ -42,6 +42,6 @@ public class DestCard {
 
         //Assigning the said image
         this.cardImage = toolkit.getImage(
-                "assets\\dest-cards\\dest-card" + "cardNum" + ".jpg");
+                "assets\\dest-cards\\dest-card" + cardNum + ".jpg");
     }
 }

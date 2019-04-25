@@ -924,24 +924,9 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                     }
 
                     //DEAL THE DESTINATION CARDS TO EACH PLAYER
-                    //REFER TO ISSUE #10 Fix to make option to take 1 or both
-                    for (int i = 0; i < players.size(); i++) {
-
-                        //Set our current player to the youngest
-                        currentPlayer = players.removeFirst();
-
-                        Object[] destCardsDealt = {destCards.removeFirst(),
-                                destCards.removeFirst()};
-
-                        DestCardSelectionFrame destCardForm =
-                                new DestCardSelectionFrame(destCardsDealt,
-                                        currentPlayer);
-
-                        //Prompt the users with the form
-                        JDialog destCardSelection = new JDialog(destCardForm);
-
-                        players.addLast(currentPlayer);
-                        currentPlayer = players.removeFirst();
+                    for (Player p : players) {
+                        p.playerDestCards.add(destCards.removeFirst());
+                        p.playerDestCards.add(destCards.removeFirst());
                     }
 
                     //Set our current player to the youngest
@@ -966,8 +951,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
         //Kill the program
         else if (e.getSource().equals(quitButton)) {
 
-            //Repaint and end the method
-            repaint();
+            System.exit(1);
         }
 
         //Switch the help messages
@@ -994,7 +978,14 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
             repaint();
         } else if (e.getSource().equals(showDestCards)) {
 
-            JOptionPane.showMessageDialog(this, "DEST CARDS SHOWN HERE");
+            JFrame shownCards = new JFrame("Destination Cards");
+            shownCards.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            shownCards.add(new
+                    ShowDestCardsPanel(currentPlayer.playerDestCards));
+
+            shownCards.setLocationRelativeTo(null);
+            shownCards.pack();
+            shownCards.setVisible(true);
         }
     }
 
@@ -1129,7 +1120,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
         //Draw 2 destination cards, the player can keep 1 or both.
         else if (destDeckRect.contains(pointClicked)) {
             //Do something
-            //ISSUE #10
+            currentPlayer.playerDestCards.add(destCards.removeFirst());
         }
 
         //After everything happens check for 2 things
