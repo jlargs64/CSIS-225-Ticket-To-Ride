@@ -15,49 +15,31 @@ public class DestCardSelectionPanel extends JPanel implements ActionListener {
 
     private JFrame parentFrame;
     private Object[] destCards;
-    private JButton submit;
+    int width, height;
     private JPanel selectionPanel, helpPanel;
+    private JButton both;
 
     public DestCardSelectionPanel(JFrame frame, Object[] destCards
             , Player currentPlayer) {
 
         //Set our panels size
         setPreferredSize(new Dimension(600, 400));
+        width = 600;
+        height = 400;
+
         parentFrame = frame;
         this.destCards = destCards;
 
-        //Initialize our radio buttons for destination card selection
-        JRadioButton leftCard = new JRadioButton("Left Card");
-        leftCard.setActionCommand("left");
-
-        JRadioButton rightCard = new JRadioButton("Right Card");
-        rightCard.setActionCommand("right");
-
-        JRadioButton bothCards = new JRadioButton("Both Cards");
-        bothCards.setActionCommand("both");
-
-        //Button group is used for keeping track of which button is clicked.
-        ButtonGroup buttons = new ButtonGroup();
-        buttons.add(leftCard);
-        buttons.add(rightCard);
-        buttons.add(bothCards);
-
-        //Set two players as default
-        bothCards.setSelected(true);
-
-        submit = new JButton("Submit");
-
+        both = new JButton("Both");
+        both.setVerticalTextPosition(AbstractButton.CENTER);
+        both.setHorizontalTextPosition(AbstractButton.CENTER);
+        both.setBounds(width / 2, height - 100, 200, 100);
         //ActionListeners are for seeing if a button was clicked
-        leftCard.addActionListener(this);
-        rightCard.addActionListener(this);
-        bothCards.addActionListener(this);
-        submit.addActionListener(this);
+        both.addActionListener(this);
 
-        selectionPanel = new JPanel(new GridLayout(1, 3));
-        selectionPanel.add(leftCard);
-        selectionPanel.add(rightCard);
-        selectionPanel.add(bothCards);
-        selectionPanel.add(submit);
+        selectionPanel = new JPanel();
+        selectionPanel.setLayout(null);
+        selectionPanel.add(both);
         add(selectionPanel, BorderLayout.CENTER);
 
         helpPanel = new JPanel(new GridLayout(0, 6));

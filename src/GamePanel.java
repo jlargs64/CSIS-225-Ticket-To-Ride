@@ -740,10 +740,13 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                     //Add points for attractions
                     p.points += p.claimedRoutes.numAttractions();
 
-                    //Add points for completed destination cards, subtract for incomplete destination cards
+                    //Add points for completed destination cards, subtract for
+                    // incomplete destination cards
                     for (DestCard c : p.playerDestCards) {
-                        if (p.claimedRoutes.findPath(c.startDistrict, c.endDistrict)
-                                || p.claimedRoutes.findPath(c.endDistrict, c.startDistrict)) {
+                        if (p.claimedRoutes.findPath(c.startDistrict,
+                                c.endDistrict)
+                                || p.claimedRoutes.findPath(c.endDistrict,
+                                c.startDistrict)) {
                             p.points += c.worth;
                         } else {
                             p.points = p.points - c.worth;
@@ -922,36 +925,24 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
                     //DEAL THE DESTINATION CARDS TO EACH PLAYER
                     //REFER TO ISSUE #10 Fix to make option to take 1 or both
-            /*for (int i = 0; i < players.size(); i++) {
+                    for (int i = 0; i < players.size(); i++) {
 
-                //Set our current player to the youngest
-                currentPlayer = players.removeFirst();
+                        //Set our current player to the youngest
+                        currentPlayer = players.removeFirst();
 
-                Object[] destCardsDealt = {destCards.removeFirst(),
-                        destCards.removeFirst()};
+                        Object[] destCardsDealt = {destCards.removeFirst(),
+                                destCards.removeFirst()};
 
-                DestCardSelectionFrame destCardForm =
-                        new DestCardSelectionFrame(destCardsDealt,
-                                currentPlayer);
+                        DestCardSelectionFrame destCardForm =
+                                new DestCardSelectionFrame(destCardsDealt,
+                                        currentPlayer);
 
-                //Prompt the users with the form
-                JDialog destCardSelection = new JDialog(destCardForm);
+                        //Prompt the users with the form
+                        JDialog destCardSelection = new JDialog(destCardForm);
 
-                destCardSelection.addWindowListener(new WindowAdapter() {
-
-                    /**
-                     * Invoked when a window has been closed.
-                     *
-                     * @param e a window event object
-                     *//*
-                    @Override
-                    public void windowClosed(WindowEvent e) {
-                        super.windowClosed(e);
+                        players.addLast(currentPlayer);
+                        currentPlayer = players.removeFirst();
                     }
-                });
-                players.addLast(currentPlayer);
-                currentPlayer = players.removeFirst();
-            }*/
 
                     //Set our current player to the youngest
                     currentPlayer = players.removeFirst();
