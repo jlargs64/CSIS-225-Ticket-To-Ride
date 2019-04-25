@@ -1119,8 +1119,15 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
         }
         //Draw 2 destination cards, the player can keep 1 or both.
         else if (destDeckRect.contains(pointClicked)) {
-            //Do something
-            currentPlayer.playerDestCards.add(destCards.removeFirst());
+
+            //Add two destination cards STILL WORKING ON CHOOSING 1/2
+
+            //Only take 2 destination cards if there are 2 available
+            if (destCards.size() > 2) {
+                currentPlayer.playerDestCards.add(destCards.removeFirst());
+                currentPlayer.playerDestCards.add(destCards.removeFirst());
+                changeTurns();
+            }
         }
 
         //After everything happens check for 2 things
@@ -1172,6 +1179,11 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
         int taxiCount = 0;
         for (int i = 0; i < activeTaxiCards.size(); i++) {
 
+            //We don't have to reshuffle if there are 3 rainbow left and
+            //only about 5 cards
+            if (taxiCards.size() < 5) {
+                break;
+            }
             //Get the current card
             TaxiCard card = activeTaxiCards.get(i);
 
@@ -1312,9 +1324,10 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                     districtClicked = -1;
                     repaint();
                 } else {
-                    if (pickUpCount == 1) {
-                        JOptionPane.showMessageDialog(this, "You already picked up a " +
-                                "card, pick up one more card to continue!");
+                    if (pickUpCount == 1 && taxiCards.size() != 0) {
+                        JOptionPane.showMessageDialog(this,
+                                "You already picked up a card, pick up one" +
+                                        " more card to continue!");
                         return;
                     }
                     districtClicked = i;
