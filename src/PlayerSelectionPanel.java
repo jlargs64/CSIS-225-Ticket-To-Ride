@@ -5,8 +5,6 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Deque;
 
-import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
-
 /**
  * The player selection panel for getting the data from the player selection
  * form.
@@ -285,7 +283,7 @@ public class PlayerSelectionPanel extends JPanel implements ActionListener {
                 return false;
             } else {
                 //Remove it so it can't be picked again
-                colors.remove(playerColors.get(i).toUpperCase());
+                colors.remove(playerColors.get(i).toUpperCase().trim());
             }
 
         }

@@ -1,10 +1,12 @@
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-import java.util.*;
 import java.util.List;
-import javax.sound.sampled.*;
+import java.util.*;
 
 /**
  * The game panel for displaying the various game states of ticket to ride.
@@ -1278,6 +1280,49 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
                 if (districtClicked != -1) {
 
+                    //Check if the player is trying to claim a double
+                    //route when only two players are playing which is not
+                    //allowed
+                    if (players.size() == 1) {
+
+                        for (Player p : players) {
+
+                            Graph.Edge finger =
+                                    p.claimedRoutes.vertices
+                                            [districtClicked].firstEdge;
+
+                            while (finger != null) {
+
+                                if (finger.dest == i) {
+                                    JOptionPane.showMessageDialog(this,
+                                            "Player already claimed route.");
+
+                                    //Reset district clicked back to -1
+                                    districtClicked = -1;
+                                    return;
+                                }
+
+                                finger = finger.next;
+                            }
+
+                            finger = p.claimedRoutes.vertices
+                                    [i].firstEdge;
+
+                            while (finger != null) {
+
+                                if (finger.dest == districtClicked) {
+                                    JOptionPane.showMessageDialog(this,
+                                            "Player already claimed route.");
+
+                                    //Reset district clicked back to -1
+                                    districtClicked = -1;
+                                    return;
+                                }
+
+                                finger = finger.next;
+                            }
+                        }
+                    }
                     //Claim the route
                     claimRoute(i);
 
