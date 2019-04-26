@@ -952,7 +952,14 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                     }
 
                     //WHICH DESTINATION CARD WOULD YOU LIKE TO KEEP
-
+                    for(Player p: players){
+                        
+                        int decision = JOptionPane.showConfirmDialog(null,"Keep both destination cards?",
+                                "choose one", JOptionPane.YES_NO_OPTION);
+                        if(decision == JOptionPane.NO_OPTION){
+                            JOptionPane.showMessageDialog(null,"Remove One");
+                        }
+                    }
                     //Set our current player to the youngest
                     currentPlayer = players.removeFirst();
 
