@@ -2,6 +2,7 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.*;
+import javax.swing.text.html.HTMLDocument;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
@@ -47,6 +48,10 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
     private ArrayList<TaxiCard> discardedTaxis;
     //Player related variables
     private Deque<Player> players = new LinkedList<>();
+    private Player player1;
+    private Player player2;
+    private Player player3;
+    private Player player4;
     private Player currentPlayer;
     //Used for turns
     private int pickUpCount = 0;
@@ -489,6 +494,10 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
         imgFileLocation = "assets\\instructions-2.jpg";
         helpImages[1] = toolkit.getImage(imgFileLocation);
 
+        //Score Menu
+        imgFileLocation = "assets\\score-card.jpg";
+        scoreCard = toolkit.getImage(imgFileLocation);
+
         //Switch case for dis1laying different states
         switch (currentState) {
 
@@ -734,11 +743,20 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 //This is where we show who won the game with the scorecard
                 //There will be some animations that we can add later.
                 //REFER TO ISSUE #8
+                remove(showDestCards);
+                g.drawImage(scoreCard, 0, 0, 800,600, this );
                 Player winner = players.getFirst();
+                String playerName;
+                String playerPoints;
+                int playerNameX = 200;
+                int playerNameY = 100;
                 for (Player p : players) {
+                    playerName = p.name;
+                    g.drawString(playerName, playerNameX, playerNameY);
 
                     //Add points for attractions
                     p.points += p.claimedRoutes.numAttractions();
+
 
                     //Add points for completed destination cards, subtract for
                     // incomplete destination cards
@@ -752,11 +770,15 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                             p.points = p.points - c.worth;
                         }
                     }
+                    playerPoints = String.valueOf(p.points);
+                    g.drawString(playerPoints, 200, 500);
 
                     //Determine the winner
                     if (p.points > winner.points) {
                         winner = p;
                     }
+                    playerNameX+=200;
+                    playerNameY+= 100;
 
                 }
 
@@ -928,6 +950,8 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                         p.playerDestCards.add(destCards.removeFirst());
                         p.playerDestCards.add(destCards.removeFirst());
                     }
+
+                    //WHICH DESTINATION CARD WOULD YOU LIKE TO KEEP
 
                     //Set our current player to the youngest
                     currentPlayer = players.removeFirst();
