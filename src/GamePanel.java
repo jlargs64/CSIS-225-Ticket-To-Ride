@@ -748,33 +748,35 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 //REFER TO ISSUE #8
                 remove(showDestCards);
                 g.drawImage(scoreCard, 0, 0, 800,600, this );
-                Player winner = players.getFirst();
+                //Player winner = players.getFirst();
                 String playerName;
                 String playerRoutePoints;
                 String playerAttractionPoints;
                 String playerDestinationPoints;
                 int playerNameX = 200;
                 int playerNameY = 100;
+                //Iterator it = players.iterator();
                 for (Player p : players) {
+                //while(it.hasNext()) {
                     playerName = p.name;
                     g.drawString(playerName, playerNameX, playerNameY);
-                    playerNameX+=200;
+                    playerNameX += 200;
                     //Add points for attractions
-                    attractionPoints = p.claimedRoutes.numAttractions();
+                    //attractionPoints = p.claimedRoutes.numAttractions();
 
 
                     //Add points for completed destination cards, subtract for
                     // incomplete destination cards
                     //for (DestCard c : p.playerDestCards) {
-                        //if (p.claimedRoutes.findPath(c.startDistrict,
-                               // c.endDistrict)
-                                //|| p.claimedRoutes.findPath(c.endDistrict,
-                                //c.startDistrict)) {
-                           // p.points += c.worth;
-                        //} else {
-                            //p.points = p.points - c.worth;
-                        //}
-                   // }
+                    //if (p.claimedRoutes.findPath(c.startDistrict,
+                    // c.endDistrict)
+                    //|| p.claimedRoutes.findPath(c.endDistrict,
+                    //c.startDistrict)) {
+                    // p.points += c.worth;
+                    //} else {
+                    //p.points = p.points - c.worth;
+                    //}
+                    // }
                     //playerPoints = String.valueOf(p.points);
                     playerRoutePoints = String.valueOf(p.routePoints);
                     g.drawString(playerRoutePoints, 200, 500);
@@ -783,10 +785,12 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
                     //Determine the winner
                     //if (p.points > winner.points) {
-                      // winner = p;
-                   // }
+                    // winner = p;
+                    // }
                     //playerNameX+=200;
-                   // playerNameY+= 100;
+                    // playerNameY+= 100;
+
+                    //}
 
                 }
 
@@ -965,7 +969,16 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                         int decision = JOptionPane.showConfirmDialog(null,"Keep both destination cards?",
                                 "choose one", JOptionPane.YES_NO_OPTION);
                         if(decision == JOptionPane.NO_OPTION){
-                            JOptionPane.showInputDialog("Remove which card?");
+                            Object[] options = {"Left", "Right"};
+                            Object selectedValue = JOptionPane.showInputDialog(null, "Remove which card?",
+                                "Input", JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+                            if(selectedValue == options[0]){
+                                p.playerDestCards.remove(0);
+                            }
+                            else{
+                                p.playerDestCards.remove(1);
+                            }
+
                         }
                     }
                     //Set our current player to the youngest
