@@ -20,7 +20,9 @@ public class Player {
     //The number of taxis
     protected int taxis;
     //The player's score
-    protected int points = 0;
+    protected int routePoints;
+    protected int destPoints;
+    protected int totalPoints;
     //The cards that player has in hand
     protected ArrayList<TaxiCard> playerTaxis = new ArrayList<>();
     //The cards that player has in hand
@@ -50,7 +52,10 @@ public class Player {
         this.age = age;
         //Set the player's starting num of taxis
         taxis = 15;
-
+        //Setting player scores to 0
+        routePoints = 0;
+        destPoints = 0;
+        totalPoints = 0;
         if (color.equalsIgnoreCase("BLUE")) {
             COLOR = Color.BLUE;
         } else if (color.equalsIgnoreCase("WHITE")) {
@@ -70,19 +75,6 @@ public class Player {
 
         //Initialize the routes
         routes = new ArrayList<>();
-    }
-
-    //does nothing at the moment
-    public void pointsEarned() {
-        //points earned from the length of each route
-        //claimed by the player
-
-        //if player failed complete destination tickets
-        //deduct the ticket value from final score
-
-        //if player completed destination tickets
-        //add their value to the final score
-
     }
 
     /**

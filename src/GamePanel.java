@@ -2,7 +2,6 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.*;
-import javax.swing.text.html.HTMLDocument;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
@@ -747,56 +746,76 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 //There will be some animations that we can add later.
                 //REFER TO ISSUE #8
                 remove(showDestCards);
-                g.drawImage(scoreCard, 0, 0, 800,600, this );
-                //Player winner = players.getFirst();
+                g.drawImage(scoreCard, 0, 0, 800, 600, this);
+                Player winner = players.getFirst();
                 String playerName;
                 String playerRoutePoints;
                 String playerAttractionPoints;
                 String playerDestinationPoints;
                 int playerNameX = 200;
                 int playerNameY = 100;
-                //Iterator it = players.iterator();
                 for (Player p : players) {
-                //while(it.hasNext()) {
+
+                    //Draw the player name
                     playerName = p.name;
                     g.drawString(playerName, playerNameX, playerNameY);
-                    playerNameX += 200;
-                    //Add points for attractions
-                    //attractionPoints = p.claimedRoutes.numAttractions();
+                    playerNameY += 100;
 
-
-                    //Add points for completed destination cards, subtract for
-                    // incomplete destination cards
-                    //for (DestCard c : p.playerDestCards) {
-                    //if (p.claimedRoutes.findPath(c.startDistrict,
-                    // c.endDistrict)
-                    //|| p.claimedRoutes.findPath(c.endDistrict,
-                    //c.startDistrict)) {
-                    // p.points += c.worth;
-                    //} else {
-                    //p.points = p.points - c.worth;
-                    //}
-                    // }
-                    //playerPoints = String.valueOf(p.points);
+                    //Points for taxis on board
                     playerRoutePoints = String.valueOf(p.routePoints);
-                    g.drawString(playerRoutePoints, 200, 500);
-                    playerAttractionPoints = String.valueOf(p.attractionPoints);
-                    g.drawString(playerAttractionPoints, 200, 400);
+                    g.drawString(playerRoutePoints, playerNameX,
+                            playerNameY);
+                    playerNameY += 100;
+
+                    //Add points for completed destination cards, subtract
+                    // for incomplete destination cards
+                    for (DestCard c : p.playerDestCards) {
+                        if (p.claimedRoutes.findPath(c.startDistrict,
+                                c.endDistrict)
+                                || p.claimedRoutes.findPath(c.endDistrict,
+                                c.startDistrict)) {
+                            p.destPoints += c.worth;
+                        } else {
+                            p.destPoints -= c.worth;
+                        }
+                    }
+
+                    //Draw dest points
+                    playerDestinationPoints =
+                            String.valueOf(p.destPoints);
+                    g.drawString(playerDestinationPoints, playerNameX,
+                            playerNameY);
+                    playerNameY += 100;
+
+                    //Add points for attractions
+                    attractionPoints = p.claimedRoutes.numAttractions();
+
+                    //Draw attraction points
+                    playerAttractionPoints =
+                            String.valueOf(attractionPoints);
+                    g.drawString(playerAttractionPoints, playerNameX,
+                            playerNameY);
+                    playerNameY += 100;
 
                     //Determine the winner
-                    //if (p.points > winner.points) {
-                    // winner = p;
-                    // }
-                    //playerNameX+=200;
-                    // playerNameY+= 100;
+                    p.totalPoints = p.routePoints + p.destPoints +
+                            attractionPoints;
 
-                    //}
-
+                    //Draw total
+                    g.drawString(Integer.toString(p.totalPoints), playerNameX,
+                            playerNameY);
+                    playerNameY += 100;
+                    if (p.totalPoints > winner.totalPoints) {
+                        winner = p;
+                    }
+                    playerNameX += 200;
+                    playerNameY = 100;
                 }
 
                 break;
         }
     }
+
 
     /**
      * Invoked when an action occurs.
@@ -964,18 +983,31 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                     }
 
                     //WHICH DESTINATION CARD WOULD YOU LIKE TO KEEP
-                    for(Player p: players){
+                    for (Player p : players) {
 
-                        int decision = JOptionPane.showConfirmDialog(null,"Keep both destination cards?",
+                        int decision = JOptionPane.showConfirmDialog(
+                                null,
+                                "Keep both destination cards?",
                                 "choose one", JOptionPane.YES_NO_OPTION);
-                        if(decision == JOptionPane.NO_OPTION){
-                            Object[] options = {"Left", "Right"};
-                            Object selectedValue = JOptionPane.showInputDialog(null, "Remove which card?",
-                                "Input", JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
-                            if(selectedValue == options[0]){
+                        if (decision == JOptionPane.NO_OPTION) {
+                            Object[] options = {
+                                    "Left",
+                                    "Right"};
+                            Object selectedValue =
+                                    JOptionPane.showInputDialog(
+                                            null,
+                                            "Remove which card?",
+                                            "Input",
+                                            JOptionPane.INFORMATION_MESSAGE,
+                                            null,
+                                            options,
+                                            options[0]);
+
+                            if (selectedValue == options[0]) {
+
                                 p.playerDestCards.remove(0);
-                            }
-                            else{
+                            } else {
+
                                 p.playerDestCards.remove(1);
                             }
 
@@ -1818,10 +1850,10 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
             //Add points for route claimed
             if (finger.cost == 1) {
-                routePoints =currentPlayer.routePoints += 1;
+                routePoints = currentPlayer.routePoints += 1;
             }
             if (finger.cost == 2) {
-                routePoints = currentPlayer.routePoints+= 2;
+                routePoints = currentPlayer.routePoints += 2;
             }
             if (finger.cost == 3) {
                 routePoints = currentPlayer.routePoints += 4;
@@ -1920,8 +1952,9 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
             }
 
             if (currentPlayer.taxis <= 2) {
+
                 lessThanTwoTaxis = true;
-                lastPlayer = currentPlayer;
+                lastPlayer = players.getFirst();
                 JOptionPane.showMessageDialog(this,
                         lastPlayer.name + " has less than two taxis," +
                                 "everyone has one more turn!",
@@ -1946,18 +1979,21 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
         //Change players
         players.addLast(currentPlayer);
-        currentPlayer = players.removeFirst();
 
         if (lessThanTwoTaxis && lastPlayer == currentPlayer) {
 
+            players.addLast(currentPlayer);
             //Go score the players
             currentState = GameState.values()[3];
+        } else {
+
+            currentPlayer = players.removeFirst();
+            turnNum++;
+            JOptionPane.showMessageDialog(this,
+                    "It is now " + currentPlayer.name
+                            + "\'s turn");
         }
-        turnNum++;
         repaint();
-        JOptionPane.showMessageDialog(this,
-                "It is now " + currentPlayer.name
-                        + "\'s turn");
     }
 
     /***

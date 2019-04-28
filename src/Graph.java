@@ -1,4 +1,4 @@
-import java.awt.Color;
+import java.awt.*;
 import java.io.File;
 import java.util.Scanner;
 
@@ -187,7 +187,7 @@ public class Graph {
     public int numAttractions(){
         int attractionCount = 0;
         for (Vertex v: vertices){
-            if (v.isAttraction){
+            if (v.isAttraction && v.firstEdge != null) {
                 attractionCount++;
             }
         }
