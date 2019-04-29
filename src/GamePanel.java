@@ -800,7 +800,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                     if (p.totalPoints > winner.totalPoints) {
                         winner = p;
                     }
-                    playerNameX += 200;
+                    playerNameX += 150;
                     playerNameY = 100;
                 }
 
