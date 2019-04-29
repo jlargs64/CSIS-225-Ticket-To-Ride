@@ -985,32 +985,33 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                     //WHICH DESTINATION CARD WOULD YOU LIKE TO KEEP
                     for (Player p : players) {
 
-                        int decision = JOptionPane.showConfirmDialog(
-                                null,
-                                "Keep both destination cards?",
-                                "choose one", JOptionPane.YES_NO_OPTION);
-                        if (decision == JOptionPane.NO_OPTION) {
-                            Object[] options = {
-                                    "Left",
-                                    "Right"};
-                            Object selectedValue =
-                                    JOptionPane.showInputDialog(
-                                            null,
-                                            "Remove which card?",
-                                            "Input",
-                                            JOptionPane.INFORMATION_MESSAGE,
-                                            null,
-                                            options,
-                                            options[0]);
+                        Object[] options = {
+                                p.playerDestCards.get(0).start + " to "
+                                        + p.playerDestCards.get(0).end
+                                        + " for a cost of "
+                                        + p.playerDestCards.get(0).worth,
+                                p.playerDestCards.get(1).start + " to "
+                                        + p.playerDestCards.get(1).end
+                                        + " for a cost of "
+                                        + p.playerDestCards.get(1).worth,
+                                "Keep both"
+                        };
 
-                            if (selectedValue == options[0]) {
+                        Object selectedValue =
+                                JOptionPane.showInputDialog(
+                                        null,
+                                        "Remove which card?",
+                                        p.name + " destination cards",
+                                        JOptionPane.INFORMATION_MESSAGE,
+                                        null,
+                                        options,
+                                        options[0]);
+                        if (selectedValue == options[0]) {
 
-                                p.playerDestCards.remove(0);
-                            } else {
+                            p.playerDestCards.remove(0);
+                        } else if (selectedValue == options[1]) {
 
-                                p.playerDestCards.remove(1);
-                            }
-
+                            p.playerDestCards.remove(1);
                         }
                     }
                     //Set our current player to the youngest
@@ -1208,8 +1209,40 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
 
             //Only take 2 destination cards if there are 2 available
             if (destCards.size() > 2) {
-                currentPlayer.playerDestCards.add(destCards.removeFirst());
-                currentPlayer.playerDestCards.add(destCards.removeFirst());
+                DestCard dc1 = destCards.removeFirst();
+                DestCard dc2 = destCards.removeFirst();
+
+                Object[] options = {
+                        dc1.start + " to "
+                                + dc1.end
+                                + " for a cost of "
+                                + dc1.worth,
+                        dc2.start + " to "
+                                + dc2.end
+                                + " for a cost of "
+                                + dc2.worth,
+                        "Keep both"
+                };
+
+                Object selectedValue =
+                        JOptionPane.showInputDialog(
+                                null,
+                                "Remove which card?",
+                                currentPlayer.name + " destination cards",
+                                JOptionPane.INFORMATION_MESSAGE,
+                                null,
+                                options,
+                                options[0]);
+                if (selectedValue == options[0]) {
+
+                    currentPlayer.playerDestCards.add(dc2);
+                } else if (selectedValue == options[1]) {
+
+                    currentPlayer.playerDestCards.add(dc1);
+                } else {
+                    currentPlayer.playerDestCards.add(dc1);
+                    currentPlayer.playerDestCards.add(dc2);
+                }
                 changeTurns();
             }
         }
