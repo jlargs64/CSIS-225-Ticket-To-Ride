@@ -2004,11 +2004,10 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
      */
     public void changeTurns() {
 
-        //Change players
-        players.addLast(currentPlayer);
-
         if (lessThanTwoTaxis && lastPlayer == players.peekLast()) {
 
+            //Change players
+            players.addLast(currentPlayer);
             //Score the dest cards
             //Add points for completed destination cards, subtract
             // for incomplete destination cards
@@ -2029,6 +2028,9 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
             //Go score the players
             currentState = GameState.values()[3];
         } else {
+
+            //Change players
+            players.addLast(currentPlayer);
 
             currentPlayer = players.removeFirst();
             turnNum++;
