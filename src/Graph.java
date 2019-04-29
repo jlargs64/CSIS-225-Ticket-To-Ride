@@ -210,7 +210,7 @@ public class Graph {
                 attractionCount++;
             }
         }
-        return attractionCount;
+        return attractionCount/2;
     }
 
     /***

@@ -47,10 +47,6 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
     private ArrayList<TaxiCard> discardedTaxis;
     //Player related variables
     private Deque<Player> players = new LinkedList<>();
-    private Player player1;
-    private Player player2;
-    private Player player3;
-    private Player player4;
     private Player currentPlayer;
     private int routePoints;
     private int attractionPoints;
@@ -59,7 +55,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
     private int pickUpCount = 0;
     private boolean lessThanTwoTaxis;
     private Player lastPlayer;
-
+    private boolean scoreScreen;
     //Used for claimed edges
     private int E;
 
@@ -98,7 +94,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
             ex.printStackTrace();
         }
 
-
+        scoreScreen = false;
         //Set our current state
         currentState = GameState.values()[0];
 
@@ -820,6 +816,8 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
         //Enter the player selection screen
         if (e.getSource().equals(playButton)) {
 
+            //Just so we don't poll for mouse input when tallying scores
+            scoreScreen = false;
             //Send the player set up form
             //We pass in the player deque to get our data
             PlayerSelectionFrame playerSelectForm =
@@ -1080,6 +1078,10 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
         //int y = e.getY();
         //System.out.println("X:" + x + " Y:" + y);
 
+        //Stop this method if
+        if(scoreScreen){
+            return;
+        }
         Point pointClicked = e.getPoint();
 
         //Check if a route is being claimed
@@ -1979,7 +1981,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
             if (currentPlayer.taxis <= 2) {
 
                 lessThanTwoTaxis = true;
-                lastPlayer = players.getFirst();
+                lastPlayer = currentPlayer;
                 JOptionPane.showMessageDialog(this,
                         lastPlayer.name + " has less than two taxis," +
                                 "everyone has one more turn!",
@@ -2005,9 +2007,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
         //Change players
         players.addLast(currentPlayer);
 
-        if (lessThanTwoTaxis && lastPlayer == currentPlayer) {
-
-            players.addLast(currentPlayer);
+        if (lessThanTwoTaxis && lastPlayer == players.peekLast()) {
 
             //Score the dest cards
             //Add points for completed destination cards, subtract
