@@ -1,5 +1,7 @@
 import java.awt.*;
 import java.io.File;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.Scanner;
 
 /**
@@ -163,18 +165,35 @@ public class Graph {
     /***
      * Determines if the graph contains a path from source to destination
      * @param src, the int value of the source vertex
-     * @param dest, the int value of the destination vertex
+     * @param endSrc, the int value of the destination vertex
      * @return true if the graph contains the given path
      */
-    public boolean findPath(int src, int dest) {
-        //The finger to traverse the graph
-        Edge finger = vertices[src].firstEdge;
-        while (finger!= null){
-        //If the destination was found return true
-            if (finger.dest==dest){
-                return true;
+    public boolean findPath(int src, int endSrc) {
+
+        boolean[] visited = new boolean[vertices.length];
+        Deque<Integer> queue = new LinkedList<>();
+
+        visited[src] = true;
+        queue.addLast(src);
+
+        while (queue.size() != 0) {
+
+            int newVertex = queue.pollFirst();
+
+            Edge finger = vertices[newVertex].firstEdge;
+            while (finger != null) {
+
+                //If the destination was found return true
+                if (finger.dest == endSrc) {
+                    return true;
+                }
+
+                if (!visited[finger.dest]) {
+                    visited[finger.dest] = true;
+                    queue.addLast(finger.dest);
+                }
+                finger = finger.next;
             }
-        finger = finger.next;
         }
         //There is not a path from given source to given destination
         return false;
@@ -184,9 +203,9 @@ public class Graph {
      * Counts the number of attractions in the graph
      * @return an int, the count of attractions
      */
-    public int numAttractions(){
+    public int numAttractions() {
         int attractionCount = 0;
-        for (Vertex v: vertices){
+        for (Vertex v : vertices) {
             if (v.isAttraction && v.firstEdge != null) {
                 attractionCount++;
             }

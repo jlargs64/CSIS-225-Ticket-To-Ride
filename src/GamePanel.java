@@ -742,6 +742,11 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                 break;
             case SCORE_MENU:
 
+                //Make the font for text
+                titleFont = new Font("Monospace", Font.BOLD, 16);
+                g.setFont(titleFont);
+                g.setColor(Color.WHITE);
+
                 //This is where we show who won the game with the scorecard
                 //There will be some animations that we can add later.
                 //REFER TO ISSUE #8
@@ -767,19 +772,6 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                             playerNameY);
                     playerNameY += 100;
 
-                    //Add points for completed destination cards, subtract
-                    // for incomplete destination cards
-                    for (DestCard c : p.playerDestCards) {
-                        if (p.claimedRoutes.findPath(c.startDistrict,
-                                c.endDistrict)
-                                || p.claimedRoutes.findPath(c.endDistrict,
-                                c.startDistrict)) {
-                            p.destPoints += c.worth;
-                        } else {
-                            p.destPoints -= c.worth;
-                        }
-                    }
-
                     //Draw dest points
                     playerDestinationPoints =
                             String.valueOf(p.destPoints);
@@ -804,7 +796,7 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
                     //Draw total
                     g.drawString(Integer.toString(p.totalPoints), playerNameX,
                             playerNameY);
-                    playerNameY += 100;
+
                     if (p.totalPoints > winner.totalPoints) {
                         winner = p;
                     }
@@ -2016,6 +2008,24 @@ public class GamePanel extends JPanel implements MouseListener, ActionListener {
         if (lessThanTwoTaxis && lastPlayer == currentPlayer) {
 
             players.addLast(currentPlayer);
+
+            //Score the dest cards
+            //Add points for completed destination cards, subtract
+            // for incomplete destination cards
+            for (Player p : players) {
+
+                for (DestCard c : p.playerDestCards) {
+                    if (p.claimedRoutes.findPath(c.startDistrict,
+                            c.endDistrict)
+                            || p.claimedRoutes.findPath(c.endDistrict,
+                            c.startDistrict)) {
+                        p.destPoints += c.worth;
+                    } else {
+                        p.destPoints -= c.worth;
+                    }
+                }
+            }
+
             //Go score the players
             currentState = GameState.values()[3];
         } else {
